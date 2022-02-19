@@ -6,8 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 public class StreamFunction {//join, stream, leave
     public void join(String url, String body){
         StreamHeader header = new StreamHeader();
-        JSONObject stream_header = header.getJSONObject(true, true,
-                true, false, false,
+        JSONObject stream_header = header.getJSONObject(false, true,
+                false, false, false,
                 false, false);
         JSONObject stream = new JSONObject();
         JSONObject input = new JSONObject();

@@ -1,5 +1,6 @@
 package StreamHeader;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
@@ -35,8 +36,8 @@ public class StreamHeader {//负责数据流header内容的转化
 
         JSONObject getJSONObject(){
             JSONObject object = new JSONObject();
-            object.put("mac-address", device_mac);
-            object.put("unique-id", uniqueID);
+            String stream_id_type = device_mac + ":" + uniqueID;
+            object.put("stream-id", stream_id_type);
             return object;
         }
     }
@@ -108,27 +109,39 @@ public class StreamHeader {//负责数据流header内容的转化
             this.destinationPortV6 = 0;
         }
 
-        JSONObject getJSONObject(){
+        JSONArray getJSONObject(){
+            JSONArray jsonArray = new JSONArray();
             JSONObject object = new JSONObject();
-            object.put("destination-mac-address", destinationMacAddress);
-            object.put("source-mac-address", sourceMacAddress);
-            object.put("priority-code-point", priorityCodePoint);
-            object.put("vlan-id", vlanId);
+            object.put("index", 0);
+
+            JSONObject object1 = new JSONObject();
+            object1.put("destination-mac-address", destinationMacAddress);
+            object1.put("source-mac-address", sourceMacAddress);
+            object.put("ieee802-mac-addresses", object1);
+
+            JSONObject object2 = new JSONObject();
+            object2.put("priority-code-point", priorityCodePoint);
+            object2.put("vlan-id", vlanId);
+            object.put("ieee802-vlan-tag", object2);
             //IPv4
-            object.put("source-ip-address-v4", sourceIpAddressV4);
-            object.put("destination-ip-address-v4", destinationIpAddressV4);
-            object.put("dscp-v4", dscpV4);
-            object.put("protocol-v4", protocolV4);
-            object.put("source-port-v4", sourcePortV4);
-            object.put("destination-port-v4", destinationPortV4);
+            JSONObject object3 = new JSONObject();
+            object3.put("source-ip-address", sourceIpAddressV4);
+            object3.put("destination-ip-address", destinationIpAddressV4);
+            object3.put("dscp", dscpV4);
+            object3.put("protocol", protocolV4);
+            object3.put("source-port", sourcePortV4);
+            object3.put("destination-port", destinationPortV4);
+            object.put("ipv4-tuple", object3);
             //IPv6
-            object.put("source-ip-address-v6", sourceIpAddressV6);
-            object.put("destination-ip-address-v6", destinationIpAddressV6);
-            object.put("dscp-v6", dscpV6);
-            object.put("protocol-v6", protocolV6);
-            object.put("source-port-v6", sourcePortV6);
-            object.put("destination-port-v6", destinationPortV6);
-            return object;
+            JSONObject object4 = new JSONObject();
+            object4.put("source-ip-address", sourceIpAddressV6);
+            object4.put("destination-ip-address", destinationIpAddressV6);
+            object4.put("dscp", dscpV6);
+            object4.put("protocol", protocolV6);
+            object4.put("source-port", sourcePortV6);
+            object4.put("destination-port", destinationPortV6);
+            object.put("ipv6-tuple", object4);
+            return jsonArray;
         }
     }
 
@@ -153,14 +166,19 @@ public class StreamHeader {//负责数据流header内容的转化
 
         JSONObject getJSONObject(){
             JSONObject object = new JSONObject();
-            object.put("numerator", this.numerator);
-            object.put("denominator", this.denominator);
+
+            JSONObject object1 = new JSONObject();
+            object1.put("numerator", this.numerator);
+            object1.put("denominator", this.denominator);
+            object.put("interval", object1);
             object.put("max-frames-per-interval", maxFramesPerInterval);
             object.put("max-frame-size", maxFrameSize);
             object.put("transmission-selection", transmissionSelection);
-            object.put("earliest-transmit-offset", earliestTransmitOffset);
-            object.put("latest-transmit-offset", latestTransmitOffset);
-            object.put("jitter", jitter);
+            JSONObject object2 = new JSONObject();
+            object2.put("earliest-transmit-offset", earliestTransmitOffset);
+            object2.put("latest-transmit-offset", latestTransmitOffset);
+            object2.put("jitter", jitter);
+            object.put("time-aware", object2);
             return object;
         }
     }
@@ -210,7 +228,7 @@ public class StreamHeader {//负责数据流header内容的转化
         JSONObject streamHeader = new JSONObject();
         if(isStreamID) streamHeader.put("stream-id", this.streamId.getJSONObject());
         if(isStreamRank) streamHeader.put("stream-rank", this.streamRank.getJSONObject());
-        if(isEndStationInterface) streamHeader.put("end-station-interface",
+        if(isEndStationInterface) streamHeader.put("end-station-interfaces",
                 this.endStationInterface.getJSONObject());
         if(isDateFrameSpecification) streamHeader.put("data-frame-specification",
                 this.dateFrameSpecification.getJSONObject());
