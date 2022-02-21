@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="netconf4j-0.0.9b">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/netconf4j-0.0.9b.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
