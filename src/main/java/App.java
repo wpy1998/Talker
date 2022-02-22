@@ -9,6 +9,7 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 
+import static Hardware.Computer.device_ip;
 import static Hardware.Computer.host_name;
 
 public class App {
@@ -47,15 +48,17 @@ public class App {
         putInfo.putInfo(network.toString());
 
         Device device = Device.builder()
-                .hostName(host_name)
+                .hostName(device_ip)
                 .userName("admin")
                 .password("admin")
+                .port(17830)
+                .timeout(50000)
                 .hostKeysFileName("hostKeysFileName")
                 .build();
         device.connect();
 
         //Send RPC and receive RPC Reply as XML
-        XML rpc_reply = device.executeRPC("get-interface-information");
+        XML rpc_reply = device.executeRPC("get-config");
         /* OR
          * device.executeRPC("<get-interface-information/>");
          * OR

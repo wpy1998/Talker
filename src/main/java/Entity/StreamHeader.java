@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static Hardware.HardwareMessage.device_mac;
+import static Hardware.Computer.device_mac;
 
 public class StreamHeader {//负责数据流header内容的转化
     private StreamId streamId;

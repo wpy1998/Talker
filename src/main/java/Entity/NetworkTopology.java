@@ -3,8 +3,8 @@ package Entity;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import static Hardware.HardwareMessage.device_ip;
-import static Hardware.HardwareMessage.device_mac;
+import static Hardware.Computer.device_ip;
+import static Hardware.Computer.device_mac;
 
 public class NetworkTopology {
     public JSONArray buildTopologies(){
