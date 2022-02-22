@@ -16,6 +16,7 @@ public class PutInfo {
                    String identity,
                    String password){
         this._url = url;
+        System.out.println(url);
         this.identity = (identity != null) ? identity: "admin";
         this.password = (password != null) ? password: "admin";
     }
