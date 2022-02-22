@@ -43,6 +43,23 @@
       <artifactId>httpclient</artifactId>
       <version>4.3.6</version>
     </dependency>
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>RELEASE</version>
+        <scope>compile</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>RELEASE</version>
+        <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.Juniper</groupId>
+      <artifactId>netconf-java</artifactId>
+      <version>v2.1</version>
+    </dependency>
   </dependencies>
 
   <build>

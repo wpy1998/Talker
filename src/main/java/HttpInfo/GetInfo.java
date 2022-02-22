@@ -1,5 +1,8 @@
 package HttpInfo;
 
+import lombok.Builder;
+import lombok.NonNull;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,15 +11,13 @@ import java.net.*;
 public class GetInfo {
     private String _url, identity, password;
 
-    public GetInfo(String _url, String identity, String password){
-        this._url = _url;
-        this.identity = identity;
-        this.password = password;
-    }
-    public GetInfo(String _url){
-        this._url = _url;
-        this.identity = "admin";
-        this.password = "admin";
+    @Builder
+    public GetInfo(@NonNull String url,
+                    String identity,
+                    String password){
+        this._url = url;
+        this.identity = (identity != null) ? identity: "admin";
+        this.password = (password != null) ? password: "admin";
     }
 
     public String getInfo(){

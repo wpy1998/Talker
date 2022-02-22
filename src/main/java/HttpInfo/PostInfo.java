@@ -1,6 +1,8 @@
 package HttpInfo;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.Builder;
+import lombok.NonNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,16 +12,13 @@ import java.net.*;
 public class PostInfo {
     String _url, identity, password;
 
-    public PostInfo(String url){
+    @Builder
+    public PostInfo(@NonNull String url,
+                   String identity,
+                   String password){
         this._url = url;
-        this.identity = "admin";
-        this.password = "admin";
-    }
-
-    public PostInfo(String url, String identity, String password){
-        this._url = url;
-        this.identity = identity;
-        this.password = password;
+        this.identity = (identity != null) ? identity: "admin";
+        this.password = (password != null) ? password: "admin";
     }
 
     public void postInfo(String objS){
