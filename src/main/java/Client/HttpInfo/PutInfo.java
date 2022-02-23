@@ -1,4 +1,4 @@
-package HttpInfo;
+package Client.HttpInfo;
 
 import lombok.Builder;
 import lombok.NonNull;

@@ -1,9 +1,9 @@
-package Entity;
+package Client.Entity;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import static Hardware.Computer.*;
+import static Client.Hardware.Computer.host_name;
 
 public class NetworkTopology {
     public JSONArray buildTopologies(){

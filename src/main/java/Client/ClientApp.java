@@ -1,13 +1,15 @@
-import Hardware.Computer;
+package Client;
+
+import Client.Hardware.Computer;
 import net.juniper.netconf.Device;
 import net.juniper.netconf.XML;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
 
-import static Hardware.Computer.device_ip;
+import static Client.Hardware.Computer.device_ip;
 
-public class App {
+public class ClientApp {
     public static void main(String[] args) throws IOException, SAXException {
         Computer computer = new Computer();
         computer.refresh();
@@ -74,6 +76,7 @@ public class App {
   <!-- keepalive-delay set to 0 turns off keepalives-->
   <keepalive-delay xmlns="urn:opendaylight:netconf-node-topology">120</keepalive-delay>
 </node>
+
 {
 "urn:TBD:params:xml:ns:yang:network-topology:node":{
 "node-id":"ubuntu",

@@ -1,4 +1,4 @@
-package HttpInfo;
+package Client.HttpInfo;
 
 public class DeleteInfo {
 }

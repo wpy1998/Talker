@@ -1,4 +1,4 @@
-package Hardware;
+package Client.Hardware;
 
 import java.net.*;
 import java.util.ArrayList;
