@@ -1,8 +1,4 @@
-import Entity.NetworkTopology;
 import Hardware.Computer;
-import HttpInfo.PutInfo;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import net.juniper.netconf.Device;
 import net.juniper.netconf.XML;
 import org.xml.sax.SAXException;
@@ -10,7 +6,6 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 
 import static Hardware.Computer.device_ip;
-import static Hardware.Computer.host_name;
 
 public class App {
     public static void main(String[] args) throws IOException, SAXException {

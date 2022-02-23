@@ -1,6 +1,5 @@
 package HttpInfo;
 
-import com.alibaba.fastjson.JSONObject;
 import lombok.Builder;
 import lombok.NonNull;
 
