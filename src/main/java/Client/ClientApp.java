@@ -1,6 +1,12 @@
 package Client;
 
+import Client.Entity.NetworkTopology;
+import Client.Entity.StreamHeader;
 import Client.Hardware.Computer;
+import Client.HttpInfo.GetInfo;
+import Client.HttpInfo.PostInfo;
+import Client.HttpInfo.PutInfo;
+import com.alibaba.fastjson.JSONObject;
 import net.juniper.netconf.Device;
 import net.juniper.netconf.XML;
 import org.xml.sax.SAXException;
@@ -8,6 +14,7 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 
 import static Client.Hardware.Computer.device_ip;
+import static Client.Hardware.Computer.host_name;
 
 public class ClientApp {
     public static void main(String[] args) throws IOException, SAXException {
@@ -15,9 +22,9 @@ public class ClientApp {
         computer.refresh();
         System.out.println(computer.device_ip + ", " + computer.device_mac);
         String destionation_ip = "10.2.25.85";
+
 //        String url = "http://" + destionation_ip + ":8181/restconf/operations/talker:";
-//
-//        PostInfo postInfo = new PostInfo(url + "join");
+//        PostInfo postInfo = PostInfo.builder().url(url + "join").build();
 //        StreamHeader header = new StreamHeader();
 //        JSONObject stream_header = header.getJSONObject(false, true,
 //                false, false, false,
@@ -28,34 +35,38 @@ public class ClientApp {
 //        stream.put("body", "test join");
 //        input.put("input", stream);
 //        postInfo.postInfo(input.toString());
-//
-//        GetInfo getInfo = new GetInfo(url + "test");
+//        GetInfo getInfo = GetInfo.builder().url(url + "test").build();
 //        getInfo.getInfo();
-//
-//        PostInfo postInfo1 = new PostInfo(url + "leave");
+//        PostInfo postInfo1 = PostInfo.builder().url(url + "leave").build();
 //        postInfo1.postInfo(input.toString());
 
-//        PutInfo putInfo = PutInfo.builder()
-//                .url("http://" + destionation_ip + ":8181/restconf/config/network-topology:network-topology" +
-//                        "/topology/topology-netconf/node/" + host_name + "/").build();
-//        JSONObject node = new NetworkTopology().buildNode_host();
-//        System.out.println(node.toString());
-//        putInfo.putInfo(node.toString());
 
-        Device device = Device.builder()
-                .hostName(device_ip)
-                .userName("admin")
-                .password("admin")
-                .port(17830)
-                .timeout(50000)
-                .hostKeysFileName("hostKeysFileName")
-                .build();
-        device.connect();
 
-        XML rpc_reply = device.executeRPC("get-config");
+        PutInfo putInfo = PutInfo.builder()
+                .url("http://" + destionation_ip + ":8181/restconf/config/network-topology:network-topology" +
+                        "/topology/topology-netconf/node/" + host_name + "/").build();
+        JSONObject node = new NetworkTopology().buildNode_host();
+        JSONObject input1 = new JSONObject();
+        input1.put("urn:TBD:params:xml:ns:yang:network-topology:node", node);
+        System.out.println(input1.toString());
+        putInfo.putInfo(input1.toString());
 
-        System.out.println(rpc_reply);
-        device.close();
+
+
+//        Device device = Device.builder()
+//                .hostName(device_ip)
+//                .userName("admin")
+//                .password("admin")
+//                .port(17830)
+//                .timeout(50000)
+//                .hostKeysFileName("hostKeysFileName")
+//                .build();
+//        device.connect();
+//
+//        XML rpc_reply = device.executeRPC("get-config");
+//
+//        System.out.println(rpc_reply);
+//        device.close();
     }
 }
 
