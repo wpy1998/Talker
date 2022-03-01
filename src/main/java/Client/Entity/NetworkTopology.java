@@ -3,7 +3,7 @@ package Client.Entity;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import static Client.Hardware.Computer.host_name;
+import static Client.Hardware.Computer.*;
 
 public class NetworkTopology {
     public JSONArray buildTopologies(){
@@ -50,7 +50,7 @@ public class NetworkTopology {
 //        host_tracker_service_attachment_points.add(host_tracker_service_attachment_point);
 
         node.put("node-id", host_name);
-        node.put("host", "10.2.25.198");
+        node.put("host", device_ip);
         node.put("port", 17830);
         node.put("username", "admin");
         node.put("password", "admin");
