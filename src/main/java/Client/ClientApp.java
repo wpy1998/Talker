@@ -1,20 +1,14 @@
 package Client;
 
-import Client.Entity.NetworkTopology;
-import Client.Entity.StreamHeader;
+import Client.Yang.NetworkTopologyYang;
 import Client.Hardware.Computer;
-import Client.HttpInfo.GetInfo;
-import Client.HttpInfo.PostInfo;
 import Client.HttpInfo.PutInfo;
 import com.alibaba.fastjson.JSONObject;
-import net.juniper.netconf.Device;
-import net.juniper.netconf.XML;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
 
-import static Client.Hardware.Computer.device_ip;
-import static Client.Hardware.Computer.host_name;
+import static Client.Hardware.Computer.*;
 
 public class ClientApp {
     public static final String cuc_ip = "192.168.1.16";
@@ -40,14 +34,21 @@ public class ClientApp {
 //        PostInfo postInfo1 = PostInfo.builder().url(url + "leave").build();
 //        postInfo1.postInfo(input.toString());
 
-        PutInfo putInfo = PutInfo.builder()
-                .url("http://" + cuc_ip + ":8181/restconf/config/network-topology:network-topology" +
-                        "/topology/topology-netconf/node/" + host_name + "/").build();
-        JSONObject node = new NetworkTopology().buildNode_host();
-        JSONObject input1 = new JSONObject();
-        input1.put("urn:TBD:params:xml:ns:yang:network-topology:node", node);
-        System.out.println(input1.toString());
-        putInfo.putInfo(input1.toString());
+//        PutInfo putInfo = PutInfo.builder()
+//                .url("http://" + cuc_ip + ":8181/restconf/config/network-topology:network-topology" +
+//                        "/topology/topology-netconf/node/" + host_name + "/").build();
+//        JSONObject node = new NetworkTopologyYang().buildTestNode();
+//        JSONObject input1 = new JSONObject();
+//        input1.put("urn:TBD:params:xml:ns:yang:network-topology:node", node);
+//        System.out.println(input1.toString());
+//        putInfo.putInfo(input1.toString());
+
+        NetworkTopologyYang networkTopologyYang = new NetworkTopologyYang();
+        NetworkTopologyYang.Topology topology = networkTopologyYang.
+                createTopology("topology-netconf");
+        NetworkTopologyYang.Node currentNode = topology.
+                createNode(host_name, device_ip, device_mac.get(0), 0);
+        System.out.println(currentNode.getJSONObject().toString());
     }
 }
 
