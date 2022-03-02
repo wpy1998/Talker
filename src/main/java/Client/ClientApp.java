@@ -1,8 +1,10 @@
 package Client;
 
-import Client.Yang.NetworkTopologyYang;
 import Client.Hardware.Computer;
 import Client.HttpInfo.PutInfo;
+import Client.Yang.NetworkTopology.Node;
+import Client.Yang.NetworkTopology.Topology;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.xml.sax.SAXException;
 
@@ -37,18 +39,47 @@ public class ClientApp {
 //        PutInfo putInfo = PutInfo.builder()
 //                .url("http://" + cuc_ip + ":8181/restconf/config/network-topology:network-topology" +
 //                        "/topology/topology-netconf/node/" + host_name + "/").build();
-//        JSONObject node = new NetworkTopologyYang().buildTestNode();
+//        JSONObject node = buildTestNode();
 //        JSONObject input1 = new JSONObject();
 //        input1.put("urn:TBD:params:xml:ns:yang:network-topology:node", node);
 //        System.out.println(input1.toString());
 //        putInfo.putInfo(input1.toString());
 
-        NetworkTopologyYang networkTopologyYang = new NetworkTopologyYang();
-        NetworkTopologyYang.Topology topology = networkTopologyYang.
-                createTopology("topology-netconf");
-        NetworkTopologyYang.Node currentNode = topology.
-                createNode(host_name, device_ip, device_mac.get(0), 0);
-        System.out.println(currentNode.getJSONObject().toString());
+        Topology topology = new Topology("tsn-network");
+        Node currentNode = new Node();
+        topology.addNode(currentNode);
+
+        JSONObject object = topology.getJSONObject();
+        JSONArray array = new JSONArray();
+        array.add(topology.getJSONObject());
+
+        JSONObject topologies = new JSONObject();
+        JSONObject network_topology = new JSONObject();
+        topologies.put("topology", array);
+        network_topology.put("urn:TBD:params:xml:ns:yang:network-topology:network-topology", topologies);
+        PutInfo putInfo = PutInfo.builder()
+                .url("http://" + cuc_ip + ":8181/restconf/config/network-topology:network-topology").build();
+        System.out.println(network_topology.toString());
+        putInfo.putInfo(network_topology.toString());
+    }
+
+    public static JSONObject buildTestNode(){
+        JSONObject node = new JSONObject();
+
+        node.put("node-id", host_name);
+        node.put("host", device_ip);
+        node.put("port", 17830);
+        node.put("username", "admin");
+        node.put("password", "admin");
+        node.put("tcp-only", false);
+        node.put("reconnect-on-changed-schema", false);
+        node.put("connection-timeout-millis", 20000);
+        node.put("max-connection-attempts", 0);
+        node.put("between-attempts-timeout-millis", 2000);
+        node.put("sleep-factor", 1.5);
+        node.put("keepalive-delay", 120);
+
+        return node;
     }
 }
 
