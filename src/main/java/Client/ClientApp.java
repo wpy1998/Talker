@@ -17,11 +17,11 @@ import static Client.Hardware.Computer.device_ip;
 import static Client.Hardware.Computer.host_name;
 
 public class ClientApp {
+    public static final String cuc_ip = "192.168.1.16";
     public static void main(String[] args) throws IOException, SAXException {
         Computer computer = new Computer();
         computer.refresh();
         System.out.println(computer.device_ip + ", " + computer.device_mac);
-        String destionation_ip = "10.2.25.85";
 
 //        String url = "http://" + destionation_ip + ":8181/restconf/operations/talker:";
 //        PostInfo postInfo = PostInfo.builder().url(url + "join").build();
@@ -40,33 +40,14 @@ public class ClientApp {
 //        PostInfo postInfo1 = PostInfo.builder().url(url + "leave").build();
 //        postInfo1.postInfo(input.toString());
 
-
-
         PutInfo putInfo = PutInfo.builder()
-                .url("http://" + destionation_ip + ":8181/restconf/config/network-topology:network-topology" +
+                .url("http://" + cuc_ip + ":8181/restconf/config/network-topology:network-topology" +
                         "/topology/topology-netconf/node/" + host_name + "/").build();
         JSONObject node = new NetworkTopology().buildNode_host();
         JSONObject input1 = new JSONObject();
         input1.put("urn:TBD:params:xml:ns:yang:network-topology:node", node);
         System.out.println(input1.toString());
         putInfo.putInfo(input1.toString());
-
-
-
-//        Device device = Device.builder()
-//                .hostName(device_ip)
-//                .userName("admin")
-//                .password("admin")
-//                .port(17830)
-//                .timeout(50000)
-//                .hostKeysFileName("hostKeysFileName")
-//                .build();
-//        device.connect();
-//
-//        XML rpc_reply = device.executeRPC("get-config");
-//
-//        System.out.println(rpc_reply);
-//        device.close();
     }
 }
 
