@@ -20,7 +20,7 @@ public class Node {
     //l3-unicast-igp-topology:igp-node-attributes
 
     public Node(){
-        this.node_id = host_name + ":" + device_mac.get(0);
+        this.node_id = host_name + ":" + device_mac;
         supporting_nodes = new ArrayList<>();
         termination_points = new ArrayList<>();
 
