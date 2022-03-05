@@ -1,7 +1,7 @@
 package Client.Yang;
 
 import Client.HttpInfo.PostInfo;
-import Client.Yang.Talker.Header;
+import Client.Yang.Stream.Header;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.HashMap;
@@ -41,16 +41,50 @@ public class CUCConnect {
     }
 
     Map<String, String> talkerUrl;
-    public void registerAndSendStream(String body){
+    public int registerAndSendStream(String body){
         int uniqueId = getUniqueId();
         Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
                 .rank((short) 0)
                 .build();
-        join(header);
+        int resultCode;
+
+        resultCode = join(header);
+        if(resultCode < 200 || resultCode > 300){
+            throw new RuntimeException("ResultCode Error in join stream action: " + resultCode);
+        }
+        resultCode = stream(body);
+        if(resultCode < 200 || resultCode > 300){
+            throw new RuntimeException("ResultCode Error in post stream to destination: " + resultCode);
+        }
+        resultCode = leave(header);
+        if(resultCode < 200 || resultCode > 300){
+            throw new RuntimeException("ResultCode Error in leave stream action: " + resultCode);
+        }
+        return resultCode;
     }
 
     private int join(Header header){
         String url = talkerUrl.get("join");
+        System.out.println(url);
+        PostInfo postInfo = PostInfo.builder().url(url).build();
+
+        JSONObject joinHeader = header.getJSONObject(true, true, true,
+                true, true, true,
+                true);
+        JSONObject stream = new JSONObject();
+        JSONObject input = new JSONObject();
+        stream.put("header", joinHeader);
+        stream.put("body", "join stream");
+        input.put("input", stream);
+        return postInfo.postInfo(input.toString());
+    }
+
+    private int stream(String body){
+        return 200;
+    }
+
+    private int leave(Header header){
+        String url = talkerUrl.get("leave");
         System.out.println(url);
         PostInfo postInfo = PostInfo.builder().url(url).build();
 

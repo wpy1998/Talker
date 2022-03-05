@@ -1,11 +1,7 @@
 package Client;
 
 import Client.Hardware.Computer;
-import Client.HttpInfo.PutInfo;
 import Client.Yang.CUCConnect;
-import Client.Yang.NetworkTopology.Node;
-import Client.Yang.NetworkTopology.Topology;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.xml.sax.SAXException;
 
@@ -14,7 +10,7 @@ import java.io.IOException;
 import static Client.Hardware.Computer.*;
 
 public class ClientApp {
-    public static final String cuc_ip = "192.168.1.3";
+    public static final String cuc_ip = "192.168.1.14";
     public static void main(String[] args) throws IOException, SAXException {
         Computer computer = new Computer();
         computer.refresh();
@@ -64,7 +60,7 @@ public class ClientApp {
 //        putInfo.putInfo(network_topology.toString());
 
         CUCConnect cucConnect = new CUCConnect();
-        cucConnect.registerAndSendStream("test");
+        cucConnect.registerAndSendStream("join");
     }
 
     public static JSONObject buildTestNode(){
