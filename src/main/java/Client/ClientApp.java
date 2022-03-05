@@ -2,6 +2,7 @@ package Client;
 
 import Client.Hardware.Computer;
 import Client.HttpInfo.PutInfo;
+import Client.Yang.CUCConnect;
 import Client.Yang.NetworkTopology.Node;
 import Client.Yang.NetworkTopology.Topology;
 import com.alibaba.fastjson.JSONArray;
@@ -13,7 +14,7 @@ import java.io.IOException;
 import static Client.Hardware.Computer.*;
 
 public class ClientApp {
-    public static final String cuc_ip = "192.168.1.16";
+    public static final String cuc_ip = "192.168.1.3";
     public static void main(String[] args) throws IOException, SAXException {
         Computer computer = new Computer();
         computer.refresh();
@@ -45,22 +46,25 @@ public class ClientApp {
 //        System.out.println(input1.toString());
 //        putInfo.putInfo(input1.toString());
 
-        Topology topology = new Topology("tsn-network");
-        Node currentNode = new Node();
-        topology.addNode(currentNode);
+//        Topology topology = new Topology("tsn-network");
+//        Node currentNode = new Node();
+//        topology.addNode(currentNode);
+//
+//        JSONObject object = topology.getJSONObject();
+//        JSONArray array = new JSONArray();
+//        array.add(topology.getJSONObject());
+//
+//        JSONObject topologies = new JSONObject();
+//        JSONObject network_topology = new JSONObject();
+//        topologies.put("topology", array);
+//        network_topology.put("urn:TBD:params:xml:ns:yang:network-topology:network-topology", topologies);
+//        PutInfo putInfo = PutInfo.builder()
+//                .url("http://" + cuc_ip + ":8181/restconf/config/network-topology:network-topology").build();
+//        System.out.println(network_topology.toString());
+//        putInfo.putInfo(network_topology.toString());
 
-        JSONObject object = topology.getJSONObject();
-        JSONArray array = new JSONArray();
-        array.add(topology.getJSONObject());
-
-        JSONObject topologies = new JSONObject();
-        JSONObject network_topology = new JSONObject();
-        topologies.put("topology", array);
-        network_topology.put("urn:TBD:params:xml:ns:yang:network-topology:network-topology", topologies);
-        PutInfo putInfo = PutInfo.builder()
-                .url("http://" + cuc_ip + ":8181/restconf/config/network-topology:network-topology").build();
-        System.out.println(network_topology.toString());
-        putInfo.putInfo(network_topology.toString());
+        CUCConnect cucConnect = new CUCConnect();
+        cucConnect.registerAndSendStream("test");
     }
 
     public static JSONObject buildTestNode(){

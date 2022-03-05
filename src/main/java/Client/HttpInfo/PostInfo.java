@@ -20,7 +20,8 @@ public class PostInfo {
         this.password = (password != null) ? password: "admin";
     }
 
-    public void postInfo(String objS){
+    public int postInfo(String objS){
+        int resultCode = 400;
         System.out.println("request: " + objS);
         try {
             URL url = new URL(this._url);
@@ -29,6 +30,7 @@ public class PostInfo {
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Accept", "application/json");
                 connection.setRequestProperty("Content-Type", "application/json");
+                connection.setInstanceFollowRedirects(true);
                 connection.setRequestProperty("Authorization", "");
                 Authenticator.setDefault(new Authenticator() {
                     @Override
@@ -39,12 +41,13 @@ public class PostInfo {
                 connection.setDoInput(true);
                 connection.setDoOutput(true);
                 connection.setUseCaches(false);
-                connection.setConnectTimeout(10000);
+                connection.setConnectTimeout(5000);
                 connection.connect();
                 StringBuffer params = new StringBuffer();
                 params.append(objS);
                 byte[] bytes = params.toString().getBytes();
                 connection.getOutputStream().write(bytes);
+                resultCode = connection.getResponseCode();
                 if(connection.getResponseCode() != 200){
                     System.out.println(connection.getResponseCode());
                     System.out.println("error!");
@@ -61,5 +64,6 @@ public class PostInfo {
         }catch (MalformedURLException e){
             e.printStackTrace();
         }
+        return resultCode;
     }
 }

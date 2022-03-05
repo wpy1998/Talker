@@ -1,14 +1,16 @@
-package Client.Yang;
+package Client.Yang.Talker;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.Builder;
+import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static Client.Hardware.Computer.device_mac;
+import static Client.Hardware.Computer.*;
 
-public class StreamHeader {//负责数据流header内容的转化
+public class Header {//负责数据流header内容的转化
     private StreamId streamId;
     private StreamRank streamRank;
     private EndStationInterface endStationInterface;
@@ -17,9 +19,10 @@ public class StreamHeader {//负责数据流header内容的转化
     private UserToNetworkRequirements userToNetworkRequirements;
     private InterfaceCapabilities interfaceCapabilities;
 
-    public StreamHeader(){
-        this.streamId = new StreamId();
-        this.streamRank = new StreamRank();
+    @Builder
+    public Header(@NonNull String uniqueId, @NonNull short rank){
+        this.streamId = new StreamId(uniqueId);
+        this.streamRank = new StreamRank(rank);
         this.endStationInterface = new EndStationInterface();
         this.dateFrameSpecification = new DateFrameSpecification();
         this.trafficSpecification = new TrafficSpecification();
@@ -27,20 +30,22 @@ public class StreamHeader {//负责数据流header内容的转化
         this.interfaceCapabilities = new InterfaceCapabilities();
     }
 
-    private class StreamId{//macAddress, uniqueID
+    private class StreamId{
         String uniqueID;
 
-        public StreamId(){
-            this.uniqueID = "00-00";
+        public StreamId(String uniqueID){
+            this.uniqueID = uniqueID;
+            System.out.println("Generate StreamID - UniqueID " + this.uniqueID);
         }
 
-        JSONObject getJSONObject(){
-            JSONObject object = new JSONObject();
-            String stream_id_type = device_mac + ":" + uniqueID;
-            object.put("stream-id", stream_id_type);
-            return object;
+        String getJSONObject(){
+//            JSONObject object = new JSONObject();
+            String stream_id_type = device_mac.get(0) + ":" + uniqueID;
+//            object.put("stream-id", stream_id_type);
+//            return object;
+            return stream_id_type;
         }
-    }
+    }//finished
 
     private class StreamRank {//rank
         short rank;
@@ -48,8 +53,8 @@ public class StreamHeader {//负责数据流header内容的转化
          * 0 流量紧急业务
          * 1 非紧急业务
          * */
-        public StreamRank(){
-            this.rank = 1;
+        public StreamRank(short rank){
+            this.rank = rank;
         }
 
         JSONObject getJSONObject(){
@@ -57,14 +62,14 @@ public class StreamHeader {//负责数据流header内容的转化
             object.put("rank", rank);
             return object;
         }
-    }
+    }//finished
 
     private class EndStationInterface {
         String macAddress, interfaceName;
 
         public EndStationInterface(){
-            this.macAddress = "00-00-00-00-00-00";
-            this.interfaceName = "default-name";
+            this.macAddress = device_mac.get(0);
+            this.interfaceName = host_name;
         }
 
         JSONObject getJSONObject(){
@@ -73,7 +78,7 @@ public class StreamHeader {//负责数据流header内容的转化
             object.put("interface-name", interfaceName);
             return object;
         }
-    }
+    }//finished
 
     private class DateFrameSpecification {
         String destinationMacAddress, sourceMacAddress;
@@ -90,11 +95,11 @@ public class StreamHeader {//负责数据流header内容的转化
 
         public DateFrameSpecification(){
             this.destinationMacAddress = "00-00-00-00-00-00";
-            this.sourceMacAddress = "00-00-00-00-00-00";
+            this.sourceMacAddress = device_mac.get(0);
             this.priorityCodePoint = 0;
             this.vlanId = 0;
 
-            this.sourceIpAddressV4 = "0.0.0.0";
+            this.sourceIpAddressV4 = device_ip;
             this.destinationIpAddressV4 = "0.0.0.0";
             this.dscpV4 = 0;
             this.protocolV4 = 0;
@@ -140,7 +145,7 @@ public class StreamHeader {//负责数据流header内容的转化
             object4.put("protocol", protocolV6);
             object4.put("source-port", sourcePortV6);
             object4.put("destination-port", destinationPortV6);
-            object.put("ipv6-tuple", object4);
+//            object.put("ipv6-tuple", object4);
             return jsonArray;
         }
     }
@@ -241,59 +246,3 @@ public class StreamHeader {//负责数据流header内容的转化
         return streamHeader;
     }
 }
-
-/*
-{
-  "input": {
-    "header": {
-      "interface-capabilities": {
-        "cb-sequence-type-list": [
-          "0"
-        ],
-        "vlan-tag-capable": "false",
-        "cb-stream-iden-type-list": [
-          "0"
-        ]
-      },
-      "date-frame-specification": {
-        "source-port-v4": "0",
-        "vlan-id": "0",
-        "source-port-v6": "0",
-        "destination-port-v4": "0",
-        "destination-port-v6": "0",
-        "protocol-v6": "0",
-        "protocol-v4": "0",
-        "destination-mac-address": "5c-Da-ce-f7-Ef-DC",
-        "destination-ip-address-v6": "C88A:0000:0000:0000:0000:0000:0000:0000",
-        "destination-ip-address-v4": "6.59.7.2",
-        "source-ip-address-v6": "C88A:0000:0000:0000:0000:0000:0000:0000",
-        "priority-code-point": "0",
-        "dscp-v4": "0",
-        "source-ip-address-v4": "16.60.82.6",
-        "dscp-v6": "0",
-        "source-mac-address": "6A-Db-2F-ab-eF-Bf"
-      },
-      "stream-rank": {
-        "rank": "0"
-      },
-      "end-station-interface": {
-        "mac-address": "eF-AA-3e-c3-E0-ee",
-        "interface-name": "Some interface-name"
-      },
-      "user-to-network-requirements": {
-        "num-seamless-trees": "1",
-        "max-latency": "0"
-      },
-      "traffic-specification": {
-        "transmission-selection": "0",
-        "max-frames-per-interval": "0",
-        "max-frame-size": "0"
-      },
-      "stream-id": {
-        "mac-address": "F9-CD-cF-Ea-87-df",
-        "unique-id": "7f-bB"
-      }
-    }
-  }
-}
-*/

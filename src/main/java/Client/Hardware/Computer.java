@@ -37,7 +37,7 @@ public class Computer {//获取硬件信息
                 }
                 sb.delete(0, sb.length());
                 for (int i = 0; i < mac.length; i++){
-                    sb.append(String.format("%02x%s", mac[i], (i < mac.length - 1) ? ":" : ""));
+                    sb.append(String.format("%02x%s", mac[i], (i < mac.length - 1) ? "-" : ""));
                 }
                 tmpMacList.add(sb.toString());
             }
