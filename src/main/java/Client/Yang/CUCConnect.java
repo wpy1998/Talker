@@ -15,8 +15,8 @@ public class CUCConnect {
     Map<String, String> urls;
     public CUCConnect(){
         urls = new HashMap<>();
-        urls.put("join", "http://" + cuc_ip + ":8181/restconf/config/talker:streams");
-        urls.put("leave", "http://" + cuc_ip + ":8181/restconf/config/talker:streams/stream/");
+        urls.put("join", "http://" + cuc_ip + ":8181/restconf/config/tsn-talker-type:streams");
+        urls.put("leave", "http://" + cuc_ip + ":8181/restconf/config/tsn-talker-type:streams/stream/");
     }
 
     //topology connect 以下参数,函数仅在操作network topology config库时使用
