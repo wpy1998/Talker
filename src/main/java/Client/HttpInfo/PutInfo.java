@@ -16,12 +16,13 @@ public class PutInfo {
                    String identity,
                    String password){
         this._url = url;
-        System.out.println(url);
         this.identity = (identity != null) ? identity: "admin";
         this.password = (password != null) ? password: "admin";
     }
 
-    public void putInfo(String objS){
+    public int putInfo(String objS){
+        System.out.println("request: " + objS);
+        int resultCode = 400;
         try {
             URL url = new URL(this._url);
             try {
@@ -45,9 +46,9 @@ public class PutInfo {
                 params.append(objS);
                 byte[] bytes = params.toString().getBytes();
                 connection.getOutputStream().write(bytes);
+                resultCode = connection.getResponseCode();
                 if(connection.getResponseCode() != 200){
                     System.out.println(connection.getResponseCode());
-                    System.out.println("error!");
                 }else {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection
                             .getInputStream(), "UTF-8"));
@@ -61,5 +62,6 @@ public class PutInfo {
         }catch (MalformedURLException e){
             e.printStackTrace();
         }
+        return resultCode;
     }
 }

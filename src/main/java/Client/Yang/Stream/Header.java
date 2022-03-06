@@ -30,6 +30,10 @@ public class Header {//负责数据流header内容的转化
         this.interfaceCapabilities = new InterfaceCapabilities();
     }
 
+    public String getKey(){
+        return this.streamId.getJSONObject();
+    }
+
     private class StreamId{
         String uniqueID;
 
@@ -83,6 +87,7 @@ public class Header {//负责数据流header内容的转化
     private class DateFrameSpecification {
         String destinationMacAddress, sourceMacAddress;
         short priorityCodePoint, vlanId;
+        int index;
         /*
          * PriorityCodePoint：VLAN Tag的PCP(PriorityCodePoint)字段，取值范围为0~7，用于标识网桥中的流类
          * VlanId：标识VLAN Tag的VLAN ID字段，取值范围为0~4095，如果仅知道PriorityCodePoint，VlanId则指定为0
@@ -94,6 +99,8 @@ public class Header {//负责数据流header内容的转化
         int protocolV4, sourcePortV4, destinationPortV4, protocolV6, sourcePortV6, destinationPortV6;
 
         public DateFrameSpecification(){
+            this.index = 0;
+
             this.destinationMacAddress = "00-00-00-00-00-00";
             this.sourceMacAddress = device_mac.get(0);
             this.priorityCodePoint = 0;
@@ -116,36 +123,52 @@ public class Header {//负责数据流header内容的转化
 
         JSONArray getJSONObject(){
             JSONArray jsonArray = new JSONArray();
-            JSONObject object = new JSONObject();
-            object.put("index", 0);
 
+            JSONObject dateFrameSpecification1 = new JSONObject();
+            dateFrameSpecification1.put("index", this.index);
+            this.index += 1;
             JSONObject object1 = new JSONObject();
             object1.put("destination-mac-address", destinationMacAddress);
             object1.put("source-mac-address", sourceMacAddress);
-            object.put("ieee802-mac-addresses", object1);
+            dateFrameSpecification1.put("ieee802-mac-addresses", object1);
+            jsonArray.add(dateFrameSpecification1);
 
+            JSONObject dateFrameSpecification2 = new JSONObject();
             JSONObject object2 = new JSONObject();
+            dateFrameSpecification2.put("index", this.index);
+            this.index += 1;
             object2.put("priority-code-point", priorityCodePoint);
             object2.put("vlan-id", vlanId);
-            object.put("ieee802-vlan-tag", object2);
+            dateFrameSpecification2.put("ieee802-vlan-tag", object2);
+            jsonArray.add(dateFrameSpecification2);
+
             //IPv4
+            JSONObject dateFrameSpecification3 = new JSONObject();
             JSONObject object3 = new JSONObject();
+            dateFrameSpecification3.put("index", this.index);
+            this.index += 1;
             object3.put("source-ip-address", sourceIpAddressV4);
             object3.put("destination-ip-address", destinationIpAddressV4);
             object3.put("dscp", dscpV4);
             object3.put("protocol", protocolV4);
             object3.put("source-port", sourcePortV4);
             object3.put("destination-port", destinationPortV4);
-            object.put("ipv4-tuple", object3);
+            dateFrameSpecification3.put("ipv4-tuple", object3);
+            jsonArray.add(dateFrameSpecification3);
             //IPv6
+            JSONObject dateFrameSpecification4 = new JSONObject();
             JSONObject object4 = new JSONObject();
+            dateFrameSpecification4.put("index", this.index);
+            this.index += 1;
             object4.put("source-ip-address", sourceIpAddressV6);
             object4.put("destination-ip-address", destinationIpAddressV6);
             object4.put("dscp", dscpV6);
             object4.put("protocol", protocolV6);
             object4.put("source-port", sourcePortV6);
             object4.put("destination-port", destinationPortV6);
-//            object.put("ipv6-tuple", object4);
+            dateFrameSpecification4.put("ipv6-tuple", object4);
+            jsonArray.add(dateFrameSpecification4);
+
             return jsonArray;
         }
     }

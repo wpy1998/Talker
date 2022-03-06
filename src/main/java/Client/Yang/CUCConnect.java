@@ -1,7 +1,9 @@
 package Client.Yang;
 
-import Client.HttpInfo.PostInfo;
+import Client.HttpInfo.DeleteInfo;
+import Client.HttpInfo.PutInfo;
 import Client.Yang.Stream.Header;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.HashMap;
@@ -10,12 +12,16 @@ import java.util.Map;
 import static Client.ClientApp.cuc_ip;
 
 public class CUCConnect {
+    Map<String, String> urls;
     public CUCConnect(){
-        talkerUrl = new HashMap<>();
-        talkerUrl.put("join", "http://" + cuc_ip + ":8181/restconf/operations/talker:join");
-        talkerUrl.put("leave", "http://" + cuc_ip + ":8181/restconf/operations/talker:leave");
+        urls = new HashMap<>();
+        urls.put("join", "http://" + cuc_ip + ":8181/restconf/config/talker:streams");
+        urls.put("leave", "http://" + cuc_ip + ":8181/restconf/config/talker:streams/stream/");
     }
-    //talker: header, body
+
+    //topology connect 以下参数,函数仅在操作network topology config库时使用
+
+    //talker: header, body 以下参数,函数仅在操作talker config库时使用
     private static int unique_id = 0;
 
     synchronized private int getUniqueId(){
@@ -40,7 +46,6 @@ public class CUCConnect {
         return s1 + "-" + s2;
     }
 
-    Map<String, String> talkerUrl;
     public int registerAndSendStream(String body){
         int uniqueId = getUniqueId();
         Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
@@ -64,19 +69,21 @@ public class CUCConnect {
     }
 
     private int join(Header header){
-        String url = talkerUrl.get("join");
+        String url = urls.get("join");
         System.out.println(url);
-        PostInfo postInfo = PostInfo.builder().url(url).build();
+        PutInfo putInfo = PutInfo.builder().url(url).build();
 
-        JSONObject joinHeader = header.getJSONObject(true, true, true,
+        JSONObject joinStream = header.getJSONObject(true, true, true,
                 true, true, true,
                 true);
-        JSONObject stream = new JSONObject();
-        JSONObject input = new JSONObject();
-        stream.put("header", joinHeader);
-        stream.put("body", "join stream");
-        input.put("input", stream);
-        return postInfo.postInfo(input.toString());
+        joinStream.put("body", "join stream");
+        JSONArray streams = new JSONArray();
+        streams.add(joinStream);
+        JSONObject middle = new JSONObject();
+        middle.put("stream", streams);
+        JSONObject result = new JSONObject();
+        result.put("streams", middle);
+        return putInfo.putInfo(result.toString());
     }
 
     private int stream(String body){
@@ -84,18 +91,20 @@ public class CUCConnect {
     }
 
     private int leave(Header header){
-        String url = talkerUrl.get("leave");
-        System.out.println(url);
-        PostInfo postInfo = PostInfo.builder().url(url).build();
+        String url = urls.get("leave");
+        System.out.println(url + header.getKey());
+        DeleteInfo deleteInfo = DeleteInfo.builder().url(url + header.getKey()).build();
 
-        JSONObject joinHeader = header.getJSONObject(true, true, true,
+        JSONObject leaveHeader = header.getJSONObject(true, true, true,
                 true, true, true,
                 true);
+        leaveHeader.put("body", "leave stream");
         JSONObject stream = new JSONObject();
-        JSONObject input = new JSONObject();
-        stream.put("header", joinHeader);
-        stream.put("body", "join stream");
-        input.put("input", stream);
-        return postInfo.postInfo(input.toString());
+        stream.put("stream", leaveHeader);
+        return deleteInfo.deleteInfo();
     }
+
+    //listener 以下参数,函数仅在操作listener config库时使用
+
+    //status 以下参数,函数仅在操作status config库时使用
 }

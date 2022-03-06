@@ -21,6 +21,7 @@ public class PostInfo {
     }
 
     public int postInfo(String objS){
+        System.out.println("request: " + objS);
         int resultCode = 400;
         System.out.println("request: " + objS);
         try {
@@ -50,7 +51,6 @@ public class PostInfo {
                 resultCode = connection.getResponseCode();
                 if(connection.getResponseCode() != 200){
                     System.out.println(connection.getResponseCode());
-                    System.out.println("error!");
                 }else {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection
                             .getInputStream(), "UTF-8"));
