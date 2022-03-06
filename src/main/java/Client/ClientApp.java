@@ -1,6 +1,7 @@
 package Client;
 
 import Client.Hardware.Computer;
+import Client.HttpInfo.GetInfo;
 import Client.Yang.CUCConnect;
 import com.alibaba.fastjson.JSONObject;
 import org.xml.sax.SAXException;
@@ -10,28 +11,11 @@ import java.io.IOException;
 import static Client.Hardware.Computer.*;
 
 public class ClientApp {
-    public static final String cuc_ip = "192.168.1.14";
+    public static final String cuc_ip = "192.168.1.3";
     public static void main(String[] args) throws IOException, SAXException {
         Computer computer = new Computer();
         computer.refresh();
         System.out.println(computer.device_ip + ", " + computer.device_mac);
-
-//        String url = "http://" + destionation_ip + ":8181/restconf/operations/talker:";
-//        PostInfo postInfo = PostInfo.builder().url(url + "join").build();
-//        StreamHeader header = new StreamHeader();
-//        JSONObject stream_header = header.getJSONObject(false, true,
-//                false, false, false,
-//                false, false);
-//        JSONObject stream = new JSONObject();
-//        JSONObject input = new JSONObject();
-//        stream.put("header", stream_header);
-//        stream.put("body", "test join");
-//        input.put("input", stream);
-//        postInfo.postInfo(input.toString());
-//        GetInfo getInfo = GetInfo.builder().url(url + "test").build();
-//        getInfo.getInfo();
-//        PostInfo postInfo1 = PostInfo.builder().url(url + "leave").build();
-//        postInfo1.postInfo(input.toString());
 
 //        PutInfo putInfo = PutInfo.builder()
 //                .url("http://" + cuc_ip + ":8181/restconf/config/network-topology:network-topology" +
@@ -59,8 +43,12 @@ public class ClientApp {
 //        System.out.println(network_topology.toString());
 //        putInfo.putInfo(network_topology.toString());
 
+        GetInfo getInfo = GetInfo.builder().url("http://" + cuc_ip +
+                ":8181/restconf/operations/tsn-talker-type:test").build();
+        getInfo.getInfo();
+
         CUCConnect cucConnect = new CUCConnect();
-        cucConnect.registerAndSendStream("join");
+        cucConnect.registerAndSendStream("test");
     }
 
     public static JSONObject buildTestNode(){
