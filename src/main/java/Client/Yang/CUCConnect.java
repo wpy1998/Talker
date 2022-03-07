@@ -9,7 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static Client.ClientApp.cuc_ip;
+import static Client.TalkerApp.cuc_ip;
 
 public class CUCConnect {
     Map<String, String> urls;
