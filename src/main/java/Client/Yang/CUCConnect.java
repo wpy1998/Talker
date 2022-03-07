@@ -15,8 +15,10 @@ public class CUCConnect {
     Map<String, String> urls;
     public CUCConnect(){
         urls = new HashMap<>();
-        urls.put("join", "http://" + cuc_ip + ":8181/restconf/config/tsn-talker-type:streams");
-        urls.put("leave", "http://" + cuc_ip + ":8181/restconf/config/tsn-talker-type:streams/stream/");
+        urls.put("join_talker", "http://" + cuc_ip +
+                ":8181/restconf/config/tsn-talker-type:stream_talker_config/stream_list/");
+        urls.put("leave_talker", "http://" + cuc_ip +
+                ":8181/restconf/config/tsn-talker-type:stream_talker_config/stream_list/");
     }
 
     //topology connect 以下参数,函数仅在操作network topology config库时使用
@@ -46,6 +48,14 @@ public class CUCConnect {
         return s1 + "-" + s2;
     }
 
+    /**
+     * create by: wpy
+     * description: TODO
+     * create time: 3/6/22 10:55 PM
+     *
+      * @Param: body
+     * @return resultCode
+     */
     public int registerAndSendStream(String body){
         int uniqueId = getUniqueId();
         Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
@@ -57,21 +67,21 @@ public class CUCConnect {
         if(resultCode < 200 || resultCode > 300){
             throw new RuntimeException("ResultCode Error in join stream action: " + resultCode);
         }
-        resultCode = stream(body);
-        if(resultCode < 200 || resultCode > 300){
-            throw new RuntimeException("ResultCode Error in post stream to destination: " + resultCode);
-        }
-        resultCode = leave(header);
-        if(resultCode < 200 || resultCode > 300){
-            throw new RuntimeException("ResultCode Error in leave stream action: " + resultCode);
-        }
+//        resultCode = stream(body);
+//        if(resultCode < 200 || resultCode > 300){
+//            throw new RuntimeException("ResultCode Error in post stream to destination: " + resultCode);
+//        }
+//        resultCode = leave(header);
+//        if(resultCode < 200 || resultCode > 300){
+//            throw new RuntimeException("ResultCode Error in leave stream action: " + resultCode);
+//        }
         return resultCode;
     }
 
     private int join(Header header){
-        String url = urls.get("join");
-        System.out.println(url);
-        PutInfo putInfo = PutInfo.builder().url(url).build();
+        String url = urls.get("join_talker");
+        System.out.println(url + header.getKey());
+        PutInfo putInfo = PutInfo.builder().url(url + header.getKey()).build();
 
         JSONObject joinStream = header.getJSONObject(true, true, true,
                 true, true, true,
@@ -79,10 +89,8 @@ public class CUCConnect {
         joinStream.put("body", "join stream");
         JSONArray streams = new JSONArray();
         streams.add(joinStream);
-        JSONObject middle = new JSONObject();
-        middle.put("stream", streams);
         JSONObject result = new JSONObject();
-        result.put("streams", middle);
+        result.put("stream_list", streams);
         return putInfo.putInfo(result.toString());
     }
 
@@ -91,16 +99,9 @@ public class CUCConnect {
     }
 
     private int leave(Header header){
-        String url = urls.get("leave");
+        String url = urls.get("leave_talker");
         System.out.println(url + header.getKey());
         DeleteInfo deleteInfo = DeleteInfo.builder().url(url + header.getKey()).build();
-
-        JSONObject leaveHeader = header.getJSONObject(true, true, true,
-                true, true, true,
-                true);
-        leaveHeader.put("body", "leave stream");
-        JSONObject stream = new JSONObject();
-        stream.put("stream", leaveHeader);
         return deleteInfo.deleteInfo();
     }
 

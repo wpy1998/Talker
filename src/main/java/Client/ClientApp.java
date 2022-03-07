@@ -11,7 +11,7 @@ import java.io.IOException;
 import static Client.Hardware.Computer.*;
 
 public class ClientApp {
-    public static final String cuc_ip = "192.168.1.3";
+    public static final String cuc_ip = "10.2.25.85";
     public static void main(String[] args) throws IOException, SAXException {
         Computer computer = new Computer();
         computer.refresh();
@@ -49,6 +49,7 @@ public class ClientApp {
 
         CUCConnect cucConnect = new CUCConnect();
         cucConnect.registerAndSendStream("test");
+        cucConnect.registerAndSendStream("1111");
     }
 
     public static JSONObject buildTestNode(){

@@ -21,7 +21,6 @@ public class PostInfo {
     }
 
     public int postInfo(String objS){
-        System.out.println("request: " + objS);
         int resultCode = 400;
         System.out.println("request: " + objS);
         try {
