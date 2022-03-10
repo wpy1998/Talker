@@ -22,7 +22,7 @@ public class Link {
                 @NonNull String source_tp,
                 @NonNull String dest_node,
                 @NonNull String dest_tp){
-        this.link_id = source_tp + "/" + dest_tp;
+        this.link_id = source_tp + "--" + dest_tp;
         this.source_node = source_node;
         this.source_tp = source_tp;
         this.dest_node = dest_node;
@@ -42,5 +42,10 @@ public class Link {
         destination.put("dest-tp", dest_tp);
         link.put("destination", destination);
         return link;
+    }
+
+    @Override
+    public String toString(){
+        return getJSONObject().toString();
     }
 }

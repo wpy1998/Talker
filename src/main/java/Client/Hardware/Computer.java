@@ -1,24 +1,42 @@
 package Client.Hardware;
 
+import Client.Yang.NetworkTopology.Link;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Computer {//获取硬件信息
+public class Computer {//获取硬件信息,LLDP
     public static String device_ip = null;
     public static List<String> device_mac = null;
     public static String host_name = null;
+
+    public Computer(){
+        try {
+            refresh();
+            System.out.println(device_ip + ", " + device_mac + ", " + host_name);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 
     public void refresh() throws UnknownHostException, SocketException {//获取ip和第一个mac地址
         InetAddress ia = InetAddress.getLocalHost();
         String ip = ia.getHostAddress();
         device_ip = ip;
-        device_mac = getALLMac();
+        device_mac = getDeviceMac();
         host_name = ia.getHostName();
     }
 
-    public List<String> getALLMac() throws SocketException {//获取mac地址
+    public List<String> getDeviceMac() throws SocketException {//获取mac地址
         java.util.Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
         StringBuilder sb = new StringBuilder();
         ArrayList<String> tmpMacList = new ArrayList<>();

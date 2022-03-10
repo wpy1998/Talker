@@ -35,14 +35,14 @@ public class Node {
 
         node.put("host", device_ip);
         node.put("port", 17830);
-        node.put("username", "admin");
-        node.put("password", "admin");
+//        node.put("username", "admin");
+//        node.put("password", "admin");
 
         JSONArray supportingNodes = new JSONArray();
         for(String str: supporting_nodes){
             JSONObject object = new JSONObject();
             object.put("node-ref", str);
-            object.put("topology-ref", "NULL");
+//            object.put("topology-ref", "NULL");
             supportingNodes.add(object);
         }
         node.put("supporting-node", supportingNodes);
