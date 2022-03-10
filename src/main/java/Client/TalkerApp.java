@@ -1,8 +1,7 @@
 package Client;
 
 import Client.Hardware.Computer;
-import Client.HttpInfo.GetInfo;
-import Client.Yang.CUCConnect;
+import Client.Yang.NetworkTopology.LLDPImpl;
 import com.alibaba.fastjson.JSONObject;
 import org.xml.sax.SAXException;
 
@@ -15,16 +14,7 @@ public class TalkerApp {
     public static void main(String[] args) throws IOException, SAXException {
         Computer computer = new Computer();
         computer.refresh();
-        System.out.println(computer.device_ip + ", " + computer.device_mac);
-
-//        PutInfo putInfo = PutInfo.builder()
-//                .url("http://" + cuc_ip + ":8181/restconf/config/network-topology:network-topology" +
-//                        "/topology/topology-netconf/node/" + host_name + "/").build();
-//        JSONObject node = buildTestNode();
-//        JSONObject input1 = new JSONObject();
-//        input1.put("urn:TBD:params:xml:ns:yang:network-topology:node", node);
-//        System.out.println(input1.toString());
-//        putInfo.putInfo(input1.toString());
+        System.out.println(computer.device_ip + ", " + computer.device_mac + ", " + computer.host_name);
 
 //        Topology topology = new Topology("tsn-network");
 //        Node currentNode = new Node();
@@ -43,13 +33,12 @@ public class TalkerApp {
 //        System.out.println(network_topology.toString());
 //        putInfo.putInfo(network_topology.toString());
 
-        GetInfo getInfo = GetInfo.builder().url("http://" + cuc_ip +
-                ":8181/restconf/operations/tsn-talker-type:test").build();
-        getInfo.getInfo();
+//        GetInfo getInfo = GetInfo.builder().url("http://" + cuc_ip +
+//                ":8181/restconf/operations/tsn-talker-type:test").build();
+//        getInfo.getInfo();
 
-        CUCConnect cucConnect = new CUCConnect();
-        cucConnect.registerAndSendStream("test");
-        cucConnect.registerAndSendStream("1111");
+        LLDPImpl lldpService = new LLDPImpl();
+        lldpService.getLLDPMessage();
     }
 
     public static JSONObject buildTestNode(){

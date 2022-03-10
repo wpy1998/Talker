@@ -20,8 +20,7 @@ public class GetInfo {
         this.password = (password != null) ? password: "admin";
     }
 
-    public int getInfo(){
-        int resultCode = 400;
+    public String getInfo(){
         String output = null;
         try {
             URL url = new URL(this._url);
@@ -41,7 +40,6 @@ public class GetInfo {
                 connection.setUseCaches(false);
                 connection.setConnectTimeout(10000);
                 connection.connect();
-                resultCode = connection.getResponseCode();
                 if(connection.getResponseCode() != 200){
                     System.out.println(connection.getResponseCode());
                 }else {
@@ -57,6 +55,6 @@ public class GetInfo {
         }catch (MalformedURLException e){
             e.printStackTrace();
         }
-        return resultCode;
+        return output;
     }
 }
