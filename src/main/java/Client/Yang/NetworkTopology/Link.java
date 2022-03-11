@@ -2,12 +2,14 @@ package Client.Yang.NetworkTopology;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Link {
+    @Getter
     String link_id;
     //source
     String source_tp, source_node;
@@ -22,7 +24,10 @@ public class Link {
                 @NonNull String source_tp,
                 @NonNull String dest_node,
                 @NonNull String dest_tp){
-        this.link_id = source_tp + "--" + dest_tp;
+        this.link_id = source_node + "(" + source_tp + ")--" + dest_node + "(" + dest_tp + ")";
+        for(int i = 0; i < this.link_id.length(); i++){
+            this.link_id = this.link_id.replace('/', '*');
+        }
         this.source_node = source_node;
         this.source_tp = source_tp;
         this.dest_node = dest_node;

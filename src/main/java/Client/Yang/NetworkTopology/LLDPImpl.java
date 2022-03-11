@@ -37,7 +37,8 @@ public class LLDPImpl {
 
     /**
      * create by: wpy
-     * description: getLocalInterface->getNeighbor->buildLink in order to get current LLDP message
+     * description: getLocalInterface->getNeighbor->buildLink->buildNode
+     * in order to get current LLDP message
      * create time: 3/10/22 6:09 AM
      *
       * @Param: null
@@ -128,6 +129,5 @@ public class LLDPImpl {
         mac = local.getJSONObject("chassis").getJSONObject(host_name)
                 .getJSONObject("id").getString("value");
         current.setAddress(ip, mac);
-        System.out.println(current.getJSONObject());
     }
 }

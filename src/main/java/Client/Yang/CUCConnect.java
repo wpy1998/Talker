@@ -2,6 +2,10 @@ package Client.Yang;
 
 import Client.HttpInfo.DeleteInfo;
 import Client.HttpInfo.PutInfo;
+import Client.Yang.NetworkTopology.LLDPImpl;
+import Client.Yang.NetworkTopology.Link;
+import Client.Yang.NetworkTopology.Node;
+import Client.Yang.NetworkTopology.Topology;
 import Client.Yang.Stream.Header;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -9,21 +13,74 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import static Client.Hardware.Computer.host_name;
 import static Client.TalkerApp.cuc_ip;
 
 public class CUCConnect {
     Map<String, String> urls;
     public CUCConnect(){
         urls = new HashMap<>();
-        urls.put("join_talker", "http://" + cuc_ip +
+        urls.put("tsn_talker", "http://" + cuc_ip +
                 ":8181/restconf/config/tsn-talker-type:stream_talker_config/stream_list/");
-        urls.put("leave_talker", "http://" + cuc_ip +
-                ":8181/restconf/config/tsn-talker-type:stream_talker_config/stream_list/");
+        urls.put("tsn_topology", "http://" + cuc_ip +
+                ":8181/restconf/config/network-topology:network-topology/");
     }
 
-    //topology connect 以下参数,函数仅在操作network topology config库时使用
+    /**
+     * create by: wpy
+     * description: topology connect 以下参数,函数仅在操作network topology config库时使用
+     * create time: 3/10/22 6:09 PM
+     *
+      * @Param: null
+     * @return
+     */
+    public void registerDevice(LLDPImpl lldp){
+        String url = this.urls.get("tsn_topology");
+        Topology topology = new Topology("tsn-network");
+        Node currentNode = lldp.current;
+        topology.addNode(currentNode);
+        for(Link link: lldp.linkList){
+            topology.addLink(link);
+        }
 
-    //talker: header, body 以下参数,函数仅在操作talker config库时使用
+        JSONArray array = new JSONArray();
+        array.add(topology.getJSONObject());
+        JSONObject topologies = new JSONObject();
+        JSONObject network_topology = new JSONObject();
+        topologies.put("topology", array);
+        network_topology.put("network-topology", topologies);
+
+        PutInfo putInfo = PutInfo.builder().url(url).build();
+        putInfo.putInfo(network_topology.toString());
+    }
+
+    public void removeDevice(LLDPImpl lldp){
+        String url = this.urls.get("tsn_topology") + "topology/tsn-network/node/" + host_name;
+        DeleteInfo deleteInfo = DeleteInfo.builder().url(url).build();
+        deleteInfo.deleteInfo();
+        for (int i = 0; i < lldp.linkList.size(); i++){
+            Link link = lldp.linkList.get(i);
+            removeLink(link);
+        }
+    }
+
+    public void removeLink(Link link){
+        String url = this.urls.get("tsn_topology") + "topology/tsn-network/link/"
+                + link.getLink_id();
+        System.out.println(url);
+        DeleteInfo deleteInfo = DeleteInfo.builder()
+                .url(url).build();
+        deleteInfo.deleteInfo();
+    }
+
+    /**
+     * create by: wpy
+     * description: talker: header, body 以下参数,函数仅在操作talker config库时使用
+     * create time: 3/10/22 6:08 PM
+     *
+      * @Param: null
+     * @return
+     */
     private static int unique_id = 0;
 
     synchronized private int getUniqueId(){
@@ -48,14 +105,6 @@ public class CUCConnect {
         return s1 + "-" + s2;
     }
 
-    /**
-     * create by: wpy
-     * description: TODO
-     * create time: 3/6/22 10:55 PM
-     *
-      * @Param: body
-     * @return resultCode
-     */
     public int registerAndSendStream(String body){
         int uniqueId = getUniqueId();
         Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
@@ -67,19 +116,19 @@ public class CUCConnect {
         if(resultCode < 200 || resultCode > 300){
             throw new RuntimeException("ResultCode Error in join stream action: " + resultCode);
         }
-//        resultCode = stream(body);
-//        if(resultCode < 200 || resultCode > 300){
-//            throw new RuntimeException("ResultCode Error in post stream to destination: " + resultCode);
-//        }
-//        resultCode = leave(header);
-//        if(resultCode < 200 || resultCode > 300){
-//            throw new RuntimeException("ResultCode Error in leave stream action: " + resultCode);
-//        }
+        resultCode = stream(body);
+        if(resultCode < 200 || resultCode > 300){
+            throw new RuntimeException("ResultCode Error in post stream to destination: " + resultCode);
+        }
+        resultCode = leave(header);
+        if(resultCode < 200 || resultCode > 300){
+            throw new RuntimeException("ResultCode Error in leave stream action: " + resultCode);
+        }
         return resultCode;
     }
 
     private int join(Header header){
-        String url = urls.get("join_talker");
+        String url = urls.get("tsn_talker");
         System.out.println(url + header.getKey());
         PutInfo putInfo = PutInfo.builder().url(url + header.getKey()).build();
 
@@ -99,7 +148,7 @@ public class CUCConnect {
     }
 
     private int leave(Header header){
-        String url = urls.get("leave_talker");
+        String url = urls.get("tsn_talker");
         System.out.println(url + header.getKey());
         DeleteInfo deleteInfo = DeleteInfo.builder().url(url + header.getKey()).build();
         return deleteInfo.deleteInfo();
