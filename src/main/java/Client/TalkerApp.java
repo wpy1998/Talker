@@ -12,12 +12,16 @@ import static Client.Hardware.Computer.*;
 
 public class TalkerApp {
     public static final String cuc_ip = "10.2.25.85";
+    public static final String topology_id = "tsn-network";
     public static void main(String[] args) throws IOException, SAXException {
         Computer computer = new Computer();
         LLDPImpl lldpService = new LLDPImpl();
         CUCConnect cucConnect = new CUCConnect();
-        cucConnect.registerDevice(lldpService);
+//        cucConnect.registerDevice(lldpService);
 //        cucConnect.removeDevice(lldpService);
+
+        cucConnect.registerAndSendStream("message1");
+//        cucConnect.registerAndSendStream("message2");
 
 
 //        GetInfo getInfo = GetInfo.builder().url("http://" + cuc_ip +

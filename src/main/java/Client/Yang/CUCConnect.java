@@ -20,9 +20,9 @@ public class CUCConnect {
     Map<String, String> urls;
     public CUCConnect(){
         urls = new HashMap<>();
-        urls.put("tsn_talker", "http://" + cuc_ip +
-                ":8181/restconf/config/tsn-talker-type:stream_talker_config/stream_list/");
-        urls.put("tsn_topology", "http://" + cuc_ip +
+        urls.put("tsn-talker", "http://" + cuc_ip +
+                ":8181/restconf/config/tsn-talker-type:stream-talker-config/devices/");
+        urls.put("tsn-topology", "http://" + cuc_ip +
                 ":8181/restconf/config/network-topology:network-topology/");
     }
 
@@ -35,7 +35,7 @@ public class CUCConnect {
      * @return
      */
     public void registerDevice(LLDPImpl lldp){
-        String url = this.urls.get("tsn_topology");
+        String url = this.urls.get("tsn-topology");
         Topology topology = new Topology("tsn-network");
         Node currentNode = lldp.current;
         topology.addNode(currentNode);
@@ -55,7 +55,7 @@ public class CUCConnect {
     }
 
     public void removeDevice(LLDPImpl lldp){
-        String url = this.urls.get("tsn_topology") + "topology/tsn-network/node/" + host_name;
+        String url = this.urls.get("tsn-topology") + "topology/tsn-network/node/" + host_name;
         DeleteInfo deleteInfo = DeleteInfo.builder().url(url).build();
         deleteInfo.deleteInfo();
         for (int i = 0; i < lldp.linkList.size(); i++){
@@ -65,7 +65,7 @@ public class CUCConnect {
     }
 
     public void removeLink(Link link){
-        String url = this.urls.get("tsn_topology") + "topology/tsn-network/link/"
+        String url = this.urls.get("tsn-topology") + "topology/tsn-network/link/"
                 + link.getLink_id();
         System.out.println(url);
         DeleteInfo deleteInfo = DeleteInfo.builder()
@@ -116,21 +116,21 @@ public class CUCConnect {
         if(resultCode < 200 || resultCode > 300){
             throw new RuntimeException("ResultCode Error in join stream action: " + resultCode);
         }
-        resultCode = stream(body);
-        if(resultCode < 200 || resultCode > 300){
-            throw new RuntimeException("ResultCode Error in post stream to destination: " + resultCode);
-        }
-        resultCode = leave(header);
-        if(resultCode < 200 || resultCode > 300){
-            throw new RuntimeException("ResultCode Error in leave stream action: " + resultCode);
-        }
+//        resultCode = stream(body);
+//        if(resultCode < 200 || resultCode > 300){
+//            throw new RuntimeException("ResultCode Error in post stream to destination: " + resultCode);
+//        }
+//        resultCode = leave(header);
+//        if(resultCode < 200 || resultCode > 300){
+//            throw new RuntimeException("ResultCode Error in leave stream action: " + resultCode);
+//        }
         return resultCode;
     }
 
     private int join(Header header){
-        String url = urls.get("tsn_talker");
-        System.out.println(url + header.getKey());
-        PutInfo putInfo = PutInfo.builder().url(url + header.getKey()).build();
+        String url = urls.get("tsn-talker") + host_name + "/stream-list/" + header.getKey();
+        System.out.println(url);
+        PutInfo putInfo = PutInfo.builder().url(url).build();
 
         JSONObject joinStream = header.getJSONObject(true, true, true,
                 true, true, true,
@@ -138,9 +138,9 @@ public class CUCConnect {
         joinStream.put("body", "join stream");
         JSONArray streams = new JSONArray();
         streams.add(joinStream);
-        JSONObject result = new JSONObject();
-        result.put("stream_list", streams);
-        return putInfo.putInfo(result.toString());
+        JSONObject device = new JSONObject();
+        device.put("stream-list", streams);
+        return putInfo.putInfo(device.toString());
     }
 
     private int stream(String body){
@@ -148,9 +148,9 @@ public class CUCConnect {
     }
 
     private int leave(Header header){
-        String url = urls.get("tsn_talker");
-        System.out.println(url + header.getKey());
-        DeleteInfo deleteInfo = DeleteInfo.builder().url(url + header.getKey()).build();
+        String url = urls.get("tsn-talker") + host_name + "/stream-list/" + header.getKey();
+        System.out.println(url);
+        DeleteInfo deleteInfo = DeleteInfo.builder().url(url).build();
         return deleteInfo.deleteInfo();
     }
 
