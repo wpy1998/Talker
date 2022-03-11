@@ -3,25 +3,48 @@ package Client.Yang.NetworkTopology;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import static Client.Hardware.Computer.host_name;
 
 public class LLDPImpl {
-    public LLDPImpl(){
+    public List<Link> linkList;
+    public Node current;
+
+    public LLDPImpl() throws IOException {
+        linkList = new ArrayList<>();
+        current = new Node();
+        refresh();
     }
 
-    public void getLLDPMessage() throws IOException{
-        getInterface();
+    /**
+     * create by: wpy
+     * description: refresh the LLDP message
+     * create time: 3/10/22 6:11 AM
+     *
+      * @Param: null
+     * @return
+     */
+    public void refresh() throws IOException{
+        getLocalInterface();
     }
 
-    private void getInterface() throws IOException {
+    /**
+     * create by: wpy
+     * description: getLocalInterface->getNeighbor->buildLink in order to get current LLDP message
+     * create time: 3/10/22 6:09 AM
+     *
+      * @Param: null
+     * @return
+     */
+    private void getLocalInterface() throws IOException {
+        this.linkList.clear();
         Process process = Runtime.getRuntime().exec("lldpcli show interfaces -f json");
         InputStreamReader ir=new InputStreamReader(process.getInputStream());
         LineNumberReader input = new LineNumberReader (ir);
@@ -41,6 +64,7 @@ public class LLDPImpl {
                     if (!via.equals("LLDP")) continue;
                     JSONObject neighbor = getNetworkCardNeighbor(networkCardName);
                     buildLink(networkCardName, neighbor);
+                    buildNode(networkCardName, networkCard, neighbor);
                 }
             }
         }catch (Exception e){
@@ -53,6 +77,7 @@ public class LLDPImpl {
                 if (!via.equals("LLDP")) continue;
                 JSONObject neighbor = getNetworkCardNeighbor(networkCardName);
                 buildLink(networkCardName, neighbor);
+                buildNode(networkCardName, networkCard, neighbor);
             }
         }
     }
@@ -72,20 +97,37 @@ public class LLDPImpl {
             object = JSON.parseObject(result).getJSONObject("lldp").getJSONObject("interface");
         }catch (Exception e){
             object = JSON.parseObject(result).getJSONObject("lldp").getJSONArray("interface").getJSONObject(0);
-        }Iterator<String> iterator = object.keySet().iterator();
+        }
+        Iterator<String> iterator = object.keySet().iterator();
         String key = iterator.next();
         neighbor = object.getJSONObject(key);
         return neighbor;
     }
 
-    private Link buildLink(String networkCardName, JSONObject neighbor){
+    private void buildLink(String networkCardName, JSONObject neighbor){
         String dest_node, dest_tp;
         Iterator<String> iterator = neighbor.getJSONObject("chassis").keySet().iterator();
         dest_node = iterator.next();
         dest_tp = neighbor.getJSONObject("port").getString("descr");
-        return Link.builder().source_node(host_name)
+        Link link = Link.builder().source_node(host_name)
                 .source_tp(networkCardName)
                 .dest_node(dest_node)
                 .dest_tp(dest_tp).build();
+        linkList.add(link);
+    }
+
+    private void buildNode(String networkCardName, JSONObject local, JSONObject neighbor){
+        current.node_id = host_name;
+        current.setTermination_points(networkCardName);
+        Iterator<String> iterator = neighbor.getJSONObject("chassis").keySet().iterator();
+        String dest_tp = iterator.next();
+        current.setAttachmentPoint(networkCardName, dest_tp);
+        String ip, mac;
+        ip = local.getJSONObject("chassis").getJSONObject(host_name)
+                .getJSONArray("mgmt-ip").getString(0);
+        mac = local.getJSONObject("chassis").getJSONObject(host_name)
+                .getJSONObject("id").getString("value");
+        current.setAddress(ip, mac);
+        System.out.println(current.getJSONObject());
     }
 }

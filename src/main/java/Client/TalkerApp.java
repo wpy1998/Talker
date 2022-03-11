@@ -36,7 +36,6 @@ public class TalkerApp {
 //        getInfo.getInfo();
 
         LLDPImpl lldpService = new LLDPImpl();
-        lldpService.getLLDPMessage();
     }
 
     public static JSONObject buildTestNode(){
