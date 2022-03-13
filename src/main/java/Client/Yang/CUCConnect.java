@@ -2,7 +2,7 @@ package Client.Yang;
 
 import Client.HttpInfo.DeleteInfo;
 import Client.HttpInfo.PutInfo;
-import Client.Yang.NetworkTopology.LLDPImpl;
+import Client.Yang.NetworkTopology.LLDP;
 import Client.Yang.NetworkTopology.Link;
 import Client.Yang.NetworkTopology.Node;
 import Client.Yang.NetworkTopology.Topology;
@@ -34,14 +34,9 @@ public class CUCConnect {
       * @Param: null
      * @return
      */
-    public void registerDevice(LLDPImpl lldp){
+    public void registerDevice(LLDP lldp){
         String url = this.urls.get("tsn-topology");
-        Topology topology = new Topology("tsn-network");
-        Node currentNode = lldp.current;
-        topology.addNode(currentNode);
-        for(Link link: lldp.linkList){
-            topology.addLink(link);
-        }
+        Topology topology = Topology.builder().topology_id("tsn-network").lldp(lldp).build();
 
         JSONArray array = new JSONArray();
         array.add(topology.getJSONObject());
@@ -54,7 +49,7 @@ public class CUCConnect {
         putInfo.putInfo(network_topology.toString());
     }
 
-    public void removeDevice(LLDPImpl lldp){
+    public void removeDevice(LLDP lldp){
         String url = this.urls.get("tsn-topology") + "topology/tsn-network/node/" + host_name;
         DeleteInfo deleteInfo = DeleteInfo.builder().url(url).build();
         deleteInfo.deleteInfo();
@@ -116,14 +111,14 @@ public class CUCConnect {
         if(resultCode < 200 || resultCode > 300){
             throw new RuntimeException("ResultCode Error in join stream action: " + resultCode);
         }
-//        resultCode = stream(body);
-//        if(resultCode < 200 || resultCode > 300){
-//            throw new RuntimeException("ResultCode Error in post stream to destination: " + resultCode);
-//        }
-//        resultCode = leave(header);
-//        if(resultCode < 200 || resultCode > 300){
-//            throw new RuntimeException("ResultCode Error in leave stream action: " + resultCode);
-//        }
+        resultCode = stream(body);
+        if(resultCode < 200 || resultCode > 300){
+            throw new RuntimeException("ResultCode Error in post stream to destination: " + resultCode);
+        }
+        resultCode = leave(header);
+        if(resultCode < 200 || resultCode > 300){
+            throw new RuntimeException("ResultCode Error in leave stream action: " + resultCode);
+        }
         return resultCode;
     }
 

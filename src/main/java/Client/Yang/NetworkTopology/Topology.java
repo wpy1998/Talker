@@ -2,6 +2,8 @@ package Client.Yang.NetworkTopology;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.Builder;
+import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,19 +17,21 @@ public class Topology {
     public List<Node> nodes;
     public List<Link> links;
 
-    public Topology(String topology_id){
+    @Builder
+    public Topology(@NonNull String topology_id,
+                    @NonNull LLDP lldp){
         this.topology_id = topology_id;
         underlay_topologies = new ArrayList<>();
         nodes = new ArrayList<>();
         links = new ArrayList<>();
+        addLink(lldp);
+        this.nodes.add(lldp.current);
     }
 
-    public void addNode(Node node){
-        this.nodes.add(node);
-    }
-
-    public void addLink(Link link){
-        this.links.add(link);
+    public void addLink(LLDP lldp){
+        for(Link link: lldp.linkList){
+            this.links.add(link);
+        }
     }
 
     public JSONObject getJSONObject(){

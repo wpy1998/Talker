@@ -13,11 +13,11 @@ import java.util.List;
 
 import static Client.Hardware.Computer.host_name;
 
-public class LLDPImpl {
+public class LLDP {
     public List<Link> linkList;
     public Node current;
 
-    public LLDPImpl() throws IOException {
+    public LLDP() throws IOException {
         linkList = new ArrayList<>();
         current = new Node();
         refresh();
