@@ -23,7 +23,7 @@ public class Link {
     public Link(@NonNull String source_node,
                 @NonNull String source_tp,
                 @NonNull String dest_node,
-                @NonNull String dest_tp){
+                String dest_tp){
         this.link_id = source_node + "(" + source_tp + ")--" + dest_node + "(" + dest_tp + ")";
         for(int i = 0; i < this.link_id.length(); i++){
             this.link_id = this.link_id.replace('/', '*');
@@ -31,7 +31,7 @@ public class Link {
         this.source_node = source_node;
         this.source_tp = source_tp;
         this.dest_node = dest_node;
-        this.dest_tp = dest_tp;
+        this.dest_tp = (dest_tp == null) ? dest_tp : null;
         supporting_links = new ArrayList<>();
     }
 

@@ -35,18 +35,16 @@ public class CUCConnect {
      * @return
      */
     public void registerDevice(LLDP lldp){
-        String url = this.urls.get("tsn-topology");
+        String url = this.urls.get("tsn-topology") + "topology/tsn-network";
         Topology topology = Topology.builder().topology_id("tsn-network").lldp(lldp).build();
 
         JSONArray array = new JSONArray();
         array.add(topology.getJSONObject());
         JSONObject topologies = new JSONObject();
-        JSONObject network_topology = new JSONObject();
         topologies.put("topology", array);
-        network_topology.put("network-topology", topologies);
 
         PutInfo putInfo = PutInfo.builder().url(url).build();
-        putInfo.putInfo(network_topology.toString());
+        putInfo.putInfo(topologies.toString());
     }
 
     public void removeDevice(LLDP lldp){

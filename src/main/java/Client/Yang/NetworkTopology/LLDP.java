@@ -53,8 +53,17 @@ public class LLDP {
         while ((line = input.readLine ()) != null){
             result += line;
         }
+        JSONObject lldp = JSON.parseObject(result).getJSONObject("lldp");
+        int length;
         try {
-            JSONArray array = JSON.parseObject(result).getJSONObject("lldp").getJSONArray("interface");
+            length = lldp.getJSONArray("interface").size();
+        }catch (Exception e){
+            length = 1;
+        }
+        System.out.println(length);
+        if (length > 1){
+            JSONArray array = lldp.getJSONArray("interface");
+            System.out.println(array.toString());
             for(int i = 0; i < array.size(); i++){
                 JSONObject object = array.getJSONObject(i);
                 Iterator<String> iterator = object.keySet().iterator();
@@ -68,18 +77,19 @@ public class LLDP {
                     buildNode(networkCardName, networkCard, neighbor);
                 }
             }
-        }catch (Exception e){
-            JSONObject object = JSON.parseObject(result).getJSONObject("lldp").getJSONObject("interface");
-            Iterator<String> iterator = object.keySet().iterator();
-            while (iterator.hasNext()){
-                String networkCardName = iterator.next();
-                JSONObject networkCard = object.getJSONObject(networkCardName);
-                String via = networkCard.getString("via");
-                if (!via.equals("LLDP")) continue;
-                JSONObject neighbor = getNetworkCardNeighbor(networkCardName);
-                buildLink(networkCardName, neighbor);
-                buildNode(networkCardName, networkCard, neighbor);
-            }
+            return;
+        }
+
+        JSONObject object = lldp.getJSONObject("interface");
+        Iterator<String> iterator = object.keySet().iterator();
+        while (iterator.hasNext()){
+            String networkCardName = iterator.next();
+            JSONObject networkCard = object.getJSONObject(networkCardName);
+            String via = networkCard.getString("via");
+            if (!via.equals("LLDP")) continue;
+            JSONObject neighbor = getNetworkCardNeighbor(networkCardName);
+            buildLink(networkCardName, neighbor);
+            buildNode(networkCardName, networkCard, neighbor);
         }
     }
 
@@ -106,14 +116,13 @@ public class LLDP {
     }
 
     private void buildLink(String networkCardName, JSONObject neighbor){
-        System.out.println(neighbor.toString());
         String dest_node, dest_tp;
         Iterator<String> iterator = neighbor.getJSONObject("chassis").keySet().iterator();
         dest_node = iterator.next();
         dest_tp = neighbor.getJSONObject("port").getString("descr");
-        if (dest_node == null || dest_tp == null){
-            throw new RuntimeException("Switch not match");
-        }
+//        if (dest_node == null || dest_tp == null){
+//            throw new RuntimeException("Switch not match");
+//        }
         Link link = Link.builder().source_node(host_name)
                 .source_tp(networkCardName)
                 .dest_node(dest_node)
