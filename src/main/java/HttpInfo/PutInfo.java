@@ -1,4 +1,4 @@
-package Client.HttpInfo;
+package HttpInfo;
 
 import lombok.Builder;
 import lombok.NonNull;
@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
 
-public class DeleteInfo {
-    private String _url, identity, password;
+public class PutInfo {
+    String _url, identity, password;
 
     @Builder
-    public DeleteInfo(@NonNull String url,
+    public PutInfo(@NonNull String url,
                    String identity,
                    String password){
         this._url = url;
@@ -20,16 +20,17 @@ public class DeleteInfo {
         this.password = (password != null) ? password: "admin";
     }
 
-    public int deleteInfo(){
+    public int putInfo(String objS){
+        System.out.println("request: " + objS);
         int resultCode = 400;
-        String output = null;
         try {
             URL url = new URL(this._url);
             try {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("DELETE");
+                connection.setRequestMethod("PUT");
                 connection.setRequestProperty("Accept", "application/json");
                 connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("Authorization", "");
                 Authenticator.setDefault(new Authenticator() {
                     @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
@@ -41,13 +42,17 @@ public class DeleteInfo {
                 connection.setUseCaches(false);
                 connection.setConnectTimeout(10000);
                 connection.connect();
+                StringBuffer params = new StringBuffer();
+                params.append(objS);
+                byte[] bytes = params.toString().getBytes();
+                connection.getOutputStream().write(bytes);
                 resultCode = connection.getResponseCode();
                 if(connection.getResponseCode() != 200){
                     System.out.println(connection.getResponseCode());
                 }else {
-                    BufferedReader result = new BufferedReader(new
-                            InputStreamReader((connection.getInputStream())));
-                    output = result.readLine();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection
+                            .getInputStream(), "UTF-8"));
+                    String output = reader.readLine();
                     System.out.println("response: " + output);
                 }
                 connection.disconnect();

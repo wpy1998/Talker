@@ -1,20 +1,19 @@
-package Client.Yang;
+package Yang;
 
-import Client.HttpInfo.DeleteInfo;
-import Client.HttpInfo.PutInfo;
-import Client.Yang.NetworkTopology.LLDP;
-import Client.Yang.NetworkTopology.Link;
-import Client.Yang.NetworkTopology.Node;
-import Client.Yang.NetworkTopology.Topology;
-import Client.Yang.Stream.Header;
+import HttpInfo.DeleteInfo;
+import HttpInfo.PutInfo;
+import Yang.NetworkTopology.LLDP;
+import Yang.NetworkTopology.Link;
+import Yang.NetworkTopology.Topology;
+import Yang.Stream.Header;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static Client.Hardware.Computer.host_name;
-import static Client.TalkerApp.cuc_ip;
+import static Hardware.Computer.host_name;
+import static TalkerApp.cuc_ip;
 
 public class CUCConnect {
     Map<String, String> urls;

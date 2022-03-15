@@ -1,14 +1,12 @@
-package Client.Yang.NetworkTopology;
+package Yang.NetworkTopology;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import lombok.Builder;
-import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static Client.Hardware.Computer.*;
+import static Hardware.Computer.*;
 
 public class Node {
     //node-attributes

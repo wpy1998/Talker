@@ -1,4 +1,4 @@
-package Client.Yang.NetworkTopology;
+package Yang.NetworkTopology;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static Client.Hardware.Computer.host_name;
+import static Hardware.Computer.host_name;
 
 public class LLDP {
     public List<Link> linkList;

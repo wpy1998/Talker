@@ -1,4 +1,4 @@
-package Client.Yang.Stream;
+package Yang.Stream;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -8,7 +8,7 @@ import lombok.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static Client.Hardware.Computer.*;
+import static Hardware.Computer.*;
 
 public class Header {//负责数据流header内容的转化
     private StreamId streamId;

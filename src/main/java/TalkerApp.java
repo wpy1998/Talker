@@ -1,8 +1,6 @@
-package Client;
-
-import Client.Hardware.Computer;
-import Client.Yang.CUCConnect;
-import Client.Yang.NetworkTopology.LLDP;
+import Hardware.Computer;
+import Yang.CUCConnect;
+import Yang.NetworkTopology.LLDP;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;

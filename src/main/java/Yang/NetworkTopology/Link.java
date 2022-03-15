@@ -1,4 +1,4 @@
-package Client.Yang.NetworkTopology;
+package Yang.NetworkTopology;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.Builder;
