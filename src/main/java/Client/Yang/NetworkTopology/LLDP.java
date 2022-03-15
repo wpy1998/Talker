@@ -60,10 +60,8 @@ public class LLDP {
         }catch (Exception e){
             length = 1;
         }
-        System.out.println(length);
         if (length > 1){
             JSONArray array = lldp.getJSONArray("interface");
-            System.out.println(array.toString());
             for(int i = 0; i < array.size(); i++){
                 JSONObject object = array.getJSONObject(i);
                 Iterator<String> iterator = object.keySet().iterator();

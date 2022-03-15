@@ -31,7 +31,7 @@ public class Link {
         this.source_node = source_node;
         this.source_tp = source_tp;
         this.dest_node = dest_node;
-        this.dest_tp = (dest_tp == null) ? dest_tp : null;
+        this.dest_tp = (dest_tp == null) ? "null" : dest_tp;
         supporting_links = new ArrayList<>();
     }
 
