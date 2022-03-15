@@ -118,13 +118,22 @@ public class LLDP {
         Iterator<String> iterator = neighbor.getJSONObject("chassis").keySet().iterator();
         dest_node = iterator.next();
         dest_tp = neighbor.getJSONObject("port").getString("descr");
-//        if (dest_node == null || dest_tp == null){
-//            throw new RuntimeException("Switch not match");
-//        }
+        if (dest_node == null || dest_tp == null){
+            buildEmptyLink(networkCardName, neighbor);
+            return;
+        }
         Link link = Link.builder().source_node(host_name)
                 .source_tp(networkCardName)
                 .dest_node(dest_node)
                 .dest_tp(dest_tp).build();
+        linkList.add(link);
+    }
+
+    private void buildEmptyLink(String networkCardName, JSONObject neighbor){
+        String mac = neighbor.getJSONObject("chassis")
+                .getJSONObject("id").getString("value");
+        Link link = Link.builder().source_node(host_name).source_tp(networkCardName)
+                .dest_node(mac).dest_tp(mac).build();
         linkList.add(link);
     }
 
