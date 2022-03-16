@@ -6,8 +6,8 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 
 public class TestApp {
-    public static final String cuc_ip = "10.2.25.85";
-    public static final String topology_id = "tsn-network";
+//    public static final String cuc_ip = "10.2.25.85";
+//    public static final String topology_id = "tsn-network";
     public static void main(String[] args) throws IOException, SAXException {
         Computer computer = new Computer();
         LLDP lldp = new LLDP();

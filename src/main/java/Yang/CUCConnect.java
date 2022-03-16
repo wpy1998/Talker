@@ -13,9 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static Hardware.Computer.host_name;
-import static TestApp.cuc_ip;
 
 public class CUCConnect {
+    public static final String cuc_ip = "10.2.25.85";
+    public static final String topology_id = "tsn-network";
+
     Map<String, String> urls;
     public CUCConnect(){
         urls = new HashMap<>();
@@ -34,8 +36,8 @@ public class CUCConnect {
      * @return
      */
     public void registerDevice(LLDP lldp){
-        String url = this.urls.get("tsn-topology") + "topology/tsn-network";
-        Topology topology = Topology.builder().topology_id("tsn-network").lldp(lldp).build();
+        String url = this.urls.get("tsn-topology") + "topology/" + topology_id;
+        Topology topology = Topology.builder().topology_id(topology_id).lldp(lldp).build();
 
         JSONArray array = new JSONArray();
         array.add(topology.getJSONObject());
@@ -47,7 +49,7 @@ public class CUCConnect {
     }
 
     public void removeDevice(LLDP lldp){
-        String url = this.urls.get("tsn-topology") + "topology/tsn-network/node/" + host_name;
+        String url = this.urls.get("tsn-topology") + "topology/" + topology_id + "/node/" + host_name;
         DeleteInfo deleteInfo = DeleteInfo.builder().url(url).build();
         deleteInfo.deleteInfo();
         for (int i = 0; i < lldp.linkList.size(); i++){
@@ -57,7 +59,7 @@ public class CUCConnect {
     }
 
     public void removeLink(Link link){
-        String url = this.urls.get("tsn-topology") + "topology/tsn-network/link/"
+        String url = this.urls.get("tsn-topology") + "topology/" + topology_id + "/link/"
                 + link.getLink_id();
         System.out.println(url);
         DeleteInfo deleteInfo = DeleteInfo.builder()
