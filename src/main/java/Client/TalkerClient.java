@@ -1,5 +1,6 @@
 package Client;
 
+import HttpInfo.RpcDecoder;
 import HttpInfo.RpcEncoder;
 import HttpInfo.RpcRequest;
 import HttpInfo.RpcResponse;
@@ -36,7 +37,7 @@ public class TalkerClient {
                         System.out.println("Connecting to...");
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         pipeline.addLast(new RpcEncoder(RpcRequest.class));
-                        pipeline.addLast(new RpcEncoder(RpcResponse.class));
+                        pipeline.addLast(new RpcDecoder(RpcResponse.class));
                         pipeline.addLast(new TalkerClientHandler());
                     }
                 });
