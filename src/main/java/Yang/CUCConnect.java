@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static Hardware.Computer.host_name;
-import static TalkerApp.cuc_ip;
+import static TestModuleApp.cuc_ip;
 
 public class CUCConnect {
     Map<String, String> urls;

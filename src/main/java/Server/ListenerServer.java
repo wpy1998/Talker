@@ -1,5 +1,9 @@
 package Server;
 
+import CSCoder.RpcDecoder;
+import CSCoder.RpcEncoder;
+import CSCoder.RpcRequest;
+import CSCoder.RpcResponse;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -17,10 +21,6 @@ public class ListenerServer {
         this.port = port;
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        new ListenerServer(666).start();
-    }
-
     public void start() throws InterruptedException {
         final ListenerServerHandler serverHandler = new ListenerServerHandler();
         EventLoopGroup group = new NioEventLoopGroup();
@@ -30,10 +30,18 @@ public class ListenerServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline().addLast(serverHandler);
+                            socketChannel.pipeline()
+                                    .addLast(new RpcDecoder(RpcRequest.class))
+                                    .addLast(new RpcEncoder(RpcResponse.class))
+                                    .addLast(serverHandler);
                         }
                     });
             ChannelFuture future = b.bind().sync();
+            if (future.isSuccess()){
+                System.out.println("Server Start Successful");
+            }else {
+                System.out.println("Server Start Failure");
+            }
             future.channel().closeFuture().sync();
         }finally {
             group.shutdownGracefully().sync();

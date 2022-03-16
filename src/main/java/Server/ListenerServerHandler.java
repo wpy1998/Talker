@@ -1,5 +1,7 @@
 package Server;
 
+import CSCoder.RpcRequest;
+import CSCoder.RpcResponse;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -7,18 +9,23 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.CharsetUtil;
 
+import java.util.UUID;
+
 public class ListenerServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg){
-        ByteBuf in = (ByteBuf) msg;
-        System.out.println("Server received: " + in.toString(CharsetUtil.UTF_8));
-        ctx.write(in);
+        RpcRequest request = (RpcRequest) msg;
+        System.out.println("Server GET: " + request.toString());
+        RpcResponse response = new RpcResponse();
+        response.setId(UUID.randomUUID().toString());
+        response.setData("Server message");
+        response.setStatus(1);
+        ctx.writeAndFlush(request);
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
-        ctx.writeAndFlush(Unpooled.EMPTY_BUFFER)
-                .addListener(ChannelFutureListener.CLOSE);
+        ctx.flush();
     }
 
     @Override
