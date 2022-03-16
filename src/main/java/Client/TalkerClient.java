@@ -1,8 +1,8 @@
 package Client;
 
-import CSCoder.RpcEncoder;
-import CSCoder.RpcRequest;
-import CSCoder.RpcResponse;
+import HttpInfo.RpcEncoder;
+import HttpInfo.RpcRequest;
+import HttpInfo.RpcResponse;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

@@ -1,6 +1,6 @@
 package Client;
 
-import CSCoder.RpcRequest;
+import HttpInfo.RpcRequest;
 import io.netty.channel.Channel;
 
 import java.util.UUID;

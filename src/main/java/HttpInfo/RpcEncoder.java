@@ -1,4 +1,4 @@
-package CSCoder;
+package HttpInfo;
 
 import com.alibaba.fastjson.JSON;
 import io.netty.buffer.ByteBuf;

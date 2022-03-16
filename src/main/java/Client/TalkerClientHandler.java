@@ -1,6 +1,6 @@
 package Client;
 
-import CSCoder.RpcResponse;
+import HttpInfo.RpcResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
