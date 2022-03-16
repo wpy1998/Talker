@@ -16,12 +16,12 @@ public class ListenerServerHandler extends ChannelInboundHandlerAdapter {
         response.setId(UUID.randomUUID().toString());
         response.setData("Server message");
         response.setStatus(1);
-        ctx.writeAndFlush(request);
+        ctx.writeAndFlush(response);
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
-        System.out.println("服务端接收数据完毕..");
+        System.out.println("Server Get Message finished..");
         ctx.flush();
     }
 
