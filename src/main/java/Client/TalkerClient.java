@@ -48,7 +48,9 @@ public class TalkerClient {
                 if (channelFuture.isSuccess()){
                     System.out.println("Connected Successful");
                 }else {
-                    System.out.println("Connected Failed");
+                    System.out.println("Connected Failure");
+                    future.cause().printStackTrace();
+                    group.shutdownGracefully(); //关闭线程组
                 }
             }
         });

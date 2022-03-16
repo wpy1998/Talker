@@ -7,6 +7,7 @@ import HttpInfo.RpcResponse;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -22,29 +23,32 @@ public class ListenerServer {
     }
 
     public void start() throws InterruptedException {
-        final ListenerServerHandler serverHandler = new ListenerServerHandler();
-        EventLoopGroup group = new NioEventLoopGroup();
-        try {
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(group).channel(NioServerSocketChannel.class).localAddress(new InetSocketAddress(port))
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline()
-                                    .addLast(new RpcDecoder(RpcRequest.class))
-                                    .addLast(new RpcEncoder(RpcResponse.class))
-                                    .addLast(serverHandler);
-                        }
-                    });
-            ChannelFuture future = b.bind().sync();
-            if (future.isSuccess()){
-                System.out.println("Server Start Successful");
-            }else {
-                System.out.println("Server Start Failure");
-            }
-            future.channel().closeFuture().sync();
-        }finally {
-            group.shutdownGracefully().sync();
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+
+        ServerBootstrap b = new ServerBootstrap();
+        b.group(bossGroup, workerGroup)
+                .channel(NioServerSocketChannel.class)
+                .childOption(ChannelOption.SO_KEEPALIVE, true)
+                .option(ChannelOption.SO_BACKLOG, 128)
+                .childHandler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    protected void initChannel(SocketChannel socketChannel) throws Exception {
+                        socketChannel.pipeline()
+                                .addLast(new RpcDecoder(RpcRequest.class))
+                                .addLast(new RpcEncoder(RpcResponse.class))
+                                .addLast(new ListenerServerHandler());
+                    }
+                });
+        ChannelFuture future = b.bind(port).sync();
+        if (future.isSuccess()){
+            System.out.println("Server Start Successful");
+        }else {
+            System.out.println("Server Start Failure");
+            future.cause().printStackTrace();
+            bossGroup.shutdownGracefully(); //关闭线程组
+            workerGroup.shutdownGracefully();
         }
+        future.channel().closeFuture().sync();
     }
 }
