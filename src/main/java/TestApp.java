@@ -1,4 +1,5 @@
 import Hardware.Computer;
+import HttpInfo.GetInfo;
 import Yang.CUCConnect;
 import Yang.NetworkTopology.LLDP;
 import org.xml.sax.SAXException;
@@ -14,17 +15,13 @@ public class TestApp {
         CUCConnect cucConnect = new CUCConnect();
 
         //test register and remove Device
-        cucConnect.registerDevice(lldp);
+//        cucConnect.registerDevice(lldp);
 //        cucConnect.removeDevice(lldp);
 
         //test register and remove stream
-//        cucConnect.registerAndSendStream("message1");
-//        cucConnect.registerAndSendStream("message2");
+//        cucConnect.registerTalkerStream("message1");
+//        cucConnect.registerTalkerStream("message2");
 
-
-//        GetInfo getInfo = GetInfo.builder().url("http://" + cuc_ip +
-//                ":8181/restconf/operations/tsn-talker-type:test").build();
-//        getInfo.getInfo();
-
+        cucConnect.registerListener("register Listener");
     }
 }
