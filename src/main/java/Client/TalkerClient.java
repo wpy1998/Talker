@@ -48,6 +48,8 @@ public class TalkerClient {
             public void operationComplete(ChannelFuture channelFuture) throws Exception {
                 if (channelFuture.isSuccess()){
                     System.out.println("Connected Successful");
+                    future.channel().close();
+                    group.shutdownGracefully();
                 }else {
                     System.out.println("Connected Failure");
                     future.cause().printStackTrace();
