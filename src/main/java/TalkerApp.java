@@ -1,12 +1,19 @@
 import Hardware.Computer;
-import Yang.CUCConnect;
+import Yang.ControllerConnect;
 import Yang.NetworkTopology.LLDP;
 
-public class TestApp {
-    public static void main(String[] args) throws Exception {
+import java.io.IOException;
+
+/**
+ * @author : wpy
+ * @description: TODO
+ * @date : 3/24/22 1:58 AM
+ */
+public class TalkerApp {
+    public static void main(String[] args) throws IOException, InterruptedException {
         Computer computer = new Computer();
         LLDP lldp = new LLDP();
-        CUCConnect cucConnect = new CUCConnect();
+        ControllerConnect controllerConnect = new ControllerConnect();
 
         //test register and remove Device
 //        cucConnect.registerDevice(lldp);
@@ -16,6 +23,6 @@ public class TestApp {
 //        cucConnect.registerTalkerStream("message1");
 //        cucConnect.registerTalkerStream("message2");
 
-        cucConnect.startListenerServer();
+        controllerConnect.startListenerServer();
     }
 }

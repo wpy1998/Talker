@@ -16,12 +16,12 @@ import java.util.Map;
 
 import static Hardware.Computer.host_name;
 
-public class CUCConnect {
+public class ControllerConnect {
     public static final String cuc_ip = "10.2.25.38";
     public static final String topology_id = "tsn-network";
 
     Map<String, String> urls;
-    public CUCConnect(){
+    public ControllerConnect(){
         urls = new HashMap<>();
         urls.put("tsn-talker", "http://" + cuc_ip +
                 ":8181/restconf/config/tsn-talker-type:stream-talker-config/devices/");
