@@ -1,9 +1,8 @@
-package Server;
+package Yang.Stream;
 
-import HttpInfo.RpcDecoder;
-import HttpInfo.RpcEncoder;
-import HttpInfo.RpcRequest;
-import HttpInfo.RpcResponse;
+import HttpInfo.*;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -12,17 +11,25 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import lombok.Builder;
+import lombok.NonNull;
 
-import java.net.InetSocketAddress;
+import static Hardware.Computer.host_name;
 
 public class ListenerServer {
     private final int port;
+    private Header header;
+    private String url;
 
-    public ListenerServer(int port) {
+    @Builder
+    public ListenerServer(@NonNull int port, @NonNull Header header, @NonNull String url) {
         this.port = port;
+        this.header = header;
+        this.url = url;
     }
 
     public void start() throws InterruptedException {
+        join_listener();
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
@@ -50,5 +57,28 @@ public class ListenerServer {
             workerGroup.shutdownGracefully();
         }
         future.channel().closeFuture().sync();
+    }
+
+    private int join_listener(){
+        String url = this.url + header.getKey();
+        System.out.println(url);
+        PutInfo putInfo = PutInfo.builder().url(url).build();
+
+        JSONObject joinStream = header.getJSONObject(true, false,
+                true, false, false,
+                true, true);
+        joinStream.put("body", "join listener");
+        JSONArray streams = new JSONArray();
+        streams.add(joinStream);
+        JSONObject device = new JSONObject();
+        device.put("stream-list", streams);
+        return putInfo.putInfo(device.toString());
+    }
+
+    private int leave_listener(){
+        String url = this.url + header.getKey();
+        System.out.println(url);
+        DeleteInfo deleteInfo = DeleteInfo.builder().url(url).build();
+        return deleteInfo.deleteInfo();
     }
 }

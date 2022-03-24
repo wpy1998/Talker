@@ -1,5 +1,7 @@
 package Yang;
 
+import Yang.Stream.ListenerServer;
+import Yang.Stream.TalkerClient;
 import HttpInfo.DeleteInfo;
 import HttpInfo.PutInfo;
 import Yang.NetworkTopology.LLDP;
@@ -15,7 +17,7 @@ import java.util.Map;
 import static Hardware.Computer.host_name;
 
 public class CUCConnect {
-    public static final String cuc_ip = "10.2.25.85";
+    public static final String cuc_ip = "10.2.25.38";
     public static final String topology_id = "tsn-network";
 
     Map<String, String> urls;
@@ -110,53 +112,15 @@ public class CUCConnect {
         return s1 + "-" + s2;
     }
 
-    public int registerTalkerStream(String body){
+    public void registerTalkerStream(String body) throws Exception {
         int uniqueId = getUniqueId();
         Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
                 .rank((short) 0)
                 .build();
-        int resultCode;
 
-        resultCode = join_talker(header);
-        if(resultCode < 200 || resultCode > 300){
-            throw new RuntimeException("ResultCode Error in join stream action: " + resultCode);
-        }
-        resultCode = stream_talker(body);
-        if(resultCode < 200 || resultCode > 300){
-            throw new RuntimeException("ResultCode Error in post stream to destination: " + resultCode);
-        }
-        resultCode = leave_talker(header);
-        if(resultCode < 200 || resultCode > 300){
-            throw new RuntimeException("ResultCode Error in leave stream action: " + resultCode);
-        }
-        return resultCode;
-    }
-
-    private int join_talker(Header header){
-        String url = urls.get("tsn-talker") + host_name + "/stream-list/" + header.getKey();
-        System.out.println(url);
-        PutInfo putInfo = PutInfo.builder().url(url).build();
-
-        JSONObject joinStream = header.getJSONObject(true, true, true,
-                true, true, true,
-                true);
-        joinStream.put("body", "join talker");
-        JSONArray streams = new JSONArray();
-        streams.add(joinStream);
-        JSONObject device = new JSONObject();
-        device.put("stream-list", streams);
-        return putInfo.putInfo(device.toString());
-    }
-
-    private int stream_talker(String body){
-        return 200;
-    }
-
-    private int leave_talker(Header header){
-        String url = urls.get("tsn-talker") + host_name + "/stream-list/" + header.getKey();
-        System.out.println(url);
-        DeleteInfo deleteInfo = DeleteInfo.builder().url(url).build();
-        return deleteInfo.deleteInfo();
+        TalkerClient client = TalkerClient.builder().host("localhost").port(17835).header(header)
+                .url(urls.get("tsn-talker") + host_name + "/stream-list/").build();
+        client.start();
     }
 
     /**
@@ -168,34 +132,14 @@ public class CUCConnect {
      * @return
      */
     //listener 以下参数,函数仅在操作listener config库时使用
-    public int registerListener(String body){
+    public void startListenerServer() throws InterruptedException {
         int uniqueId = getUniqueId();
         Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
                 .rank((short) 0)
                 .build();
-        int resultCode;
-
-        resultCode = join_listener(header);
-        if(resultCode < 200 || resultCode > 300){
-            throw new RuntimeException("ResultCode Error in join stream action: " + resultCode);
-        }
-        return resultCode;
-    }
-
-    private int join_listener(Header header){
-        String url = urls.get("tsn-listener") + host_name + "/stream-list/" + header.getKey();
-        System.out.println(url);
-        PutInfo putInfo = PutInfo.builder().url(url).build();
-
-        JSONObject joinStream = header.getJSONObject(true, false,
-                true, false, false,
-                true, true);
-        joinStream.put("body", "join listener");
-        JSONArray streams = new JSONArray();
-        streams.add(joinStream);
-        JSONObject device = new JSONObject();
-        device.put("stream-list", streams);
-        return putInfo.putInfo(device.toString());
+        ListenerServer server = ListenerServer.builder().port(17835).header(header)
+                .url(urls.get("tsn-listener") + host_name + "/stream-list/").build();
+        server.start();
     }
 
     //status 以下参数,函数仅在操作status config库时使用

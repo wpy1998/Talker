@@ -1,15 +1,18 @@
-package Client;
+package Yang.Stream;
 
-import HttpInfo.RpcDecoder;
-import HttpInfo.RpcEncoder;
-import HttpInfo.RpcRequest;
-import HttpInfo.RpcResponse;
+import HttpInfo.*;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
+
+import static Hardware.Computer.host_name;
 
 /**
  * @author : wpy
@@ -21,12 +24,23 @@ public class TalkerClient {
     private final int port;
     @Getter
     private Channel channel;
-    public TalkerClient(String host, int port){
+    @Getter
+    private int resultCode;
+
+    private Header header;
+    private String url;
+
+    @Builder
+    public TalkerClient(String host, @NonNull int port, @NonNull Header header,
+                        @NonNull String url){
         this.port = port;
-        this.host = host;
+        this.host = host == null ? "localhost" : host;
+        this.header = header;
+        this.url = url;
     }
 
     public void start() throws Exception{
+        join_talker();
         final EventLoopGroup group = new NioEventLoopGroup();
 
         Bootstrap b = new Bootstrap();
@@ -48,16 +62,40 @@ public class TalkerClient {
             public void operationComplete(ChannelFuture channelFuture) throws Exception {
                 if (channelFuture.isSuccess()){
                     System.out.println("Connected Successful");
-                    future.channel().close();
-                    group.shutdownGracefully();
+                    resultCode = 200;
                 }else {
                     System.out.println("Connected Failure");
-                    future.cause().printStackTrace();
-                    group.shutdownGracefully(); //关闭线程组
+                    resultCode = 400;
                 }
+                future.channel().close();
+                group.shutdownGracefully();
+                leave_talker();
             }
         });
 
         this.channel = future.channel();
+    }
+
+    private int join_talker(){
+        String url = this.url + header.getKey();
+        System.out.println(url);
+        PutInfo putInfo = PutInfo.builder().url(url).build();
+
+        JSONObject joinStream = header.getJSONObject(true, true, true,
+                true, true, true,
+                true);
+        joinStream.put("body", "join talker");
+        JSONArray streams = new JSONArray();
+        streams.add(joinStream);
+        JSONObject device = new JSONObject();
+        device.put("stream-list", streams);
+        return putInfo.putInfo(device.toString());
+    }
+
+    private int leave_talker(){
+        String url = this.url + header.getKey();
+        System.out.println(url);
+        DeleteInfo deleteInfo = DeleteInfo.builder().url(url).build();
+        return deleteInfo.deleteInfo();
     }
 }
