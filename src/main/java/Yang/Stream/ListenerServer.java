@@ -55,6 +55,7 @@ public class ListenerServer {
             future.cause().printStackTrace();
             bossGroup.shutdownGracefully(); //关闭线程组
             workerGroup.shutdownGracefully();
+            leave_listener();
         }
         future.channel().closeFuture().sync();
     }
