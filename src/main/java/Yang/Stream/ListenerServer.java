@@ -30,6 +30,7 @@ public class ListenerServer {
 
     public void start() throws InterruptedException {
         join_listener();
+
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 

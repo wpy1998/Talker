@@ -5,8 +5,7 @@ import Yang.NetworkTopology.LLDP;
 public class ListenerApp {
     public static void main(String[] args) throws Exception {
         Computer computer = new Computer();
-        LLDP lldp = new LLDP();
-        ControllerConnect controllerConnect = new ControllerConnect();
+        ControllerConnect controllerConnect = ControllerConnect.builder().lldp(new LLDP()).build();
 
         controllerConnect.startListenerServer();
     }

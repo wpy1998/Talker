@@ -12,8 +12,7 @@ import java.io.IOException;
 public class TalkerApp {
     public static void main(String[] args) throws IOException, InterruptedException {
         Computer computer = new Computer();
-        LLDP lldp = new LLDP();
-        ControllerConnect controllerConnect = new ControllerConnect();
+        ControllerConnect controllerConnect = ControllerConnect.builder().lldp(new LLDP()).build();
 
         //test register and remove Device
 //        cucConnect.registerDevice(lldp);

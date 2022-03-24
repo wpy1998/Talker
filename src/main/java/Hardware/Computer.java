@@ -10,6 +10,7 @@ public class Computer {//获取硬件信息,LLDP
     public static String device_ip = null;
     public static List<String> device_mac = null;
     public static String host_name = null;
+    public static Thread timerThread;
 
     public Computer(){
         try {

@@ -10,18 +10,24 @@ import Yang.NetworkTopology.Topology;
 import Yang.Stream.Header;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.Builder;
+import lombok.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static Hardware.Computer.host_name;
+import static Hardware.Computer.timerThread;
 
 public class ControllerConnect {
     public static final String cuc_ip = "10.2.25.38";
     public static final String topology_id = "tsn-network";
 
     Map<String, String> urls;
-    public ControllerConnect(){
+    private LLDP lldp;
+
+    @Builder
+    public ControllerConnect(@NonNull LLDP lldp){
         urls = new HashMap<>();
         urls.put("tsn-talker", "http://" + cuc_ip +
                 ":8181/restconf/config/tsn-talker-type:stream-talker-config/devices/");
@@ -29,6 +35,33 @@ public class ControllerConnect {
                 ":8181/restconf/config/network-topology:network-topology/");
         urls.put("tsn-listener", "http://" + cuc_ip +
                 ":8181/restconf/config/tsn-listener-type:stream-listener-config/devices/");
+        this.lldp = lldp;
+
+        startTimerThread();
+    }
+
+    private void startTimerThread(){
+        if (timerThread != null){
+            System.out.println("timer has started");
+            return;
+        }
+
+        timerThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    int timeInterval = 15 * 60 * 1000;
+                    while (true){
+                        registerDevice(lldp);
+                        Thread.sleep(timeInterval);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        timerThread.start();
     }
 
     /**
@@ -52,7 +85,7 @@ public class ControllerConnect {
         putInfo.putInfo(topologies.toString());
     }
 
-    public void removeDevice(LLDP lldp){
+    public void removeDevice(){
         String url = this.urls.get("tsn-topology") + "topology/" + topology_id + "/node/" + host_name;
         DeleteInfo deleteInfo = DeleteInfo.builder().url(url).build();
         deleteInfo.deleteInfo();
