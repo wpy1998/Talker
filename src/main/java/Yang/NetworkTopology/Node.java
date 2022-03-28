@@ -63,20 +63,6 @@ public class Node {
         JSONObject node = new JSONObject();
         node.put("node-id", node_id);
 
-//        node.put("host", device_ip);
-//        node.put("port", 17830);
-//        node.put("username", "admin");
-//        node.put("password", "admin");
-
-//        JSONArray supportingNodes = new JSONArray();
-//        for(String str: supporting_nodes){
-//            JSONObject object = new JSONObject();
-//            object.put("node-ref", str);
-//            object.put("topology-ref", "NULL");
-//            supportingNodes.add(object);
-//        }
-//        node.put("supporting-node", supportingNodes);
-
         JSONArray terminationPoints = new JSONArray();
         for (String str: termination_points){
             JSONObject object = new JSONObject();
@@ -100,20 +86,6 @@ public class Node {
         node.put("id", device_mac.get(0));
         return node;
     }
-
-//    private class TerminationPoint{
-//        public String tp_id;
-//        //l3-unicast-igp-topology:igp-termination-point-attributes
-//
-//        public TerminationPoint(){
-//        }
-//
-//        public JSONObject getJSONObject(){
-//            JSONObject termination_point = new JSONObject();
-//            termination_point.put("tp-id", tp_id);
-//            return termination_point;
-//        }
-//    }
 
     private class AttachmentPoint{
         String tpId, correspondingTp;

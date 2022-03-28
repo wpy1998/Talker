@@ -80,12 +80,16 @@ public class LLDP {
 
         JSONObject object = lldp.getJSONObject("interface");
         Iterator<String> iterator = object.keySet().iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()){//networkCard size > 1
             String networkCardName = iterator.next();
             JSONObject networkCard = object.getJSONObject(networkCardName);
             String via = networkCard.getString("via");
             if (!via.equals("LLDP")) continue;
             JSONObject neighbor = getNetworkCardNeighbor(networkCardName);
+            if(neighbor == null) {
+                System.out.println("NetworkCard: " + networkCardName + " has no neighbor through LLDP");
+                continue;
+            }//this network has no neighbor through LLDP
             buildLink(networkCardName, neighbor);
             buildNode(networkCardName, networkCard, neighbor);
         }
@@ -100,13 +104,28 @@ public class LLDP {
         while ((line = input.readLine ()) != null){
             result += line;
         }
-        JSONObject neighbor = null;
-        JSONObject object;
+        JSONObject neighbor = null, object = null;
+        JSONObject lldp = JSON.parseObject(result).getJSONObject("lldp");
+        int length;
         try {
-            object = JSON.parseObject(result).getJSONObject("lldp").getJSONObject("interface");
+            length = lldp.getJSONArray("interface").size();
         }catch (Exception e){
-            object = JSON.parseObject(result).getJSONObject("lldp").getJSONArray("interface").getJSONObject(0);
+            length = 1;
         }
+
+        if(length > 1){
+            JSONArray interfaces = JSON.parseObject(result).getJSONObject("lldp").getJSONArray("interface");
+            for (int i = 0; i < interfaces.size(); i++){
+                object = interfaces.getJSONObject(i);
+                int ttl = object.getJSONObject(networkCardName).getJSONObject("port").getInteger("ttl");
+                if (ttl < 256) break;
+            }
+        }else {
+            object = JSON.parseObject(result).getJSONObject("lldp").getJSONObject("interface");
+            int ttl = object.getJSONObject(networkCardName).getJSONObject("port").getInteger("ttl");
+            if (ttl > 256) object = null;
+        }
+        if (object == null) return neighbor;
         Iterator<String> iterator = object.keySet().iterator();
         String key = iterator.next();
         neighbor = object.getJSONObject(key);
