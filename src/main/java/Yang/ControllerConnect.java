@@ -20,7 +20,7 @@ import static Hardware.Computer.host_name;
 import static Hardware.Computer.timerThread;
 
 public class ControllerConnect {
-    public static final String cuc_ip = "10.2.25.38";
+    public static final String cuc_ip = "10.2.25.4";
     public static final String topology_id = "tsn-network";
 
     Map<String, String> urls;
