@@ -1,8 +1,11 @@
 import Hardware.Computer;
-import Yang.ControllerConnect;
-import Yang.NetworkTopology.LLDP;
+import Yang.StreamLauncher;
+import Yang.NetworkTopologyLauncher;
 
 import java.io.IOException;
+
+import static Hardware.Computer.host_name;
+import static Hardware.Computer.topology_id;
 
 /**
  * @author : wpy
@@ -12,7 +15,20 @@ import java.io.IOException;
 public class TalkerApp {
     public static void main(String[] args) throws IOException, InterruptedException {
         Computer computer = new Computer();
-        ControllerConnect controllerConnect = ControllerConnect.builder().lldp(new LLDP()).build();
+        NetworkTopologyLauncher launcher = NetworkTopologyLauncher.builder()
+                .topologyFront(computer.urls.get("tsn-topology"))
+                .hostName(host_name)
+                .topologyId(topology_id)
+                .build();
+        launcher.startTimerThread();
+
+        StreamLauncher streamLauncher = StreamLauncher.builder()
+                .talkerFront(computer.urls.get("tsn-talker"))
+                .listenerFront(computer.urls.get("tsn-listener"))
+                .hostName(host_name)
+                .build();
+        streamLauncher.startPollingThread();
+        streamLauncher.registerTalkerStream("aaa");
 
         //test register and remove Device
 //        cucConnect.registerDevice(lldp);
@@ -21,7 +37,5 @@ public class TalkerApp {
         //test register and remove stream
 //        cucConnect.registerTalkerStream("message1");
 //        cucConnect.registerTalkerStream("message2");
-
-        controllerConnect.startListenerServer();
     }
 }

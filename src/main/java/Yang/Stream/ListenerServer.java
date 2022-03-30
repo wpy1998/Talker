@@ -14,8 +14,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.Builder;
 import lombok.NonNull;
 
-import static Hardware.Computer.host_name;
-
 public class ListenerServer {
     private final int port;
     private Header header;

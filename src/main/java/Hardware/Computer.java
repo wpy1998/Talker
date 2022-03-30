@@ -3,16 +3,27 @@ package Hardware;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Computer {//获取硬件信息,LLDP
+public class Computer {//获取硬件信息, LLDP
     public static String device_ip = null;
     public static List<String> device_mac = null;
     public static String host_name = null;
-    public static Thread timerThread;
+    public static final String cuc_ip = "10.2.25.4";
+    public static final String topology_id = "tsn-network";
+    public Map<String, String> urls;
 
     public Computer(){
+        urls = new HashMap<>();
+        urls.put("tsn-talker", "http://" + cuc_ip +
+                ":8181/restconf/config/tsn-talker-type:stream-talker-config/devices/");
+        urls.put("tsn-topology", "http://" + cuc_ip +
+                ":8181/restconf/config/network-topology:network-topology/");
+        urls.put("tsn-listener", "http://" + cuc_ip +
+                ":8181/restconf/config/tsn-listener-type:stream-listener-config/devices/");
         try {
             refresh();
             System.out.println(device_ip + ", " + device_mac + ", " + host_name);

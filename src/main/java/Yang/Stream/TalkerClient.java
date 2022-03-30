@@ -37,10 +37,11 @@ public class TalkerClient {
         this.host = host == null ? "localhost" : host;
         this.header = header;
         this.url = url;
+
+        join_talker();
     }
 
     public void start() throws Exception{
-        join_talker();
         final EventLoopGroup group = new NioEventLoopGroup();
 
         Bootstrap b = new Bootstrap();
@@ -97,5 +98,9 @@ public class TalkerClient {
         System.out.println(url);
         DeleteInfo deleteInfo = DeleteInfo.builder().url(url).build();
         return deleteInfo.deleteInfo();
+    }
+
+    public String getKey(){
+        return this.header.getKey();
     }
 }

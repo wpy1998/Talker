@@ -18,8 +18,7 @@ public class Topology {
     public List<Link> links;
 
     @Builder
-    public Topology(@NonNull String topology_id,
-                    @NonNull LLDP lldp){
+    public Topology(@NonNull String topology_id, @NonNull LLDP lldp){
         this.topology_id = topology_id;
         underlay_topologies = new ArrayList<>();
         nodes = new ArrayList<>();
