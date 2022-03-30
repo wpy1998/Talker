@@ -62,6 +62,7 @@ public class Node {
     public JSONObject getJSONObject(){
         JSONObject node = new JSONObject();
         node.put("node-id", node_id);
+        node.put("node-type", "device");
 
         JSONArray terminationPoints = new JSONArray();
         for (String str: termination_points){

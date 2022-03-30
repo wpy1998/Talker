@@ -32,7 +32,7 @@ public class StreamLauncher {
         pollingThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                int timeInterval = 30 * 1000;
+                int timeInterval = 15 * 1000;
                 try {
                     while (true){
                         for (TalkerClient talkerClient: clients){
