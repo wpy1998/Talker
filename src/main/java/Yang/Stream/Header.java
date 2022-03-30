@@ -266,6 +266,7 @@ public class Header {//负责数据流header内容的转化
                 this.userToNetworkRequirements.getJSONObject());
         if(isInterfaceCapabilities) streamHeader.put("interface-capabilities",
                 this.interfaceCapabilities.getJSONObject());
+        streamHeader.put("is-config", false);
         return streamHeader;
     }
 }
