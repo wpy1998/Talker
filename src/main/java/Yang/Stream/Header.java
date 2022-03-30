@@ -18,6 +18,7 @@ public class Header {//负责数据流header内容的转化
     private TrafficSpecification trafficSpecification;
     private UserToNetworkRequirements userToNetworkRequirements;
     private InterfaceCapabilities interfaceCapabilities;
+    private ConfigResult configResult;
 
     @Builder
     public Header(@NonNull String uniqueId, @NonNull short rank){
@@ -28,6 +29,7 @@ public class Header {//负责数据流header内容的转化
         this.trafficSpecification = new TrafficSpecification();
         this.userToNetworkRequirements = new UserToNetworkRequirements();
         this.interfaceCapabilities = new InterfaceCapabilities();
+        this.configResult = new ConfigResult();
     }
 
     public String getKey(){
@@ -247,6 +249,20 @@ public class Header {//负责数据流header内容的转化
         }
     }
 
+    private class ConfigResult{
+        public boolean isConfig;
+
+        public ConfigResult(){
+            this.isConfig = false;
+        }
+
+        JSONObject getJSONObject(){
+            JSONObject object = new JSONObject();
+            object.put("is-config", this.isConfig);
+            return object;
+        }
+    }
+
     public JSONObject getJSONObject(boolean isStreamID, boolean isStreamRank,
                                     boolean isEndStationInterface,
                                     boolean isDateFrameSpecification,
@@ -266,7 +282,7 @@ public class Header {//负责数据流header内容的转化
                 this.userToNetworkRequirements.getJSONObject());
         if(isInterfaceCapabilities) streamHeader.put("interface-capabilities",
                 this.interfaceCapabilities.getJSONObject());
-        streamHeader.put("is-config", false);
+        streamHeader.put("config-result", this.configResult.getJSONObject());
         return streamHeader;
     }
 }
