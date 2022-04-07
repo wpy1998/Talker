@@ -79,7 +79,7 @@ public class TalkerClient {
 
     private int join_talker(){
         String url = this.url + header.getKey();
-        System.out.println(url);
+//        System.out.println(url);
         PutInfo putInfo = PutInfo.builder().url(url).build();
 
         JSONObject joinStream = header.getJSONObject(true, true, true,

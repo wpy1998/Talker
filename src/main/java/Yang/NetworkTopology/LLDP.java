@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static Hardware.Computer.device_mac;
 import static Hardware.Computer.host_name;
 
 public class LLDP {
@@ -157,7 +158,7 @@ public class LLDP {
     }
 
     private void buildNode(String networkCardName, JSONObject local, JSONObject neighbor){
-        current.node_id = host_name;
+        current.node_id = host_name + device_mac.get(0);
         current.setTermination_points(networkCardName);
         Iterator<String> iterator = neighbor.getJSONObject("chassis").keySet().iterator();
         String dest_tp = iterator.next();
