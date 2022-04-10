@@ -115,16 +115,19 @@ public class LLDP {
         }
 
         if(length > 1){
-            JSONArray interfaces = JSON.parseObject(result).getJSONObject("lldp").getJSONArray("interface");
+            JSONArray interfaces = JSON.parseObject(result).getJSONObject("lldp")
+                    .getJSONArray("interface");
             for (int i = 0; i < interfaces.size(); i++){
                 object = interfaces.getJSONObject(i);
-                int ttl = object.getJSONObject(networkCardName).getJSONObject("port").getInteger("ttl");
-                if (ttl < 256) break;
+                int ttl = object.getJSONObject(networkCardName).getJSONObject("port")
+                        .getInteger("ttl");
+                if (ttl < 10000) break;
             }
         }else {
             object = JSON.parseObject(result).getJSONObject("lldp").getJSONObject("interface");
-            int ttl = object.getJSONObject(networkCardName).getJSONObject("port").getInteger("ttl");
-            if (ttl > 256) object = null;
+            int ttl = object.getJSONObject(networkCardName).getJSONObject("port")
+                    .getInteger("ttl");
+            if (ttl > 10000) object = null;
         }
         if (object == null) return neighbor;
         Iterator<String> iterator = object.keySet().iterator();
