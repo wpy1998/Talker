@@ -1,7 +1,7 @@
 package Yang;
 
-import HttpInfo.DeleteInfo;
-import HttpInfo.PutInfo;
+import RestfulAPI.RestfulDeleteInfo;
+import RestfulAPI.RestfulPutInfo;
 import Yang.NetworkTopology.LLDP;
 import Yang.NetworkTopology.Link;
 import Yang.NetworkTopology.Topology;
@@ -75,14 +75,14 @@ public class NetworkTopologyLauncher {
         JSONObject topologies = new JSONObject();
         topologies.put("topology", array);
 
-        PutInfo putInfo = PutInfo.builder().url(url).build();
-        putInfo.putInfo(topologies.toString());
+        RestfulPutInfo restfulPutInfo = RestfulPutInfo.builder().url(url).build();
+        restfulPutInfo.putInfo(topologies.toString());
     }
 
     public void removeDevice(){
         String url = this.topologyFront + "topology/" + topologyId + "/node/" + hostName;
-        DeleteInfo deleteInfo = DeleteInfo.builder().url(url).build();
-        deleteInfo.deleteInfo();
+        RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder().url(url).build();
+        restfulDeleteInfo.deleteInfo();
         for (int i = 0; i < lldp.linkList.size(); i++){
             Link link = lldp.linkList.get(i);
             removeLink(link);
@@ -93,8 +93,8 @@ public class NetworkTopologyLauncher {
         String url = this.topologyFront + "topology/" + topologyId + "/link/"
                 + link.getLink_id();
         System.out.println(url);
-        DeleteInfo deleteInfo = DeleteInfo.builder()
+        RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder()
                 .url(url).build();
-        deleteInfo.deleteInfo();
+        restfulDeleteInfo.deleteInfo();
     }
 }

@@ -1,6 +1,6 @@
 package Yang.Stream;
 
-import HttpInfo.*;
+import RestfulAPI.*;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.netty.bootstrap.ServerBootstrap;
@@ -62,7 +62,7 @@ public class ListenerServer {
     private int join_listener(){
         String url = this.url + header.getKey();
         System.out.println(url);
-        PutInfo putInfo = PutInfo.builder().url(url).build();
+        RestfulPutInfo restfulPutInfo = RestfulPutInfo.builder().url(url).build();
 
         JSONObject joinStream = header.getJSONObject(true, false,
                 true, false, false,
@@ -72,13 +72,13 @@ public class ListenerServer {
         streams.add(joinStream);
         JSONObject device = new JSONObject();
         device.put("stream-list", streams);
-        return putInfo.putInfo(device.toString());
+        return restfulPutInfo.putInfo(device.toString());
     }
 
     private int leave_listener(){
         String url = this.url + header.getKey();
         System.out.println(url);
-        DeleteInfo deleteInfo = DeleteInfo.builder().url(url).build();
-        return deleteInfo.deleteInfo();
+        RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder().url(url).build();
+        return restfulDeleteInfo.deleteInfo();
     }
 }

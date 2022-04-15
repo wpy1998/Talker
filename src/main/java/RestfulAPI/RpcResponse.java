@@ -1,4 +1,4 @@
-package HttpInfo;
+package RestfulAPI;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import lombok.Setter;
  * @description: TODO
  * @date : 3/15/22 6:35 PM
  */
-public class RpcRequest {
+public class RpcResponse {
     @Getter
     @Setter
     private String id;
@@ -17,8 +17,12 @@ public class RpcRequest {
     @Setter
     private Object data;
 
+    @Getter
+    @Setter
+    private int status;
+
     @Override
     public String toString(){
-        return "RpcRequest{id=\'" + id + "\', data=" + data + "}";
+        return "RpcResponse{id=\'" + id + "\', data=" + data + ", status=" + status + "}";
     }
 }

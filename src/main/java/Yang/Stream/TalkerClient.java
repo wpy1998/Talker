@@ -1,6 +1,6 @@
 package Yang.Stream;
 
-import HttpInfo.*;
+import RestfulAPI.*;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.netty.bootstrap.Bootstrap;
@@ -11,8 +11,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
-
-import static Hardware.Computer.host_name;
 
 /**
  * @author : wpy
@@ -80,7 +78,7 @@ public class TalkerClient {
     private int join_talker(){
         String url = this.url + header.getKey();
 //        System.out.println(url);
-        PutInfo putInfo = PutInfo.builder().url(url).build();
+        RestfulPutInfo restfulPutInfo = RestfulPutInfo.builder().url(url).build();
 
         JSONObject joinStream = header.getJSONObject(true, true, true,
                 true, true, true,
@@ -90,14 +88,14 @@ public class TalkerClient {
         streams.add(joinStream);
         JSONObject device = new JSONObject();
         device.put("stream-list", streams);
-        return putInfo.putInfo(device.toString());
+        return restfulPutInfo.putInfo(device.toString());
     }
 
     private int leave_talker(){
         String url = this.url + header.getKey();
         System.out.println(url);
-        DeleteInfo deleteInfo = DeleteInfo.builder().url(url).build();
-        return deleteInfo.deleteInfo();
+        RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder().url(url).build();
+        return restfulDeleteInfo.deleteInfo();
     }
 
     public String getKey(){

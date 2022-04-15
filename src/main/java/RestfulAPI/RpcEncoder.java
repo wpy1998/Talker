@@ -1,4 +1,4 @@
-package HttpInfo;
+package RestfulAPI;
 
 import com.alibaba.fastjson.JSON;
 import io.netty.buffer.ByteBuf;

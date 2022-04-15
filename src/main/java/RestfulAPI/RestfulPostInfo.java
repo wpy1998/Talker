@@ -1,4 +1,4 @@
-package HttpInfo;
+package RestfulAPI;
 
 import lombok.Builder;
 import lombok.NonNull;
@@ -8,13 +8,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
 
-public class PostInfo {
+public class RestfulPostInfo {
     String _url, identity, password;
 
     @Builder
-    public PostInfo(@NonNull String url,
-                   String identity,
-                   String password){
+    public RestfulPostInfo(@NonNull String url,
+                           String identity,
+                           String password){
         this._url = url;
         this.identity = (identity != null) ? identity: "admin";
         this.password = (password != null) ? password: "admin";
