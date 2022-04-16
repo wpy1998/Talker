@@ -70,4 +70,12 @@ public class Computer {//获取硬件信息, LLDP
         List<String> unique = tmpMacList.stream().distinct().collect(Collectors.toList());
         return unique;
     }
+
+    private static int netconfMessageId = 0;
+
+    synchronized public static String getNetconfMessageId(){
+        int cur = netconfMessageId;
+        netconfMessageId = (netconfMessageId + 1) % 10000;
+        return Integer.toString(cur);
+    }
 }
