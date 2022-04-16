@@ -253,7 +253,7 @@ public class Header {//负责数据流header内容的转化
         public boolean isConfig;
 
         public ConfigResult(){
-            this.isConfig = false;
+            this.isConfig = true;
         }
 
         JSONObject getJSONObject(){

@@ -12,7 +12,7 @@ public class Computer {//获取硬件信息, LLDP
     public static String device_ip = null;
     public static List<String> device_mac = null;
     public static String host_name = null;
-    public static final String cuc_ip = "10.2.25.4";
+    public static final String cuc_ip = "localhost";
     public static final String topology_id = "tsn-network";
     public Map<String, String> urls;
 

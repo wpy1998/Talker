@@ -4,8 +4,7 @@ import Yang.NetworkTopologyLauncher;
 
 import java.io.IOException;
 
-import static Hardware.Computer.host_name;
-import static Hardware.Computer.topology_id;
+import static Hardware.Computer.*;
 
 /**
  * @author : wpy
@@ -17,7 +16,7 @@ public class TalkerApp {
         Computer computer = new Computer();
         NetworkTopologyLauncher launcher = NetworkTopologyLauncher.builder()
                 .topologyFront(computer.urls.get("tsn-topology"))
-                .hostName(host_name)
+                .hostName(host_name + device_mac.get(0))
                 .topologyId(topology_id)
                 .build();
         launcher.startTimerThread();
@@ -25,7 +24,7 @@ public class TalkerApp {
         StreamLauncher streamLauncher = StreamLauncher.builder()
                 .talkerFront(computer.urls.get("tsn-talker"))
                 .listenerFront(computer.urls.get("tsn-listener"))
-                .hostName(host_name)
+                .hostName(host_name + device_mac.get(0))
                 .build();
         streamLauncher.startPollingThread();
         streamLauncher.registerTalkerStream("aaa");

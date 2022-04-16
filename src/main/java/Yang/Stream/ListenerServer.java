@@ -27,7 +27,12 @@ public class ListenerServer {
     }
 
     public void start() throws InterruptedException {
-        join_listener();
+        int resultCode = join_listener();
+
+        if(resultCode >= 400 || resultCode < 100){
+            System.out.println("listener register failed");
+            return;
+        }
 
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
