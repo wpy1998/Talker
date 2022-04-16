@@ -47,10 +47,10 @@ public class NetconfGetInfo {
         device.connect();
 
         String messageId = getNetconfMessageId();
-        String rpcContent = "<get message-id=\"" + messageId + "\" " +
+        String rpcContent = "<get-config message-id=\"" + messageId + "\" " +
                 "xmlns=\"urn:ietf:params:xml:ns:netconf:base:1.0\">" +
                 "<source><running/></source><filter>" +
-                "<network-topology xmlns=\"urn:TBD:params:xml:ns:yang:network-topology\"/></filter></get>";
+                "</filter></get-config>";
         System.out.println("Netconf Request: " + rpcContent);
         XML rpc_reply = device.executeRPC(rpcContent);
         device.close();
