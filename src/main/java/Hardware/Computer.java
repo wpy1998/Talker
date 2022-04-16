@@ -23,7 +23,7 @@ public class Computer {//获取硬件信息, LLDP
         urls.put("tsn-topology", "http://" + cuc_ip +
                 ":8181/restconf/config/network-topology:network-topology/");
         urls.put("tsn-listener", "http://" + cuc_ip +
-                ":8181/restconf/config/tsn-listener-type:stream-listener-config/devices/");
+                ":8181/restconf/config/tsn-listener-types:stream-listener-config/devices/");
         try {
             refresh();
             System.out.println(device_ip + ", " + device_mac + ", " + host_name);
