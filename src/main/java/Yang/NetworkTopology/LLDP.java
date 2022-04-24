@@ -173,4 +173,26 @@ public class LLDP {
                 .getJSONObject("id").getString("value");
         current.setAddress(ip, mac);
     }
+
+    public JSONObject getSpeed(String destinationIP) throws IOException {
+        Process process = Runtime.getRuntime().exec("mtr -r " +
+                destinationIP + " -j");
+        InputStreamReader ir = new InputStreamReader(process.getInputStream());
+        LineNumberReader input = new LineNumberReader (ir);
+        String line, result = "";
+        while ((line = input.readLine ()) != null){
+            result += line;
+        }
+        JSONObject report = JSON.parseObject(result).getJSONObject("report");
+        JSONObject mtr = report.getJSONObject("mtr");
+        JSONArray hubs = report.getJSONArray("hubs");
+        JSONObject object = hubs.getJSONObject(0);
+        JSONObject speed = new JSONObject();
+        speed.put("packet-size", mtr.getInteger("psize"));
+        speed.put("loss", object.getFloat("Loss%"));
+        speed.put("best", object.getFloat("Best"));
+        speed.put("worst", object.getFloat("Wrst"));
+        speed.put("avg", object.getFloat("Avg"));
+        return speed;
+    }
 }
