@@ -3,6 +3,7 @@ import Yang.StreamLauncher;
 import Yang.NetworkTopologyLauncher;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 import static Hardware.Computer.*;
 
@@ -28,6 +29,16 @@ public class TalkerApp {
                 .build();
         streamLauncher.startPollingThread();
         streamLauncher.registerTalkerStream("aaa");
+
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNext()){
+            String str = scanner.next();
+            if (str.equals("quit") || str.equals("exit") || str.equals("stop")){
+                streamLauncher.stopPollingThread();
+                launcher.stopTimerThread();
+                break;
+            }
+        }
 
         //test register and remove Device
 //        cucConnect.registerDevice(lldp);

@@ -91,9 +91,9 @@ public class TalkerClient {
         return restfulPutInfo.putInfo(device.toString());
     }
 
-    private int leave_talker(){
+    public int leave_talker(){
         String url = this.url + header.getKey();
-        System.out.println(url);
+//        System.out.println(url);
         RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder().url(url).build();
         return restfulDeleteInfo.deleteInfo();
     }

@@ -47,14 +47,22 @@ public class NetworkTopologyLauncher {
                         registerDevice(lldp);
                         Thread.sleep(timeInterval);
                     }
-                }catch (Exception e){
-                    removeDevice();
+                }catch (InterruptedException e){
+                    System.out.println("TimerThread interrupted");
+                } catch (Exception e){
                     e.printStackTrace();
                 }
             }
         });
 
         timerThread.start();
+    }
+
+    public void stopTimerThread(){
+        if (timerThread != null && timerThread.isAlive()){
+            timerThread.interrupt();
+        }
+        removeDevice();
     }
 
     /**
@@ -99,6 +107,7 @@ public class NetworkTopologyLauncher {
 
     public void removeDevice(){
         String url = this.topologyFront + "topology/" + topologyId + "/node/" + hostName;
+        System.out.println("--remove node from controller--");
         RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder().url(url).build();
         restfulDeleteInfo.deleteInfo();
         for (int i = 0; i < lldp.linkList.size(); i++){
@@ -110,7 +119,7 @@ public class NetworkTopologyLauncher {
     public void removeLink(Link link){
         String url = this.topologyFront + "topology/" + topologyId + "/link/"
                 + link.getLink_id();
-        System.out.println(url);
+        System.out.println("--remove link from controller--");
         RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder()
                 .url(url).build();
         restfulDeleteInfo.deleteInfo();

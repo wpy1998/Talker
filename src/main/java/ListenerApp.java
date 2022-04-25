@@ -2,6 +2,8 @@ import Hardware.Computer;
 import Yang.StreamLauncher;
 import Yang.NetworkTopologyLauncher;
 
+import java.util.Scanner;
+
 import static Hardware.Computer.*;
 
 public class ListenerApp {
@@ -20,5 +22,15 @@ public class ListenerApp {
                 .hostName(host_name + device_mac.get(0))
                 .build();
         streamLauncher.startListenerServer();
+
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNext()){
+            String str = scanner.next();
+            if (str.equals("quit") || str.equals("exit") || str.equals("stop")){
+                streamLauncher.stopListenerServer();
+                launcher.stopTimerThread();
+                break;
+            }
+        }
     }
 }

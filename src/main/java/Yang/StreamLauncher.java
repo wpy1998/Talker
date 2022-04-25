@@ -13,6 +13,7 @@ import java.util.List;
 public class StreamLauncher {
     private String talkerFront, listenerFront, hostName;
     private static List<TalkerClient> clients = new ArrayList<>();
+    private static ListenerServer server = null;
 
     private static Thread pollingThread = null;
 
@@ -40,12 +41,22 @@ public class StreamLauncher {
                         }
                         Thread.sleep(timeInterval);
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                }catch (InterruptedException e){
+                    System.out.println("PollingThread interrupted");
                 }
             }
         });
         pollingThread.start();
+    }
+
+    public void stopPollingThread(){
+        if (pollingThread != null && pollingThread.isAlive()){
+            pollingThread.interrupt();
+        }
+        for (TalkerClient talkerClient: clients){
+            talkerClient.leave_talker();
+        }
+        clients.clear();
     }
 
     /**
@@ -114,9 +125,15 @@ public class StreamLauncher {
         Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
                 .rank((short) 0)
                 .build();
-        ListenerServer server = ListenerServer.builder().port(17835).header(header)
+        server = ListenerServer.builder().port(17835).header(header)
                 .url(this.listenerFront + hostName + "/stream-list/").build();
         server.start();
+    }
+
+    public void stopListenerServer(){
+        if (server != null){
+            server.stop();
+        }
     }
 
     //status 以下参数,函数仅在操作status config库时使用

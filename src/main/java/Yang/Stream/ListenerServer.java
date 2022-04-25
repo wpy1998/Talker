@@ -14,10 +14,14 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.Builder;
 import lombok.NonNull;
 
+import java.util.Scanner;
+
 public class ListenerServer {
     private final int port;
     private Header header;
     private String url;
+
+    private Thread serverThread;
 
     @Builder
     public ListenerServer(@NonNull int port, @NonNull Header header, @NonNull String url) {
@@ -26,47 +30,78 @@ public class ListenerServer {
         this.url = url;
     }
 
-    public void start() throws InterruptedException {
-        int resultCode = join_listener();
+    private void initServer(){
+        serverThread = new Thread(new Runnable() {
+            EventLoopGroup bossGroup, workerGroup;
+            ChannelFuture future;
 
-        if(resultCode >= 400 || resultCode < 100){
-            System.out.println("listener register failed");
-            return;
-        }
+            @Override
+            public void run() {
+                try{
+                    int resultCode = join_listener();
 
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
-
-        ServerBootstrap b = new ServerBootstrap();
-        b.group(bossGroup, workerGroup)
-                .channel(NioServerSocketChannel.class)
-                .childOption(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.SO_BACKLOG, 128)
-                .childHandler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    protected void initChannel(SocketChannel socketChannel) throws Exception {
-                        socketChannel.pipeline()
-                                .addLast(new RpcDecoder(RpcRequest.class))
-                                .addLast(new RpcEncoder(RpcResponse.class))
-                                .addLast(new ListenerServerHandler());
+                    if(resultCode >= 400 || resultCode < 100){
+                        System.out.println("listener register failed");
+                        return;
                     }
-                });
-        ChannelFuture future = b.bind(port).sync();
-        if (future.isSuccess()){
-            System.out.println("Server Start Successful");
-        }else {
-            System.out.println("Server Start Failure");
-            future.cause().printStackTrace();
-            bossGroup.shutdownGracefully(); //关闭线程组
-            workerGroup.shutdownGracefully();
-            leave_listener();
+
+                    bossGroup = new NioEventLoopGroup();
+                    workerGroup = new NioEventLoopGroup();
+
+                    ServerBootstrap b = new ServerBootstrap();
+                    b.group(bossGroup, workerGroup)
+                            .channel(NioServerSocketChannel.class)
+                            .childOption(ChannelOption.SO_KEEPALIVE, true)
+                            .option(ChannelOption.SO_BACKLOG, 128)
+                            .childHandler(new ChannelInitializer<SocketChannel>() {
+                                @Override
+                                protected void initChannel(SocketChannel socketChannel){
+                                    socketChannel.pipeline()
+                                            .addLast(new RpcDecoder(RpcRequest.class))
+                                            .addLast(new RpcEncoder(RpcResponse.class))
+                                            .addLast(new ListenerServerHandler());
+                                }
+                            });
+                    future = b.bind(port).sync();
+                    if (future.isSuccess()){
+                        System.out.println("Server Start Successful");
+                    }else {
+                        System.out.println("Server Start Failure");
+                        stopServer();
+                    }
+                    future.channel().closeFuture().sync();
+                }catch (InterruptedException e){
+                    stopServer();
+                    System.out.println("ServerThread interrupted");
+                }
+            }
+
+            public void stopServer(){
+                if (bossGroup != null)
+                    bossGroup.shutdownGracefully();
+                if (workerGroup != null)
+                    workerGroup.shutdownGracefully();
+                leave_listener();
+            }
+        });
+    }
+
+    public void start() throws InterruptedException {
+        if (serverThread == null){
+            initServer();
         }
-        future.channel().closeFuture().sync();
+        serverThread.start();
+    }
+
+    public void stop(){
+        if (serverThread != null){
+            serverThread.interrupt();
+        }
     }
 
     private int join_listener(){
         String url = this.url + header.getKey();
-        System.out.println(url);
+//        System.out.println(url);
         RestfulPutInfo restfulPutInfo = RestfulPutInfo.builder().url(url).build();
 
         JSONObject joinStream = header.getJSONObject(true, false,
@@ -77,13 +112,14 @@ public class ListenerServer {
         streams.add(joinStream);
         JSONObject device = new JSONObject();
         device.put("stream-list", streams);
+        System.out.println("--register listener to controller--");
         return restfulPutInfo.putInfo(device.toString());
     }
 
     private int leave_listener(){
         String url = this.url + header.getKey();
-        System.out.println(url);
         RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder().url(url).build();
+        System.out.println("--remove listener from controller--");
         return restfulDeleteInfo.deleteInfo();
     }
 }
