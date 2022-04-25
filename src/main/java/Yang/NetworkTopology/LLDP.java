@@ -72,7 +72,7 @@ public class LLDP {
                     String via = networkCard.getString("via");
                     if (!via.equals("LLDP")) continue;
                     JSONObject neighbor = getNetworkCardNeighbor(networkCardName);
-                    buildLink(networkCardName, neighbor);
+                    buildTargetLink(networkCardName, neighbor);
                     buildNode(networkCardName, networkCard, neighbor);
                 }
             }
@@ -91,7 +91,7 @@ public class LLDP {
                 System.out.println("NetworkCard: " + networkCardName + " has no neighbor through LLDP");
                 continue;
             }//this network has no neighbor through LLDP
-            buildLink(networkCardName, neighbor);
+            buildTargetLink(networkCardName, neighbor);
             buildNode(networkCardName, networkCard, neighbor);
         }
     }
@@ -136,7 +136,7 @@ public class LLDP {
         return neighbor;
     }
 
-    private void buildLink(String networkCardName, JSONObject neighbor){
+    private void buildTargetLink(String networkCardName, JSONObject neighbor){
         String dest_node, dest_tp;
         Iterator<String> iterator = neighbor.getJSONObject("chassis").keySet().iterator();
         dest_node = iterator.next();
@@ -167,8 +167,13 @@ public class LLDP {
         String dest_tp = iterator.next();
         current.setAttachmentPoint(networkCardName, dest_tp);
         String ip, mac;
-        ip = local.getJSONObject("chassis").getJSONObject(host_name)
-                .getJSONArray("mgmt-ip").getString(0);
+        try{
+            ip = local.getJSONObject("chassis").getJSONObject(host_name)
+                    .getJSONArray("mgmt-ip").getString(0);
+        }catch (Exception e){
+            ip = local.getJSONObject("chassis").getJSONObject(host_name)
+                    .getString("mgmt-ip");
+        }
         mac = local.getJSONObject("chassis").getJSONObject(host_name)
                 .getJSONObject("id").getString("value");
         current.setAddress(ip, mac);

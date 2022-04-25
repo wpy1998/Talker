@@ -67,16 +67,34 @@ public class NetworkTopologyLauncher {
      * @param lldp
      */
     public void registerDevice(LLDP lldp){
-        String url = this.topologyFront + "topology/" + topologyId;
         Topology topology = Topology.builder().topology_id(topologyId).lldp(lldp).build();
+        String url = this.topologyFront + "topology/" + topologyId;
 
-        JSONArray array = new JSONArray();
-        array.add(topology.getJSONObject());
-        JSONObject topologies = new JSONObject();
-        topologies.put("topology", array);
-
-        RestfulPutInfo restfulPutInfo = RestfulPutInfo.builder().url(url).build();
-        restfulPutInfo.putInfo(topologies.toString());
+        JSONObject net = topology.getJSONObject();
+        JSONArray nodes = net.getJSONArray("node");
+        for (int i = 0; i < nodes.size(); i++){
+            JSONObject node = nodes.getJSONObject(i);
+            String url1 = url + "/node/" + node.getString("node-id");
+            System.out.println("--register node to controller--");
+            RestfulPutInfo restfulPutInfo = RestfulPutInfo.builder().url(url1).build();
+            JSONArray array = new JSONArray();
+            array.add(node);
+            JSONObject object = new JSONObject();
+            object.put("node", node);
+            restfulPutInfo.putInfo(object.toString());
+        }
+        JSONArray links = net.getJSONArray("link");
+        for (int i = 0; i < links.size(); i++){
+            JSONObject link = links.getJSONObject(i);
+            String url1 = url + "/link/" + link.getString("link-id");
+            System.out.println("--register link to controller--");
+            RestfulPutInfo restfulPutInfo = RestfulPutInfo.builder().url(url1).build();
+            JSONArray array = new JSONArray();
+            array.add(link);
+            JSONObject object = new JSONObject();
+            object.put("link", link);
+            restfulPutInfo.putInfo(object.toString());
+        }
     }
 
     public void removeDevice(){
