@@ -21,10 +21,11 @@ public class TestApp {
 //        System.out.println(speed.toString());
 
         NetworkTopologyLauncher launcher = NetworkTopologyLauncher.builder()
-                .topologyFront(computer.urls.get("tsn-topology"))
+                .topologyId(computer.urls.get("tsn-topology"))
                 .hostName(host_name + device_mac.get(0))
                 .topologyId(topology_id)
                 .build();
         launcher.startTimerThread();
+        launcher.stopTimerThread();
     }
 }

@@ -20,13 +20,13 @@ import java.io.IOException;
 public class NetworkTopologyLauncher {
     private static Thread timerThread = null;
     private LLDP lldp;
-    private String topologyId, topologyFront, hostName;
+    private String topologyId, urlFront, hostName;
 
     @Builder
-    public NetworkTopologyLauncher(@NonNull String topologyId, @NonNull String topologyFront,
+    public NetworkTopologyLauncher(@NonNull String topologyId, @NonNull String urlFront,
                                    @NonNull String hostName) throws IOException {
         this.topologyId = topologyId;
-        this.topologyFront = topologyFront;
+        this.urlFront = urlFront;
         this.hostName = hostName;
 
         this.lldp = new LLDP();
@@ -76,7 +76,7 @@ public class NetworkTopologyLauncher {
      */
     public void registerDevice(LLDP lldp){
         Topology topology = Topology.builder().topology_id(topologyId).lldp(lldp).build();
-        String url = this.topologyFront + "topology/" + topologyId;
+        String url = this.urlFront + "topology/" + topologyId;
 
         JSONObject net = topology.getJSONObject();
         JSONArray nodes = net.getJSONArray("node");
@@ -106,7 +106,7 @@ public class NetworkTopologyLauncher {
     }
 
     public void removeDevice(){
-        String url = this.topologyFront + "topology/" + topologyId + "/node/" + hostName;
+        String url = this.urlFront + "topology/" + topologyId + "/node/" + hostName;
         System.out.println("--remove node from controller--");
         RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder().url(url).build();
         restfulDeleteInfo.deleteInfo();
@@ -117,7 +117,7 @@ public class NetworkTopologyLauncher {
     }
 
     public void removeLink(Link link){
-        String url = this.topologyFront + "topology/" + topologyId + "/link/"
+        String url = this.urlFront + "topology/" + topologyId + "/link/"
                 + link.getLink_id();
         System.out.println("--remove link from controller--");
         RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder()

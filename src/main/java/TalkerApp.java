@@ -16,7 +16,7 @@ public class TalkerApp {
     public static void main(String[] args) throws IOException, InterruptedException {
         Computer computer = new Computer();
         NetworkTopologyLauncher launcher = NetworkTopologyLauncher.builder()
-                .topologyFront(computer.urls.get("tsn-topology"))
+                .topologyId(computer.urls.get("tsn-topology"))
                 .hostName(host_name + device_mac.get(0))
                 .topologyId(topology_id)
                 .build();
