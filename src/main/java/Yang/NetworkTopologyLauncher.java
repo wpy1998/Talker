@@ -48,7 +48,7 @@ public class NetworkTopologyLauncher {
                         Thread.sleep(timeInterval);
                     }
                 }catch (InterruptedException e){
-                    System.out.println("TimerThread interrupted");
+                    System.out.println("--Thread: TimerThread interrupted--");
                 } catch (Exception e){
                     e.printStackTrace();
                 }

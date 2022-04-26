@@ -72,7 +72,7 @@ public class ListenerServer {
                     future.channel().closeFuture().sync();
                 }catch (InterruptedException e){
                     stopServer();
-                    System.out.println("ServerThread interrupted");
+                    System.out.println("--Thread: ServerThread interrupted--");
                 }
             }
 

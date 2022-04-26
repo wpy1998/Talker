@@ -10,7 +10,7 @@ public class ListenerApp {
     public static void main(String[] args) throws Exception {
         Computer computer = new Computer();
         NetworkTopologyLauncher launcher = NetworkTopologyLauncher.builder()
-                .topologyId(computer.urls.get("tsn-topology"))
+                .urlFront(computer.urls.get("tsn-topology"))
                 .hostName(host_name + device_mac.get(0))
                 .topologyId(topology_id)
                 .build();

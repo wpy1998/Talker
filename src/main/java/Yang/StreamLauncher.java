@@ -42,7 +42,7 @@ public class StreamLauncher {
                         Thread.sleep(timeInterval);
                     }
                 }catch (InterruptedException e){
-                    System.out.println("PollingThread interrupted");
+                    System.out.println("--Thread: PollingThread interrupted--");
                 }
             }
         });
