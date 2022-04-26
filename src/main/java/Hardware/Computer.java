@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 public class Computer {//获取硬件信息, LLDP
     public static String host_name = null;
+    public static String host_merge;
     public static final String cuc_ip = "localhost";
     public static final String topology_id = "tsn-network";
     public Map<String, String> urls;
@@ -33,6 +34,7 @@ public class Computer {//获取硬件信息, LLDP
         try {
             refresh();
             System.out.println(ipv4s + ", " + macs + ", " + host_name);
+            host_merge = host_name + macs.get(0);
         }catch (IOException e){
             e.printStackTrace();
         }

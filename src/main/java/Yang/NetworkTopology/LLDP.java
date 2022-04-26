@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static Hardware.Computer.host_merge;
 import static Hardware.Computer.host_name;
-import static Hardware.Computer.macs;
 
 public class LLDP {
     public List<Link> linkList;
@@ -145,7 +145,7 @@ public class LLDP {
             buildEmptyLink(networkCardName, neighbor);
             return;
         }
-        Link link = Link.builder().source_node(host_name)
+        Link link = Link.builder().source_node(host_merge)
                 .source_tp(networkCardName)
                 .dest_node(dest_node)
                 .dest_tp(dest_tp).build();
@@ -155,13 +155,13 @@ public class LLDP {
     private void buildEmptyLink(String networkCardName, JSONObject neighbor){
         String mac = neighbor.getJSONObject("chassis")
                 .getJSONObject("id").getString("value");
-        Link link = Link.builder().source_node(host_name).source_tp(networkCardName)
+        Link link = Link.builder().source_node(host_merge).source_tp(networkCardName)
                 .dest_node(mac).dest_tp(mac).build();
         linkList.add(link);
     }
 
     private void buildNode(String networkCardName, JSONObject local, JSONObject neighbor){
-        current.node_id = host_name + macs.get(0);
+        current.node_id = host_merge;
         current.setTermination_points(networkCardName);
         Iterator<String> iterator = neighbor.getJSONObject("chassis").keySet().iterator();
         String dest_tp = iterator.next();
