@@ -46,7 +46,7 @@ public class Header {//负责数据流header内容的转化
 
         String getJSONObject(){
 //            JSONObject object = new JSONObject();
-            String stream_id_type = device_mac.get(0) + ":" + uniqueID;
+            String stream_id_type = macs.get(0) + ":" + uniqueID;
 //            object.put("stream-id", stream_id_type);
 //            return object;
             return stream_id_type;
@@ -74,7 +74,7 @@ public class Header {//负责数据流header内容的转化
         String macAddress, interfaceName;
 
         public EndStationInterface(){
-            this.macAddress = device_mac.get(0);
+            this.macAddress = macs.get(0);
             this.interfaceName = host_name;
         }
 
@@ -104,18 +104,18 @@ public class Header {//负责数据流header内容的转化
             this.index = 0;
 
             this.destinationMacAddress = "00-00-00-00-00-00";
-            this.sourceMacAddress = device_mac.get(0);
+            this.sourceMacAddress = macs.get(0);
             this.priorityCodePoint = 0;
             this.vlanId = 0;
 
-            this.sourceIpAddressV4 = device_ip;
+            this.sourceIpAddressV4 = ipv4s.get(0);
             this.destinationIpAddressV4 = "0.0.0.0";
             this.dscpV4 = 0;
             this.protocolV4 = 0;
             this.sourcePortV4 = 0;
             this.destinationPortV4 = 0;
 
-            this.sourceIpAddressV6 = "0000:0000:0000:0000:0000:0000:0000:0000";
+            this.sourceIpAddressV6 = ipv6s.get(0);
             this.destinationIpAddressV6 = "0000:0000:0000:0000:0000:0000:0000:0000";
             this.dscpV6 = 0;
             this.protocolV6 = 0;
