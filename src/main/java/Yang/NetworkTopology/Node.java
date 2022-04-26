@@ -22,7 +22,7 @@ public class Node {
     List<Address> addresses;
 
     public Node(){
-        this.node_id = host_name + device_mac.get(0);
+        this.node_id = host_name + macs.get(0);
         supporting_nodes = new ArrayList<>();
         termination_points = new ArrayList<>();
         attachmentPoints = new ArrayList<>();
@@ -30,7 +30,7 @@ public class Node {
     }
 
     public void refresh(){
-        this.node_id = host_name + device_mac.get(0);
+        this.node_id = host_name + macs.get(0);
         supporting_nodes.clear();
         termination_points.clear();
         attachmentPoints.clear();
@@ -84,7 +84,7 @@ public class Node {
         }
         node.put("addresses", addresses);
 
-        node.put("id", device_mac.get(0));
+        node.put("id", macs.get(0));
         return node;
     }
 

@@ -1,20 +1,23 @@
 package Hardware;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Computer {//获取硬件信息, LLDP
-    public static String device_ip = null;
-    public static List<String> device_mac = null;
     public static String host_name = null;
     public static final String cuc_ip = "localhost";
     public static final String topology_id = "tsn-network";
     public Map<String, String> urls;
+
+    public static List<String> ipv4s, ipv6s, macs;
 
     public Computer(){
         urls = new HashMap<>();
@@ -24,58 +27,59 @@ public class Computer {//获取硬件信息, LLDP
                 ":8181/restconf/config/network-topology:network-topology/");
         urls.put("tsn-listener", "http://" + cuc_ip +
                 ":8181/restconf/config/tsn-listener-type:stream-listener-config/devices/");
+        ipv4s = new ArrayList<>();
+        ipv6s = new ArrayList<>();
+        macs = new ArrayList<>();
         try {
             refresh();
-            System.out.println(device_ip + ", " + device_mac + ", " + host_name);
+            System.out.println(ipv4s + ", " + macs + ", " + host_name);
         }catch (IOException e){
             e.printStackTrace();
         }
     }
 
-    public void refresh() throws UnknownHostException, SocketException {//获取ip和第一个mac地址
+    public void refresh() throws IOException {//获取ip和第一个mac地址
+        macs.clear();
+        ipv4s.clear();
+        ipv6s.clear();
         InetAddress ia = InetAddress.getLocalHost();
-        String ip = ia.getHostAddress();
-        device_ip = ip;
-        device_mac = getDeviceMac();
         host_name = ia.getHostName();
-    }
 
-    public List<String> getDeviceMac() throws SocketException {//获取mac地址
-        java.util.Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
-        StringBuilder sb = new StringBuilder();
-        ArrayList<String> tmpMacList = new ArrayList<>();
-        while (en.hasMoreElements()){
-            NetworkInterface iface = en.nextElement();
-            List<InterfaceAddress> addrs = iface.getInterfaceAddresses();
-            for (InterfaceAddress addr: addrs){
-                InetAddress ip = addr.getAddress();
-                NetworkInterface network = NetworkInterface.getByInetAddress(ip);
-                if (network == null){
-                    continue;
-                }
-                byte[] mac = network.getHardwareAddress();
-                if (mac == null){
-                    continue;
-                }
-                sb.delete(0, sb.length());
-                for (int i = 0; i < mac.length; i++){
-                    sb.append(String.format("%02x%s", mac[i], (i < mac.length - 1) ? "-" : ""));
-                }
-                tmpMacList.add(sb.toString());
+        Process process = Runtime.getRuntime().exec("lldpcli show interfaces " +
+                "-f json");
+        InputStreamReader ir = new InputStreamReader(process.getInputStream());
+        LineNumberReader input = new LineNumberReader (ir);
+        String line, result = "";
+        while ((line = input.readLine ()) != null){
+            result += line;
+        }
+        JSONObject origin = JSON.parseObject(result).getJSONObject("lldp");
+        try {
+            JSONObject inter = origin.getJSONObject("interface");
+            addComputerMessage(inter);
+        }catch (Exception e){
+            JSONArray inter = origin.getJSONArray("interface");
+            for (int i = 0; i < inter.size(); i++){
+                addComputerMessage(inter.getJSONObject(i));
             }
         }
-        if (tmpMacList.size() <= 0){
-            return tmpMacList;
-        }
-        List<String> unique = tmpMacList.stream().distinct().collect(Collectors.toList());
-        return unique;
     }
 
-    private static int netconfMessageId = 0;
-
-    synchronized public static String getNetconfMessageId(){
-        int cur = netconfMessageId;
-        netconfMessageId = (netconfMessageId + 1) % 10000;
-        return Integer.toString(cur);
+    public void addComputerMessage(JSONObject inter){
+        Iterator<String> iterator = inter.keySet().iterator();
+        String networkCardName = iterator.next();
+        JSONObject networkCard = inter.getJSONObject(networkCardName);
+        if (!networkCard.getString("via").equals("LLDP")){
+            return;
+        }
+        JSONObject chassis = networkCard.getJSONObject("chassis");
+        iterator = chassis.keySet().iterator();
+        String name = iterator.next();
+        JSONObject target = chassis.getJSONObject(name);
+        String mac = target.getJSONObject("id").getString("value")
+                .replace(':', '-');
+        macs.add(mac);
+        ipv4s.add(target.getJSONArray("mgmt-ip").getString(0));
+        ipv6s.add(target.getJSONArray("mgmt-ip").getString(1));
     }
 }

@@ -77,12 +77,12 @@ public class TalkerClient {
 
     private int join_talker(){
         String url = this.url + header.getKey();
-//        System.out.println(url);
+        System.out.println(url);
         RestfulPutInfo restfulPutInfo = RestfulPutInfo.builder().url(url).build();
 
-        JSONObject joinStream = header.getJSONObject(true, true, true,
+        JSONObject joinStream = header.getJSONObject(true, true,
                 true, true, true,
-                true);
+                true, true);
         joinStream.put("body", "join talker");
         JSONArray streams = new JSONArray();
         streams.add(joinStream);
