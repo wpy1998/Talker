@@ -35,22 +35,26 @@ public class Command {
             String input = scanner.next();
             if (input.equals("1") || input.equals("talker") || input.equals("Talker")){
                 pattern = 1;
-                streamLauncher.startPollingThread();
-                streamLauncher.registerTalkerStream("talker client message");
                 System.out.println("start Talker Pattern\n");
             }else if (input.equals("2") || input.equals("listener") || input.equals("Listener")){
                 pattern = 2;
-                streamLauncher.startListenerServer();
-                System.out.println("start Listener Pattern\n");
-            }else {
-                System.out.println("start Test Pattern\n");
             }
         }else if (type == StartType.Talker){
             pattern = 1;
         }else if (type == StartType.Listener){
             pattern = 2;
         }
+
         topologyLauncher.startTimerThread();
+        if (pattern == 1){
+            streamLauncher.startPollingThread();
+            streamLauncher.registerTalkerStream("talker client message");
+        }else if (pattern == 2){
+            streamLauncher.startListenerServer();
+            System.out.println("start Listener Pattern\n");
+        }else {
+            System.out.println("start Test Pattern\n");
+        }
 
         while (scanner.hasNext()){
             String str = scanner.next();
