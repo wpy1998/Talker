@@ -10,7 +10,8 @@ public class Command {
     private StreamLauncher streamLauncher;
 
     @Builder
-    public Command(@NonNull NetworkTopologyLauncher topologyLauncher, @NonNull StreamLauncher streamLauncher){
+    public Command(@NonNull NetworkTopologyLauncher topologyLauncher,
+                   @NonNull StreamLauncher streamLauncher){
         this.topologyLauncher = topologyLauncher;
         this.streamLauncher = streamLauncher;
     }
@@ -29,13 +30,15 @@ public class Command {
         Scanner scanner = new Scanner(System.in);
         if (type == StartType.TSN){
             System.out.println("************************************************");
-            System.out.println("Please input the number which pattern to start: \n1. Talker\n2. Listener");
+            System.out.println("Please input the number which pattern to start: \n" +
+                    "1. Talker\n2. Listener");
             System.out.println("************************************************");
 
             String input = scanner.next();
             if (input.equals("1") || input.equals("talker") || input.equals("Talker")){
                 pattern = 1;
-            }else if (input.equals("2") || input.equals("listener") || input.equals("Listener")){
+            }else if (input.equals("2") || input.equals("listener") ||
+                    input.equals("Listener")){
                 pattern = 2;
             }
         }else if (type == StartType.Talker){

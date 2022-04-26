@@ -75,7 +75,7 @@ public class Header {//负责数据流header内容的转化
 
         public EndStationInterface(){
             this.macAddress = macs.get(0);
-            this.interfaceName = host_name;
+            this.interfaceName = host_merge;
         }
 
         JSONObject getJSONObject(){
