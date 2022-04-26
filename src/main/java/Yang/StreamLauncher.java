@@ -91,8 +91,8 @@ public class StreamLauncher {
 
     private String convertUniqueID(int uniqueId){
         int front, next;
-        next = unique_id % 100;
-        front = unique_id % 10000 - next;
+        next = uniqueId % 100;
+        front = uniqueId % 10000 - next;
         String s1, s2;
         s1 = String.valueOf(front);
         s2 = String.valueOf(next);
@@ -125,7 +125,7 @@ public class StreamLauncher {
      * @return
      */
     //listener 以下参数,函数仅在操作listener config库时使用
-    public void startListenerServer() throws InterruptedException {
+    public void startListenerServer(){
         int uniqueId = allocateUniqueId();
         Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
                 .rank((short) 0)

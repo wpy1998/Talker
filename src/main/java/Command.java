@@ -35,7 +35,6 @@ public class Command {
             String input = scanner.next();
             if (input.equals("1") || input.equals("talker") || input.equals("Talker")){
                 pattern = 1;
-                System.out.println("start Talker Pattern\n");
             }else if (input.equals("2") || input.equals("listener") || input.equals("Listener")){
                 pattern = 2;
             }
@@ -47,13 +46,14 @@ public class Command {
 
         topologyLauncher.startTimerThread();
         if (pattern == 1){
+            System.out.println("--start Talker Pattern--");
             streamLauncher.startPollingThread();
             streamLauncher.registerTalkerStream("talker client message");
         }else if (pattern == 2){
+            System.out.println("--start Listener Pattern--");
             streamLauncher.startListenerServer();
-            System.out.println("start Listener Pattern\n");
         }else {
-            System.out.println("start Test Pattern\n");
+            System.out.println("--start Test Pattern--");
         }
 
         while (scanner.hasNext()){
