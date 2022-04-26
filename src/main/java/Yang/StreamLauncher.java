@@ -25,6 +25,11 @@ public class StreamLauncher {
         this.hostName = hostName;
     }
 
+    public void stopStreamLauncher(){
+        stopPollingThread();
+        stopListenerServer();
+    }
+
     public void startPollingThread(){
         if (pollingThread != null){
             System.out.println("Polling Thread has started");
