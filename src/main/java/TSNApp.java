@@ -1,11 +1,8 @@
 import Hardware.Computer;
 import Yang.NetworkTopologyLauncher;
-import Yang.Stream.ListenerServer;
-import Yang.Stream.TalkerClient;
 import Yang.StreamLauncher;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 import static Hardware.Computer.*;
 

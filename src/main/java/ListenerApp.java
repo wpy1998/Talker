@@ -2,8 +2,6 @@ import Hardware.Computer;
 import Yang.StreamLauncher;
 import Yang.NetworkTopologyLauncher;
 
-import java.util.Scanner;
-
 import static Hardware.Computer.*;
 
 public class ListenerApp {
