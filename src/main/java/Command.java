@@ -35,9 +35,10 @@ public class Command {
             String input = scanner.next();
             if (input.equals("1") || input.equals("talker") || input.equals("Talker")){
                 pattern = 1;
-                System.out.println("start Talker Pattern\n");
+                System.out.println("--start Talker Pattern--");
             }else if (input.equals("2") || input.equals("listener") || input.equals("Listener")){
                 pattern = 2;
+                System.out.println("--start Listener Pattern--");
             }
         }else if (type == StartType.Talker){
             pattern = 1;

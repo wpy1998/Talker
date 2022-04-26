@@ -86,7 +86,7 @@ public class ListenerServer {
         });
     }
 
-    public void start() throws InterruptedException {
+    public void start(){
         if (serverThread == null){
             initServer();
         }
