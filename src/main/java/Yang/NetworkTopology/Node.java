@@ -22,7 +22,7 @@ public class Node {
     List<Address> addresses;
 
     public Node(){
-        this.node_id = host_name + macs.get(0);
+        this.node_id = host_merge;
         supporting_nodes = new ArrayList<>();
         termination_points = new ArrayList<>();
         attachmentPoints = new ArrayList<>();

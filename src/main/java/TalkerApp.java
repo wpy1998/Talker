@@ -16,14 +16,14 @@ public class TalkerApp {
         Computer computer = new Computer();
         NetworkTopologyLauncher networkTopologyLauncher = NetworkTopologyLauncher.builder()
                 .urlFront(computer.urls.get("tsn-topology"))
-                .hostName(host_name + macs.get(0))
+                .hostName(host_merge)
                 .topologyId(topology_id)
                 .build();
 
         StreamLauncher streamLauncher = StreamLauncher.builder()
                 .talkerFront(computer.urls.get("tsn-talker"))
                 .listenerFront(computer.urls.get("tsn-listener"))
-                .hostName(host_name + macs.get(0))
+                .hostName(host_merge)
                 .build();
 
         Command command = Command.builder().topologyLauncher(networkTopologyLauncher)

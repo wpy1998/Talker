@@ -33,8 +33,13 @@ public class Computer {//获取硬件信息, LLDP
         macs = new ArrayList<>();
         try {
             refresh();
-            System.out.println(ipv4s + ", " + macs + ", " + host_name);
-            host_merge = host_name + macs.get(0);
+            System.out.println(ipv4s + ", " + macs + ", " + ipv6s + ", " + host_name);
+            if (macs.size() == 0){
+                System.out.println("--Did not find suitable mac--");
+                host_merge = host_name;
+            }else {
+                host_merge = host_name + macs.get(0);
+            }
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -71,17 +76,26 @@ public class Computer {//获取硬件信息, LLDP
         Iterator<String> iterator = inter.keySet().iterator();
         String networkCardName = iterator.next();
         JSONObject networkCard = inter.getJSONObject(networkCardName);
-        if (!networkCard.getString("via").equals("LLDP")){
-            return;
-        }
+//        if (!networkCard.getString("via").equals("LLDP")){
+//            return;
+//        }
         JSONObject chassis = networkCard.getJSONObject("chassis");
         iterator = chassis.keySet().iterator();
         String name = iterator.next();
         JSONObject target = chassis.getJSONObject(name);
         String mac = target.getJSONObject("id").getString("value")
                 .replace(':', '-');
-        macs.add(mac);
-        ipv4s.add(target.getJSONArray("mgmt-ip").getString(0));
-        ipv6s.add(target.getJSONArray("mgmt-ip").getString(1));
+        insertToList(macs, mac);
+        insertToList(ipv4s, target.getJSONArray("mgmt-ip").getString(0));
+        insertToList(ipv6s, target.getJSONArray("mgmt-ip").getString(1));
+    }
+
+    private void insertToList(List<String> list, String content){
+        for (String str: list){
+            if (content.equals(str)){
+                return;
+            }
+        }
+        list.add(content);
     }
 }
