@@ -18,34 +18,20 @@ public class Command {
         this.streamLauncher = streamLauncher;
     }
 
-    enum StartType{
-        TSN, Talker, Listener
-    }
-
-    /*
-    * type = 0 TSNApp
-    * type = 1 TalkerApp
-    * type = 2 ListenerApp
-    * */
-    public void start(StartType type) throws InterruptedException {
+    public void start() throws InterruptedException {
         int pattern  = 0;
         Scanner scanner = new Scanner(System.in);
-        if (type == StartType.TSN){
-            System.out.println("************************************************");
-            System.out.println("Please input the number which pattern to start: \n" +
-                    "1. Talker\n2. Listener");
-            System.out.println("************************************************");
 
-            String input = scanner.next();
-            if (input.equals("1") || input.equals("talker") || input.equals("Talker")){
-                pattern = 1;
-            }else if (input.equals("2") || input.equals("listener") ||
-                    input.equals("Listener")){
-                pattern = 2;
-            }
-        }else if (type == StartType.Talker){
+        System.out.println("************************************************");
+        System.out.println("Please input the number which pattern to start: \n" +
+                "1. Talker\n2. Listener");
+        System.out.println("************************************************");
+
+        String input = scanner.next();
+        if (input.equals("1") || input.equals("talker") || input.equals("Talker")){
             pattern = 1;
-        }else if (type == StartType.Listener){
+        }else if (input.equals("2") || input.equals("listener") ||
+                input.equals("Listener")){
             pattern = 2;
         }
 

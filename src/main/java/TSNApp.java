@@ -24,6 +24,6 @@ public class TSNApp {
 
         Command command = Command.builder().topologyLauncher(networkTopologyLauncher)
                 .streamLauncher(streamLauncher).build();
-        command.start(Command.StartType.TSN);
+        command.start();
     }
 }
