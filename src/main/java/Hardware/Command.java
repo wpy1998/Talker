@@ -22,10 +22,10 @@ public class Command {
         int pattern  = 0;
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("************************************************");
+        System.out.println("*****************************************************************");
         System.out.println("Please input the number which pattern to start: \n" +
                 "1. Talker\n2. Listener");
-        System.out.println("************************************************");
+        System.out.println("*****************************************************************");
 
         String input = scanner.next();
         if (input.equals("1") || input.equals("talker") || input.equals("Talker")){
