@@ -18,7 +18,7 @@ public class Command {
         this.streamLauncher = streamLauncher;
     }
 
-    public void start() throws InterruptedException {
+    public void start() {
         int pattern  = 0;
         Scanner scanner = new Scanner(System.in);
 
