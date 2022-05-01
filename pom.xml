@@ -34,11 +34,6 @@
       <version>1.2.44</version>
     </dependency>
     <dependency>
-      <groupId>com.github.Juniper</groupId>
-      <artifactId>netconf-java</artifactId>
-      <version>v2.1</version>
-    </dependency>
-    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.18.22</version>
