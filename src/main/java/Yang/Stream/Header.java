@@ -19,9 +19,11 @@ public class Header {//负责数据流header内容的转化
     private UserToNetworkRequirements userToNetworkRequirements;
     private InterfaceCapabilities interfaceCapabilities;
     private ConfigResult configResult;
+    private String dest_mac, dest_ip;
 
     @Builder
-    public Header(@NonNull String uniqueId, @NonNull short rank){
+    public Header(@NonNull String uniqueId, @NonNull short rank,
+                  String dest_mac, String dest_ip){
         this.streamId = new StreamId(uniqueId);
         this.streamRank = new StreamRank(rank);
         this.endStationInterface = new EndStationInterface();
@@ -30,6 +32,9 @@ public class Header {//负责数据流header内容的转化
         this.userToNetworkRequirements = new UserToNetworkRequirements();
         this.interfaceCapabilities = new InterfaceCapabilities();
         this.configResult = new ConfigResult();
+
+        this.dest_ip = (dest_ip == null) ? ipv4s.get(0) : dest_ip;
+        this.dest_mac = (dest_mac == null) ? macs.get(0) : dest_mac;
     }
 
     public String getKey(){
@@ -46,7 +51,8 @@ public class Header {//负责数据流header内容的转化
 
         String getJSONObject(){
 //            JSONObject object = new JSONObject();
-            String stream_id_type = macs.get(0) + ":" + uniqueID;
+            String stream_id_type = macs.get(0).replace(":", "-") + ":"
+                    + uniqueID;
 //            object.put("stream-id", stream_id_type);
 //            return object;
             return stream_id_type;
@@ -57,7 +63,7 @@ public class Header {//负责数据流header内容的转化
         short rank;
         /*
          * 0 流量紧急业务
-         * 1 非紧急业务
+         * 1 流量非紧急业务
          * */
         public StreamRank(short rank){
             this.rank = rank;
@@ -103,13 +109,13 @@ public class Header {//负责数据流header内容的转化
         public DateFrameSpecification(){
             this.index = 0;
 
-            this.destinationMacAddress = "00-00-00-00-00-00";
+            this.destinationMacAddress = dest_mac;
             this.sourceMacAddress = macs.get(0);
             this.priorityCodePoint = 0;
             this.vlanId = 0;
 
             this.sourceIpAddressV4 = ipv4s.get(0);
-            this.destinationIpAddressV4 = "0.0.0.0";
+            this.destinationIpAddressV4 = dest_ip;
             this.dscpV4 = 0;
             this.protocolV4 = 0;
             this.sourcePortV4 = 0;
