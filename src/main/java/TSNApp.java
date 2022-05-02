@@ -1,6 +1,6 @@
 import Hardware.Command;
 import Hardware.Computer;
-import Yang.NetworkTopologyLauncher;
+import Yang.NetworkLauncher;
 import Yang.StreamLauncher;
 
 import java.io.IOException;
@@ -10,7 +10,7 @@ import static Hardware.Computer.*;
 public class TSNApp {
     public static void main(String[] args) throws IOException, InterruptedException {
         Computer computer = new Computer();
-        NetworkTopologyLauncher networkTopologyLauncher = NetworkTopologyLauncher.builder()
+        NetworkLauncher networkLauncher = NetworkLauncher.builder()
                 .urlFront(computer.urls.get("tsn-topology"))
                 .hostName(host_merge)
                 .topologyId(topology_id)
@@ -22,7 +22,7 @@ public class TSNApp {
                 .hostName(host_merge)
                 .build();
 
-        Command command = Command.builder().topologyLauncher(networkTopologyLauncher)
+        Command command = Command.builder().topologyLauncher(networkLauncher)
                 .streamLauncher(streamLauncher).build();
         command.start();
     }

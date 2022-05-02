@@ -1,6 +1,6 @@
 package Hardware;
 
-import Yang.NetworkTopologyLauncher;
+import Yang.NetworkLauncher;
 import Yang.StreamLauncher;
 import lombok.Builder;
 import lombok.NonNull;
@@ -8,11 +8,11 @@ import lombok.NonNull;
 import java.util.Scanner;
 
 public class Command {
-    private NetworkTopologyLauncher topologyLauncher;
+    private NetworkLauncher topologyLauncher;
     private StreamLauncher streamLauncher;
 
     @Builder
-    public Command(@NonNull NetworkTopologyLauncher topologyLauncher,
+    public Command(@NonNull NetworkLauncher topologyLauncher,
                    @NonNull StreamLauncher streamLauncher){
         this.topologyLauncher = topologyLauncher;
         this.streamLauncher = streamLauncher;

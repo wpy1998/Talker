@@ -2,9 +2,9 @@ package Yang;
 
 import RestfulAPI.RestfulDeleteInfo;
 import RestfulAPI.RestfulPutInfo;
-import Yang.NetworkTopology.LLDP;
-import Yang.NetworkTopology.Link;
-import Yang.NetworkTopology.Topology;
+import Yang.Network.LLDP;
+import Yang.Network.Link;
+import Yang.Network.Topology;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Builder;
@@ -17,14 +17,14 @@ import java.io.IOException;
  * @description: TODO
  * @date : 3/29/22 6:16 PM
  */
-public class NetworkTopologyLauncher {
+public class NetworkLauncher {
     private static Thread timerThread = null;
     private LLDP lldp;
     private String topologyId, urlFront, hostName;
 
     @Builder
-    public NetworkTopologyLauncher(@NonNull String topologyId, @NonNull String urlFront,
-                                   @NonNull String hostName) throws IOException {
+    public NetworkLauncher(@NonNull String topologyId, @NonNull String urlFront,
+                           @NonNull String hostName) throws IOException {
         this.topologyId = topologyId;
         this.urlFront = urlFront;
         this.hostName = hostName;
