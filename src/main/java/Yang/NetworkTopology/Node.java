@@ -110,7 +110,6 @@ public class Node {
     private class Address{
         int id;
         String mac, ip;
-        long first_seen, last_seen;
 
         public Address(int id, String mac, String ip){
             this.id = id;
@@ -123,8 +122,8 @@ public class Node {
             object.put("id", this.id);
             object.put("mac", this.mac);
             object.put("ip", this.ip);
-            object.put("first-seen", 0);
-            object.put("last-seen", 0);
+            object.put("first-seen", firstSeen);
+            object.put("last-seen", System.currentTimeMillis());
             return object;
         }
     }

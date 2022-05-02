@@ -16,8 +16,8 @@ public class Computer {//获取硬件信息, LLDP
     public static String host_merge;
     public static final String cuc_ip = "localhost";
     public static final String topology_id = "tsn-network";
+    public static long firstSeen = System.currentTimeMillis();
     public Map<String, String> urls;
-
     public static List<String> ipv4s, ipv6s, macs;
 
     public Computer(){
