@@ -17,14 +17,14 @@ import java.io.IOException;
  * @description: TODO
  * @date : 3/29/22 6:16 PM
  */
-public class NetworkLauncher {
+public class TopologyLauncher {
     private static Thread timerThread = null;
     private LLDP lldp;
     private String topologyId, urlFront, hostName;
 
     @Builder
-    public NetworkLauncher(@NonNull String topologyId, @NonNull String urlFront,
-                           @NonNull String hostName) throws IOException {
+    public TopologyLauncher(@NonNull String topologyId, @NonNull String urlFront,
+                            @NonNull String hostName) throws IOException {
         this.topologyId = topologyId;
         this.urlFront = urlFront;
         this.hostName = hostName;
