@@ -22,7 +22,7 @@ public class RestfulDeleteInfo {
 
     public int deleteInfo(){
         int resultCode = 400;
-        System.out.println(_url);
+        System.out.println("request: " + _url);
         try {
             URL url = new URL(this._url);
             try {
@@ -45,8 +45,8 @@ public class RestfulDeleteInfo {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection
                         .getInputStream(), "UTF-8"));
                 String output = reader.readLine();
-                System.out.println("resultCode: " + resultCode);
-                System.out.println("response: " + output);
+                System.out.println("responseCode: " + resultCode);
+                System.out.println("responseBody: " + output);
                 connection.disconnect();
             } catch (IOException e) {
                 e.printStackTrace();

@@ -50,8 +50,8 @@ public class RestfulPutInfo {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection
                         .getInputStream(), "UTF-8"));
                 String output = reader.readLine();
-                System.out.println("resultCode: " + resultCode);
-                System.out.println("response: " + output);
+                System.out.println("responseCode: " + resultCode);
+                System.out.println("responseBody: " + output);
                 connection.disconnect();
             } catch (IOException e) {
                 e.printStackTrace();
