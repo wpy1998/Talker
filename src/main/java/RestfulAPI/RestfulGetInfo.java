@@ -40,14 +40,12 @@ public class RestfulGetInfo {
                 connection.setUseCaches(false);
                 connection.setConnectTimeout(10000);
                 connection.connect();
-                if(connection.getResponseCode() != 200){
-                    System.out.println(connection.getResponseCode());
-                }else {
-                    BufferedReader result = new BufferedReader(new
-                            InputStreamReader((connection.getInputStream())));
-                    output = result.readLine();
-                    System.out.println("response: " + output);
-                }
+                int resultCode = connection.getResponseCode();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection
+                        .getInputStream(), "UTF-8"));
+                output = reader.readLine();
+                System.out.println("resultCode: " + resultCode);
+                System.out.println("response: " + output);
                 connection.disconnect();
             } catch (IOException e) {
                 e.printStackTrace();

@@ -48,14 +48,11 @@ public class RestfulPostInfo {
                 byte[] bytes = params.toString().getBytes();
                 connection.getOutputStream().write(bytes);
                 resultCode = connection.getResponseCode();
-                if(connection.getResponseCode() != 200){
-                    System.out.println(connection.getResponseCode());
-                }else {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection
-                            .getInputStream(), "UTF-8"));
-                    String output = reader.readLine();
-                    System.out.println("response: " + output);
-                }
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection
+                        .getInputStream(), "UTF-8"));
+                String output = reader.readLine();
+                System.out.println("resultCode: " + resultCode);
+                System.out.println("response: " + output);
                 connection.disconnect();
             } catch (IOException e) {
                 e.printStackTrace();
