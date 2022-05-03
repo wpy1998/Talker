@@ -22,7 +22,8 @@ public class RestfulGetInfo {
 
     public String getInfo(){
         String output = null;
-        System.out.println("request: " + _url);
+        System.out.println("requestType : getInfo");
+        System.out.println("requestBody : " + _url);
         try {
             URL url = new URL(this._url);
             try {

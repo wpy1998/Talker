@@ -22,7 +22,8 @@ public class RestfulDeleteInfo {
 
     public int deleteInfo(){
         int resultCode = 400;
-        System.out.println("request: " + _url);
+        System.out.println("requestType : deleteInfo");
+        System.out.println("requestBody : " + _url);
         try {
             URL url = new URL(this._url);
             try {

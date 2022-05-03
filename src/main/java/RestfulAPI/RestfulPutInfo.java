@@ -21,7 +21,8 @@ public class RestfulPutInfo {
     }
 
     public int putInfo(String objS){
-        System.out.println("request: " + objS);
+        System.out.println("requestType : putInfo");
+        System.out.println("requestBody : " + objS);
         int resultCode = 400;
         try {
             URL url = new URL(this._url);
