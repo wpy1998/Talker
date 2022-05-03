@@ -1,4 +1,4 @@
-package RestfulAPI;
+package NettyAPI;
 
 import lombok.Getter;
 import lombok.Setter;

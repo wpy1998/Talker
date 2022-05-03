@@ -1,7 +1,7 @@
 package Yang.Stream;
 
-import RestfulAPI.RpcRequest;
-import RestfulAPI.RpcResponse;
+import NettyAPI.RpcRequest;
+import NettyAPI.RpcResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
