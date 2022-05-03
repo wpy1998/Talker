@@ -110,8 +110,12 @@ public class StreamLauncher {
                 .rank((short) 0)
                 .build();
 
-        TalkerClient client = TalkerClient.builder().host("localhost").port(17835).header(header)
-                .url(this.talkerFront + this.hostName + "/stream-list/").build();
+        TalkerClient client = TalkerClient.builder()
+                .host("localhost")
+                .port(17835)
+                .header(header)
+                .url(this.talkerFront + this.hostName + "/stream-list/")
+                .build();
         clients.add(client);
     }
 
@@ -123,7 +127,7 @@ public class StreamLauncher {
       * @Param: null
      * @return
      */
-    //listener 以下参数,函数仅在操作listener config库时使用
+    //listener 以下参数, 函数仅在操作listener config库时使用
     public void startListenerServer(){
         int uniqueId = allocateUniqueId();
         Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
