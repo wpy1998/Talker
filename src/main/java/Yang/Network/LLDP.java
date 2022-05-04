@@ -109,9 +109,18 @@ public class LLDP {
         JSONObject lldp = JSON.parseObject(result).getJSONObject("lldp");
         int length;
         try {
-            length = lldp.getJSONArray("interface").size();
+            JSONArray array =  lldp.getJSONArray("interface");
+            if (array != null){
+                length = array.size();
+            }else {
+                length = 0;
+            }
         }catch (Exception e){
-            length = 1;
+            if(lldp.getJSONObject("interface") != null){
+                length = 1;
+            }else {
+                length = 0;
+            }
         }
 
         if(length > 1){
@@ -123,11 +132,13 @@ public class LLDP {
                         .getInteger("ttl");
                 if (ttl < 10000) break;
             }
-        }else {
+        }else if (length == 1){
             object = JSON.parseObject(result).getJSONObject("lldp").getJSONObject("interface");
             int ttl = object.getJSONObject(networkCardName).getJSONObject("port")
                     .getInteger("ttl");
             if (ttl > 10000) object = null;
+        }else {
+            return null;
         }
         if (object == null) return neighbor;
         Iterator<String> iterator = object.keySet().iterator();
@@ -137,6 +148,9 @@ public class LLDP {
     }
 
     private void buildTargetLink(String networkCardName, JSONObject neighbor){
+        if (neighbor == null){
+            return;
+        }
         String dest_node, dest_tp;
         Iterator<String> iterator = neighbor.getJSONObject("chassis").keySet().iterator();
         dest_node = iterator.next();
@@ -161,6 +175,9 @@ public class LLDP {
     }
 
     private void buildNode(String networkCardName, JSONObject local, JSONObject neighbor){
+        if (neighbor == null){
+            return;
+        }
         current.node_id = host_merge;
         current.setTermination_points(networkCardName);
         Iterator<String> iterator = neighbor.getJSONObject("chassis").keySet().iterator();
