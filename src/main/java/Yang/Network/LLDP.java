@@ -47,7 +47,8 @@ public class LLDP {
      */
     private void getLocalInterface() throws IOException {
         this.linkList.clear();
-        Process process = Runtime.getRuntime().exec("lldpcli show interfaces -f json");
+        Process process = Runtime.getRuntime()
+                .exec("lldpcli show interfaces -f json");
         InputStreamReader ir=new InputStreamReader(process.getInputStream());
         LineNumberReader input = new LineNumberReader (ir);
         String line, result = "";
@@ -88,7 +89,8 @@ public class LLDP {
             if (!via.equals("LLDP")) continue;
             JSONObject neighbor = getNetworkCardNeighbor(networkCardName);
             if(neighbor == null) {
-                System.out.println("NetworkCard: " + networkCardName + " has no neighbor through LLDP");
+                System.out.println("NetworkCard: " + networkCardName + " has no neighbor" +
+                        " through LLDP");
                 continue;
             }//this network has no neighbor through LLDP
             buildTargetLink(networkCardName, neighbor);
@@ -97,8 +99,8 @@ public class LLDP {
     }
 
     private JSONObject getNetworkCardNeighbor(String networkCardName) throws IOException {
-        Process process = Runtime.getRuntime().exec("lldpcli show neighbors ports " +
-                networkCardName + " summary -f json");
+        Process process = Runtime.getRuntime().exec("lldpcli show neighbors ports "
+                + networkCardName + " summary -f json");
         InputStreamReader ir = new InputStreamReader(process.getInputStream());
         LineNumberReader input = new LineNumberReader (ir);
         String line, result = "";
@@ -133,7 +135,8 @@ public class LLDP {
                 if (ttl < 10000) break;
             }
         }else if (length == 1){
-            object = JSON.parseObject(result).getJSONObject("lldp").getJSONObject("interface");
+            object = JSON.parseObject(result).getJSONObject("lldp")
+                    .getJSONObject("interface");
             int ttl = object.getJSONObject(networkCardName).getJSONObject("port")
                     .getInteger("ttl");
             if (ttl > 10000) object = null;
