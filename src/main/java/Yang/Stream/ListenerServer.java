@@ -109,7 +109,6 @@ public class ListenerServer {
         JSONObject joinStream = header.getJSONObject(true, false,
                 true, false, false,
                 true, true);
-        joinStream.put("body", "join listener");
         JSONArray streams = new JSONArray();
         streams.add(joinStream);
         JSONObject device = new JSONObject();

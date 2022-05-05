@@ -25,7 +25,7 @@ public class Command {
 
         System.out.println("*****************************************************************");
         System.out.println("Please input the number which pattern to start: \n" +
-                "1. Talker\n2. Listener");
+                "1. Talker\n2. Listener\n3. Both");
         System.out.println("*****************************************************************");
 
         String input = scanner.next();
@@ -34,18 +34,24 @@ public class Command {
         }else if (input.equals("2") || input.equals("listener") ||
                 input.equals("Listener")){
             pattern = 2;
+        } else if (input.equals("3") || input.equals("both") || input.equals("Both")) {
+            pattern = 3;
         }
 
         topologyLauncher.startTimerThread();
         if (pattern == 1){
-            System.out.println("--start Talker Pattern--");
+            System.out.println("--Start Talker Client--");
             streamLauncher.startPollingThread();
             streamLauncher.registerTalkerStream("talker client message");
         }else if (pattern == 2){
-            System.out.println("--start Listener Pattern--");
+            System.out.println("--Start Listener Server--");
             streamLauncher.startListenerServer();
+        }else if(pattern == 3){
+            System.out.println("--Start Talker Client and Listener Server--");
+            streamLauncher.startListenerServer();
+            streamLauncher.registerTalkerStream("talker client message");
         }else {
-            System.out.println("--start Test Pattern--");
+            System.out.println("--Start Test Pattern--");
         }
 
         while (scanner.hasNext()){
@@ -60,6 +66,8 @@ public class Command {
                     case 1:
                         break;
                     case 2:
+                        break;
+                    case 3:
                         break;
                     default:
                         break;
