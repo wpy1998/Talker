@@ -5,6 +5,7 @@ import Yang.StreamLauncher;
 import lombok.Builder;
 import lombok.NonNull;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
 public class Command {
@@ -18,7 +19,7 @@ public class Command {
         this.streamLauncher = streamLauncher;
     }
 
-    public void start() {
+    public void start() throws UnsupportedEncodingException {
         int pattern  = 0;
         Scanner scanner = new Scanner(System.in);
 

@@ -6,6 +6,8 @@ import Yang.Stream.Header;
 import lombok.Builder;
 import lombok.NonNull;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +70,7 @@ public class StreamLauncher {
      * description: Common
      * create time: 3/15/22 8:28 PM
      *
-      * @Param: null
+     * @Param: null
      * @return
      */
     private static int unique_id = 0;
@@ -84,7 +86,7 @@ public class StreamLauncher {
      * description: talker: header, body 以下参数,函数仅在操作talker config库时使用
      * create time: 3/10/22 6:08 PM
      *
-      * @Param: null
+     * @Param: null
      * @return
      */
 
@@ -104,17 +106,21 @@ public class StreamLauncher {
         return s1 + "-" + s2;
     }
 
-    public void registerTalkerStream(String body){
+    public void registerTalkerStream(String body) throws UnsupportedEncodingException {
         int uniqueId = allocateUniqueId();
         Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
                 .rank((short) 0)
                 .build();
+        String unit = "Byte";
+        long size = body.getBytes("gbk").length;
 
         TalkerClient client = TalkerClient.builder()
                 .host("localhost")
                 .port(17835)
                 .header(header)
                 .url(this.talkerFront + this.hostName + "/stream-list/")
+                .size(size)
+                .unit(unit)
                 .build();
         clients.add(client);
     }
@@ -124,7 +130,7 @@ public class StreamLauncher {
      * description: Listener
      * create time: 3/15/22 8:28 PM
      *
-      * @Param: null
+     * @Param: null
      * @return
      */
     //listener 以下参数, 函数仅在操作listener config库时使用
