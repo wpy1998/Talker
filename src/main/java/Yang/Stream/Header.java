@@ -100,7 +100,7 @@ public class Header {//负责数据流header内容的转化
         this.cBSequenceTypeList = new ArrayList<>();
 
         //configResult
-        this.isConfig = true;
+        this.isConfig = false;
     }
 
     public String getKey(){
