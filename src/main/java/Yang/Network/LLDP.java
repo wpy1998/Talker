@@ -216,7 +216,7 @@ public class LLDP {
     }
 
     public JSONObject getSpeed(String destinationIP) throws IOException {
-        Process process = Runtime.getRuntime().exec("mtr -r " +
+        Process process = Runtime.getRuntime().exec("mtr -r -s 64 " +
                 destinationIP + " -j");
         InputStreamReader ir = new InputStreamReader(process.getInputStream());
         LineNumberReader input = new LineNumberReader (ir);
