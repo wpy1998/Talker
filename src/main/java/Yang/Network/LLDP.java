@@ -171,7 +171,8 @@ public class LLDP {
         Link link = Link.builder().source_node(host_merge)
                 .source_tp(networkCardName)
                 .dest_node(dest_node)
-                .dest_tp(dest_tp).build();
+                .dest_tp(dest_tp)
+                .build();
         JSONObject object = neighbor.getJSONObject("chassis").getJSONObject(dest_node);
         String dest_ip;
         try {
