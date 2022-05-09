@@ -86,8 +86,13 @@ public class Computer {//获取硬件信息, LLDP
         String mac = target.getJSONObject("id").getString("value")
                 .replace(':', '-');
         insertToList(macs, mac);
-        insertToList(ipv4s, target.getJSONArray("mgmt-ip").getString(0));
-        insertToList(ipv6s, target.getJSONArray("mgmt-ip").getString(1));
+        try{
+            insertToList(ipv4s, target.getJSONArray("mgmt-ip").getString(0));
+            insertToList(ipv6s, target.getJSONArray("mgmt-ip").getString(1));
+        }catch (Exception e){
+            insertToList(ipv4s, target.getString("mgmt-ip"));
+            insertToList(ipv6s, "0000:0000:0000:0000:0000:0000:0000:0000");
+        }
     }
 
     private void insertToList(List<String> list, String content){

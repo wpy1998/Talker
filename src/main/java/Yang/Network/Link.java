@@ -19,6 +19,7 @@ public class Link {
     List<String> supporting_links;//Unloaded
     //l3-unicast-igp-topology:igp-link-attributes
 
+    private JSONObject speed;
     @Builder
     public Link(@NonNull String source_node,
                 @NonNull String source_tp,
@@ -33,6 +34,7 @@ public class Link {
         this.dest_node = dest_node;
         this.dest_tp = dest_tp;
         supporting_links = new ArrayList<>();
+        speed = null;
     }
 
     JSONObject getJSONObject(){
@@ -46,11 +48,18 @@ public class Link {
         destination.put("dest-node", dest_node);
         destination.put("dest-tp", dest_tp);
         link.put("destination", destination);
+        if (speed != null){
+            link.put("speed", speed);
+        }
         return link;
     }
 
     @Override
     public String toString(){
         return getJSONObject().toString();
+    }
+
+    public void setSpeed(JSONObject speed) {
+        this.speed = speed;
     }
 }

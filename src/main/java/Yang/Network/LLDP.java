@@ -100,7 +100,7 @@ public class LLDP {
 
     private JSONObject getNetworkCardNeighbor(String networkCardName) throws IOException {
         Process process = Runtime.getRuntime().exec("lldpcli show neighbors ports "
-                + networkCardName + " summary -f json");
+                + networkCardName + " -f json");
         InputStreamReader ir = new InputStreamReader(process.getInputStream());
         LineNumberReader input = new LineNumberReader (ir);
         String line, result = "";
@@ -132,7 +132,15 @@ public class LLDP {
                 object = interfaces.getJSONObject(i);
                 int ttl = object.getJSONObject(networkCardName).getJSONObject("port")
                         .getInteger("ttl");
-                if (ttl < 10000) break;
+
+                JSONObject chassis = object.getJSONObject(networkCardName)
+                        .getJSONObject("chassis");
+                Iterator<String> iterator = chassis.keySet().iterator();
+                String key = iterator.next();
+                if (chassis.getJSONObject("id") == null &&
+                        chassis.getJSONObject(key).getJSONObject("id") != null){
+                    break;
+                }
             }
         }else if (length == 1){
             object = JSON.parseObject(result).getJSONObject("lldp")
@@ -144,13 +152,11 @@ public class LLDP {
             return null;
         }
         if (object == null) return neighbor;
-        Iterator<String> iterator = object.keySet().iterator();
-        String key = iterator.next();
-        neighbor = object.getJSONObject(key);
+        neighbor = object.getJSONObject(networkCardName);
         return neighbor;
     }
 
-    private void buildTargetLink(String networkCardName, JSONObject neighbor){
+    private void buildTargetLink(String networkCardName, JSONObject neighbor) throws IOException {
         if (neighbor == null){
             return;
         }
@@ -166,6 +172,15 @@ public class LLDP {
                 .source_tp(networkCardName)
                 .dest_node(dest_node)
                 .dest_tp(dest_tp).build();
+        JSONObject object = neighbor.getJSONObject("chassis").getJSONObject(dest_node);
+        String dest_ip;
+        try {
+            dest_ip = object.getJSONArray("mgmt-ip").getString(0);
+        }catch (Exception e){
+            dest_ip = object.getString("mgmt-ip");
+        }
+        JSONObject speed = getSpeed(dest_ip);
+        link.setSpeed(speed);
         linkList.add(link);
     }
 
@@ -208,6 +223,7 @@ public class LLDP {
         while ((line = input.readLine ()) != null){
             result += line;
         }
+        if (result.length() == 0) return null;
         JSONObject report = JSON.parseObject(result).getJSONObject("report");
         JSONObject mtr = report.getJSONObject("mtr");
         JSONArray hubs = report.getJSONArray("hubs");
