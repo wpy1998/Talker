@@ -184,18 +184,18 @@ public class Header {//负责数据流header内容的转化
         dateFrameSpecification3.put("ipv4-tuple", object3);
         jsonArray.add(dateFrameSpecification3);
         //IPv6
-        JSONObject dateFrameSpecification4 = new JSONObject();
-        JSONObject object4 = new JSONObject();
-        dateFrameSpecification4.put("index", this.index);
-        this.index += 1;
-        object4.put("source-ip-address", sourceIpAddressV6);
-        object4.put("destination-ip-address", destinationIpAddressV6);
-        object4.put("dscp", dscpV6);
-        object4.put("protocol", protocolV6);
-        object4.put("source-port", sourcePortV6);
-        object4.put("destination-port", destinationPortV6);
-        dateFrameSpecification4.put("ipv6-tuple", object4);
-        jsonArray.add(dateFrameSpecification4);
+//        JSONObject dateFrameSpecification4 = new JSONObject();
+//        JSONObject object4 = new JSONObject();
+//        dateFrameSpecification4.put("index", this.index);
+//        this.index += 1;
+//        object4.put("source-ip-address", sourceIpAddressV6);
+//        object4.put("destination-ip-address", destinationIpAddressV6);
+//        object4.put("dscp", dscpV6);
+//        object4.put("protocol", protocolV6);
+//        object4.put("source-port", sourcePortV6);
+//        object4.put("destination-port", destinationPortV6);
+//        dateFrameSpecification4.put("ipv6-tuple", object4);
+//        jsonArray.add(dateFrameSpecification4);
 
         return jsonArray;
     }
