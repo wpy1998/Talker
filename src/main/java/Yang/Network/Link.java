@@ -14,7 +14,7 @@ public class Link {
     //source
     String source_tp, source_node;
     //destination
-    String dest_node, dest_tp;
+    String dest_node, dest_tp, dest_mac;
     //supporting-link
     List<String> supporting_links;//Unloaded
     //l3-unicast-igp-topology:igp-link-attributes
@@ -24,7 +24,8 @@ public class Link {
     public Link(@NonNull String source_node,
                 @NonNull String source_tp,
                 @NonNull String dest_node,
-                @NonNull String dest_tp){
+                @NonNull String dest_tp,
+                @NonNull String dest_mac){
         this.link_id = source_node + "(" + source_tp + ")--" + dest_node + "(" + dest_tp + ")";
         for(int i = 0; i < this.link_id.length(); i++){
             this.link_id = this.link_id.replace('/', '*');
@@ -33,6 +34,7 @@ public class Link {
         this.source_tp = source_tp;
         this.dest_node = dest_node;
         this.dest_tp = dest_tp;
+        this.dest_mac = dest_mac;
         supporting_links = new ArrayList<>();
         speed = null;
     }

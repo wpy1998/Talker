@@ -70,8 +70,8 @@ public class LLDP {
                 while (iterator.hasNext()){
                     String networkCardName = iterator.next();
                     JSONObject networkCard = object.getJSONObject(networkCardName);
-                    String via = networkCard.getString("via");
-                    if (!via.equals("LLDP")) continue;
+//                    String via = networkCard.getString("via");
+//                    if (!via.equals("LLDP")) continue;
                     JSONObject neighbor = getNetworkCardNeighbor(networkCardName);
                     buildTargetLink(networkCardName, neighbor);
                     buildNode(networkCardName, networkCard, neighbor);
@@ -85,8 +85,8 @@ public class LLDP {
         while (iterator.hasNext()){//networkCard size > 1
             String networkCardName = iterator.next();
             JSONObject networkCard = object.getJSONObject(networkCardName);
-            String via = networkCard.getString("via");
-            if (!via.equals("LLDP")) continue;
+//            String via = networkCard.getString("via");
+//            if (!via.equals("LLDP")) continue;
             JSONObject neighbor = getNetworkCardNeighbor(networkCardName);
             if(neighbor == null) {
                 System.out.println("NetworkCard: " + networkCardName + " has no neighbor" +
@@ -160,18 +160,22 @@ public class LLDP {
         if (neighbor == null){
             return;
         }
-        String dest_node, dest_tp;
+        System.out.println(neighbor.toString());
+        String dest_node, dest_tp, dest_mac;
         Iterator<String> iterator = neighbor.getJSONObject("chassis").keySet().iterator();
         dest_node = iterator.next();
         dest_tp = neighbor.getJSONObject("port").getString("descr");
+        dest_mac = neighbor.getJSONObject("port").getJSONObject("id")
+                .getString("value");
         if (dest_node == null || dest_tp == null){
             buildEmptyLink(networkCardName, neighbor);
             return;
         }
         Link link = Link.builder().source_node(host_merge)
                 .source_tp(networkCardName)
-                .dest_node(dest_node)
+                .dest_node(dest_node + dest_mac)
                 .dest_tp(dest_tp)
+                .dest_mac(dest_mac)
                 .build();
         JSONObject object = neighbor.getJSONObject("chassis").getJSONObject(dest_node);
         String dest_ip;
@@ -186,10 +190,17 @@ public class LLDP {
     }
 
     private void buildEmptyLink(String networkCardName, JSONObject neighbor){
-        String mac = neighbor.getJSONObject("chassis")
+        String dest_node = neighbor.getJSONObject("chassis")
                 .getJSONObject("id").getString("value");
-        Link link = Link.builder().source_node(host_merge).source_tp(networkCardName)
-                .dest_node(mac).dest_tp(mac).build();
+        String dest_mac = neighbor.getJSONObject("port")
+                .getJSONObject("id").getString("value");
+        Link link = Link.builder()
+                .source_node(host_merge)
+                .source_tp(networkCardName)
+                .dest_node(dest_node + dest_mac)
+                .dest_tp(dest_node)
+                .dest_mac(dest_mac)
+                .build();
         linkList.add(link);
     }
 
