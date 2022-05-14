@@ -94,6 +94,7 @@ public class TalkerClient {
                 true, true);
         joinStream.put("packet-size", this.size);
         joinStream.put("packet-unit", this.unit);
+        joinStream.put("create-time", System.currentTimeMillis());
         JSONArray streams = new JSONArray();
         streams.add(joinStream);
         JSONObject device = new JSONObject();
