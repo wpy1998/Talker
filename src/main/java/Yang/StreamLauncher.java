@@ -93,7 +93,7 @@ public class StreamLauncher {
     private String convertUniqueID(int uniqueId){
         int front, next;
         next = uniqueId % 100;
-        front = uniqueId % 10000 - next;
+        front = (uniqueId % 10000) / 100;
         String s1, s2;
         s1 = String.valueOf(front);
         s2 = String.valueOf(next);
