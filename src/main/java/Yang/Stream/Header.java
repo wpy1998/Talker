@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Builder;
 import lombok.NonNull;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,9 @@ public class Header {//负责数据流header内容的转化
     //dateFrameSpecification
     private int index, protocolV4, sourcePortV4, destinationPortV4, protocolV6, sourcePortV6,
             destinationPortV6;
-    private String destinationMacAddress, sourceMacAddress, sourceIpAddressV4,
-            destinationIpAddressV4, sourceIpAddressV6, destinationIpAddressV6;
+    private String sourceMacAddress, sourceIpAddressV4, sourceIpAddressV6;
     private short priorityCodePoint, vlanId, dscpV4, dscpV6;
+    private List<String> destinationMacAddress, destinationIpAddressV4, destinationIpAddressV6;
 
     //trafficSpecification
     private int numerator, denominator, earliestTransmitOffset, latestTransmitOffset, jitter;
@@ -42,9 +43,18 @@ public class Header {//负责数据流header内容的转化
     //configResult
     public boolean isConfig;
 
+    @Setter
+    private boolean isHaveIpv6, isHaveIpv4, isHaveVlan, isHaveMac;
+
     @Builder
     public Header(@NonNull String uniqueId, @NonNull short rank,
-                  String dest_mac, String dest_ip){
+                  List<String> dest_mac, List<String> dest_ip, List<String> dest_ip6,
+                  Boolean isHaveIpv6, Boolean isHaveIpv4,
+                  Boolean isHaveVlan, Boolean isHaveMac){
+        this.isHaveIpv6 = isHaveIpv6 == null ? false : isHaveIpv6;
+        this.isHaveIpv4 = isHaveIpv4 == null ? false : isHaveIpv4;
+        this.isHaveMac = isHaveMac == null ? true : isHaveMac;
+        this.isHaveVlan = isHaveVlan == null ? false : isHaveVlan;
         //streamId
         this.uniqueId = uniqueId;
         System.out.println("Generate StreamID - UniqueID " + this.uniqueId);
@@ -59,20 +69,33 @@ public class Header {//负责数据流header内容的转化
         //dateFrameSpecification
         this.index = 0;
 
-        this.destinationMacAddress = (dest_mac == null) ? macs.get(0) : dest_mac;
+        if (dest_mac == null){
+            this.destinationMacAddress = new ArrayList<>();
+            this.destinationMacAddress.add(macs.get(0));
+        }else this.destinationMacAddress = dest_mac;
         this.sourceMacAddress = macs.get(0);
         this.priorityCodePoint = 0;
         this.vlanId = 0;
 
         this.sourceIpAddressV4 = ipv4s.get(0);
-        this.destinationIpAddressV4 = (dest_ip == null) ? "127.0.0.1" : dest_ip;
+        if (dest_ip == null){
+            destinationIpAddressV4 = new ArrayList<>();
+            destinationIpAddressV4.add("127.0.0.1");
+        }else {
+            destinationIpAddressV4 = dest_ip;
+        }
         this.dscpV4 = 0;
         this.protocolV4 = 0;
         this.sourcePortV4 = 0;
         this.destinationPortV4 = 0;
 
         this.sourceIpAddressV6 = ipv6s.get(0);
-        this.destinationIpAddressV6 = "0000:0000:0000:0000:0000:0000:0000:0000";
+        if (dest_ip == null){
+            destinationIpAddressV6 = new ArrayList<>();
+            destinationIpAddressV6.add("0000:0000:0000:0000:0000:0000:0000:0000");
+        }else {
+            destinationIpAddressV6 = dest_ip6;
+        }
         this.dscpV6 = 0;
         this.protocolV6 = 0;
         this.sourcePortV6 = 0;
@@ -152,50 +175,64 @@ public class Header {//负责数据流header内容的转化
     JSONArray getDateFrameSpecificationJSONObject(){
         JSONArray jsonArray = new JSONArray();
 
-        JSONObject dateFrameSpecification1 = new JSONObject();
-        dateFrameSpecification1.put("index", this.index);
-        this.index += 1;
-        JSONObject object1 = new JSONObject();
-        object1.put("destination-mac-address", destinationMacAddress);
-        object1.put("source-mac-address", sourceMacAddress);
-        dateFrameSpecification1.put("ieee802-mac-addresses", object1);
-        jsonArray.add(dateFrameSpecification1);
+        if (isHaveMac){
+            for (String str: this.destinationMacAddress){
+                JSONObject dateFrameSpecification1 = new JSONObject();
+                dateFrameSpecification1.put("index", this.index);
+                this.index += 1;
+                JSONObject object1 = new JSONObject();
+                object1.put("destination-mac-address", str);
+                object1.put("source-mac-address", sourceMacAddress);
+                dateFrameSpecification1.put("ieee802-mac-addresses", object1);
+                jsonArray.add(dateFrameSpecification1);
+            }
+        }
 
-        JSONObject dateFrameSpecification2 = new JSONObject();
-        JSONObject object2 = new JSONObject();
-        dateFrameSpecification2.put("index", this.index);
-        this.index += 1;
-        object2.put("priority-code-point", priorityCodePoint);
-        object2.put("vlan-id", vlanId);
-        dateFrameSpecification2.put("ieee802-vlan-tag", object2);
-        jsonArray.add(dateFrameSpecification2);
+        if (isHaveVlan){
+            JSONObject dateFrameSpecification2 = new JSONObject();
+            JSONObject object2 = new JSONObject();
+            dateFrameSpecification2.put("index", this.index);
+            this.index += 1;
+            object2.put("priority-code-point", priorityCodePoint);
+            object2.put("vlan-id", vlanId);
+            dateFrameSpecification2.put("ieee802-vlan-tag", object2);
+            jsonArray.add(dateFrameSpecification2);
+        }
 
         //IPv4
-        JSONObject dateFrameSpecification3 = new JSONObject();
-        JSONObject object3 = new JSONObject();
-        dateFrameSpecification3.put("index", this.index);
-        this.index += 1;
-        object3.put("source-ip-address", sourceIpAddressV4);
-        object3.put("destination-ip-address", destinationIpAddressV4);
-        object3.put("dscp", dscpV4);
-        object3.put("protocol", protocolV4);
-        object3.put("source-port", sourcePortV4);
-        object3.put("destination-port", destinationPortV4);
-        dateFrameSpecification3.put("ipv4-tuple", object3);
-        jsonArray.add(dateFrameSpecification3);
+        if (isHaveIpv4){
+            for (String str: destinationIpAddressV4){
+                JSONObject dateFrameSpecification3 = new JSONObject();
+                JSONObject object3 = new JSONObject();
+                dateFrameSpecification3.put("index", this.index);
+                this.index += 1;
+                object3.put("source-ip-address", sourceIpAddressV4);
+                object3.put("destination-ip-address", str);
+                object3.put("dscp", dscpV4);
+                object3.put("protocol", protocolV4);
+                object3.put("source-port", sourcePortV4);
+                object3.put("destination-port", destinationPortV4);
+                dateFrameSpecification3.put("ipv4-tuple", object3);
+                jsonArray.add(dateFrameSpecification3);
+            }
+        }
         //IPv6
-//        JSONObject dateFrameSpecification4 = new JSONObject();
-//        JSONObject object4 = new JSONObject();
-//        dateFrameSpecification4.put("index", this.index);
-//        this.index += 1;
-//        object4.put("source-ip-address", sourceIpAddressV6);
-//        object4.put("destination-ip-address", destinationIpAddressV6);
-//        object4.put("dscp", dscpV6);
-//        object4.put("protocol", protocolV6);
-//        object4.put("source-port", sourcePortV6);
-//        object4.put("destination-port", destinationPortV6);
-//        dateFrameSpecification4.put("ipv6-tuple", object4);
-//        jsonArray.add(dateFrameSpecification4);
+        if (isHaveIpv6){
+            for (String str: destinationIpAddressV6){
+                JSONObject dateFrameSpecification4 = new JSONObject();
+                JSONObject object4 = new JSONObject();
+                dateFrameSpecification4.put("index", this.index);
+                this.index += 1;
+                object4.put("source-ip-address", sourceIpAddressV6);
+                object4.put("destination-ip-address", str);
+                object4.put("dscp", dscpV6);
+                object4.put("protocol", protocolV6);
+                object4.put("source-port", sourcePortV6);
+                object4.put("destination-port", destinationPortV6);
+                dateFrameSpecification4.put("ipv6-tuple", object4);
+                jsonArray.add(dateFrameSpecification4);
+            }
+        }
 
         return jsonArray;
     }
