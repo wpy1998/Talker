@@ -99,7 +99,7 @@ public class TalkerClient {
         streams.add(joinStream);
         JSONObject device = new JSONObject();
         device.put("stream-list", streams);
-        System.out.println("--register listener to controller--");
+        System.out.println("--register talker to controller--");
         return restfulPutInfo.putInfo(device.toString());
     }
 
@@ -109,7 +109,7 @@ public class TalkerClient {
         RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder()
                 .url(url)
                 .build();
-        System.out.println("--remove listener to controller--");
+        System.out.println("--remove talker from controller--");
         return restfulDeleteInfo.deleteInfo();
     }
 
