@@ -184,7 +184,7 @@ public class LLDP {
         }catch (Exception e){
             dest_ip = object.getString("mgmt-ip");
         }
-        JSONObject speed = getSpeed(dest_ip);
+        JSONObject speed = getSpeed(dest_ip, networkCardName);
         link.setSpeed(speed);
         linkList.add(link);
     }
@@ -226,7 +226,8 @@ public class LLDP {
         current.setAddress(ip, mac);
     }
 
-    public JSONObject getSpeed(String destinationIP) throws IOException {
+    public JSONObject getSpeed(String destinationIP, String networkCardName) throws IOException {
+        System.out.println(networkCardName);
         Process process = Runtime.getRuntime().exec("mtr -r -s 64 " +
                 destinationIP + " -j");
         InputStreamReader ir = new InputStreamReader(process.getInputStream());
@@ -237,15 +238,21 @@ public class LLDP {
         }
         if (result.length() == 0) return null;
         JSONObject report = JSON.parseObject(result).getJSONObject("report");
-        JSONObject mtr = report.getJSONObject("mtr");
+//        JSONObject mtr = report.getJSONObject("mtr");
         JSONArray hubs = report.getJSONArray("hubs");
         JSONObject object = hubs.getJSONObject(0);
         JSONObject speed = new JSONObject();
-        speed.put("packet-size", mtr.getInteger("psize"));
+//        speed.put("packet-size", mtr.getInteger("psize"));
+        speed.put("sending-speed", getSendingSpeed());
         speed.put("loss", object.getFloat("Loss%"));
-        speed.put("best", object.getFloat("Best"));
-        speed.put("worst", object.getFloat("Wrst"));
-        speed.put("avg", object.getFloat("Avg"));
+        speed.put("best-transmission-delay", object.getFloat("Best"));
+        speed.put("worst-transmission-delay", object.getFloat("Wrst"));
+        speed.put("avg-transmission-delay", object.getFloat("Avg"));
         return speed;
+    }
+
+    private int getSendingSpeed(){
+        System.out.println(host_name);
+        return 1000;
     }
 }
