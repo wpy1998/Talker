@@ -16,31 +16,33 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * @author : wpy
  * @description: TODO
  * @date : 3/15/22 6:18 PM
  */
 public class TalkerClient {
-    private final String host;
+    private final String host, unit = "Byte";
     private final int port;
     @Getter
     private Channel channel;
     @Getter
     private int resultCode;
     private Header header;
-    private String url, unit;
+    private String url, body;
     private long size;
 
     @Builder
     public TalkerClient(String host, @NonNull int port, @NonNull Header header,
-                        @NonNull String url, String unit, Long size){
+                        @NonNull String url, @NonNull String body) throws Exception {
         this.port = port;
         this.host = host == null ? "localhost" : host;
         this.header = header;
         this.url = url;
-        this.unit = unit == null ? "Byte" : unit;
-        this.size = size == null ? 0 : size;
+        this.body = body;
+        this.size = this.body.getBytes("gbk").length;
 
         join_talker();
     }
@@ -68,6 +70,7 @@ public class TalkerClient {
                 if (channelFuture.isSuccess()){
                     System.out.println("Connected Successful");
                     resultCode = 200;
+                    channel.writeAndFlush(body);
                 }else {
                     System.out.println("Connected Failure");
                     resultCode = 400;

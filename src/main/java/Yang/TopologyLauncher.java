@@ -8,6 +8,7 @@ import Yang.Network.Topology;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.io.IOException;
  */
 public class TopologyLauncher {
     private static Thread timerThread = null;
+    @Getter
     private LLDP lldp;
     private String topologyId, urlFront, hostName;
 

@@ -106,21 +106,18 @@ public class StreamLauncher {
         return s1 + "-" + s2;
     }
 
-    public void registerTalkerStream(String body) throws UnsupportedEncodingException {
+    public void registerTalkerStream(String body) throws Exception {
         int uniqueId = allocateUniqueId();
         Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
                 .rank((short) 0)
                 .build();
-        String unit = "Byte";
-        long size = body.getBytes("gbk").length;
 
         TalkerClient client = TalkerClient.builder()
                 .host("localhost")
                 .port(17835)
                 .header(header)
                 .url(this.talkerFront + this.hostName + "/stream-list/")
-                .size(size)
-                .unit(unit)
+                .body(body)
                 .build();
         clients.add(client);
     }

@@ -8,7 +8,7 @@ import java.io.IOException;
 import static Hardware.Computer.*;
 
 public class TSNApp {
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws Exception{
         Computer computer = new Computer();
         TopologyLauncher topologyLauncher = TopologyLauncher.builder()
                 .urlFront(computer.urls.get("tsn-topology"))

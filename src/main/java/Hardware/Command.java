@@ -19,7 +19,7 @@ public class Command {
         this.streamLauncher = streamLauncher;
     }
 
-    public void start() throws UnsupportedEncodingException {
+    public void start() throws Exception {
         int pattern  = 0;
         Scanner scanner = new Scanner(System.in);
 
