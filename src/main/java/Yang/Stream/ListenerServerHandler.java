@@ -22,14 +22,16 @@ public class ListenerServerHandler extends ChannelInboundHandlerAdapter {
 //        ctx.writeAndFlush(response);
 
         System.out.println("Client: " + ctx.channel().remoteAddress());
-        ByteBuf buf = (ByteBuf) msg;
-        System.out.println("Client Message: " + buf.toString(CharsetUtil.UTF_8));
+        RpcRequest rpcRequest = (RpcRequest) msg;
+        System.out.println("Client Message: " + rpcRequest.getData());
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
         System.out.println("Server Get Message finished..");
-        ctx.writeAndFlush(Unpooled.copiedBuffer("Hello，Client....^_^", CharsetUtil.UTF_8));
+        RpcResponse rpcResponse = new RpcResponse();
+        rpcResponse.setData("Hello，Client....^_^");
+        ctx.channel().writeAndFlush(rpcResponse);
     }
 
     @Override

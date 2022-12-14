@@ -1,5 +1,6 @@
 package Yang.Stream;
 
+import NettyAPI.RpcRequest;
 import NettyAPI.RpcResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -24,13 +25,15 @@ public class TalkerClientHandler extends SimpleChannelInboundHandler<RpcResponse
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext,
                                 RpcResponse rpcResponse) throws Exception {
-        System.out.println("Get Server response data: " + rpcResponse.toString());
+        System.out.println("Get Server response data: " + rpcResponse.getData());
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception{
         System.out.println("Send Message: " + body);
-        ctx.channel().writeAndFlush(body);
+        RpcRequest rpcRequest = new RpcRequest();
+        rpcRequest.setData(body);
+        ctx.channel().writeAndFlush(rpcRequest);
     }
 
     @Override
