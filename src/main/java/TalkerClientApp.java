@@ -11,18 +11,12 @@ public class TalkerClientApp {
     public static void main(String[] args) throws Exception {
         Computer computer = new Computer();
 
-        StreamLauncher streamLauncher = StreamLauncher.builder()
-                .talkerFront(computer.urls.get("tsn-talker"))
-                .listenerFront(computer.urls.get("tsn-listener"))
-                .hostName(host_merge)
-                .build();
-
-        String body = "11111111111111111111111111111111111";
+        String body = "123456789012345678901234567890123456789012345678901234567890";
         Header header = Header.builder().uniqueId("00-00")
                 .rank((short) 0)
                 .build();
         TalkerClient client = TalkerClient.builder()
-                .host("localhost")
+                .host("192.168.1.42")
                 .port(17835)
                 .header(header)
                 .url(computer.urls.get("tsn-talker") + host_merge + "/stream-list/")
