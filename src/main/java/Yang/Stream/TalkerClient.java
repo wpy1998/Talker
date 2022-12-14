@@ -59,7 +59,7 @@ public class TalkerClient {
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         pipeline.addLast(new RpcEncoder(RpcRequest.class));
                         pipeline.addLast(new RpcDecoder(RpcResponse.class));
-                        pipeline.addLast(new TalkerClientHandler());
+                        pipeline.addLast(new TalkerClientHandler(body));
                     }
                 });
         final ChannelFuture future = b.connect(host, port).sync();
@@ -70,7 +70,6 @@ public class TalkerClient {
                 if (channelFuture.isSuccess()){
                     System.out.println("Connected Successful");
                     resultCode = 200;
-                    channel.writeAndFlush(body);
                 }else {
                     System.out.println("Connected Failure");
                     resultCode = 400;
@@ -82,6 +81,7 @@ public class TalkerClient {
         });
 
         this.channel = future.channel();
+//        System.out.println(body);
     }
 
     private int join_talker(){

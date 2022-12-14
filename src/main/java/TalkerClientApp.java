@@ -16,7 +16,7 @@ public class TalkerClientApp {
                 .rank((short) 0)
                 .build();
         TalkerClient client = TalkerClient.builder()
-                .host("192.168.1.42")
+                .host("localhost")
                 .port(17835)
                 .header(header)
                 .url(computer.urls.get("tsn-talker") + host_merge + "/stream-list/")
