@@ -24,6 +24,11 @@ public class LLDP {
         refresh();
     }
 
+    public LLDP(String test){
+        linkList = new ArrayList<>();
+        current = new Node();
+    }
+
     /**
      * create by: wpy
      * description: refresh the LLDP message
@@ -184,7 +189,7 @@ public class LLDP {
         }catch (Exception e){
             dest_ip = object.getString("mgmt-ip");
         }
-        JSONObject speed = getSpeed(dest_ip, networkCardName);
+        JSONObject speed = getDelaySpeed(dest_ip, networkCardName);
         link.setSpeed(speed);
         linkList.add(link);
     }
@@ -226,8 +231,8 @@ public class LLDP {
         current.setAddress(ip, mac);
     }
 
-    public JSONObject getSpeed(String destinationIP, String networkCardName) throws IOException {
-        System.out.println(networkCardName);
+    private JSONObject getDelaySpeed(String destinationIP, String networkCardName) throws IOException {
+//        System.out.println(networkCardName);
         Process process = Runtime.getRuntime().exec("mtr -r -s 64 " +
                 destinationIP + " -j");
         InputStreamReader ir = new InputStreamReader(process.getInputStream());
@@ -243,7 +248,7 @@ public class LLDP {
         JSONObject object = hubs.getJSONObject(0);
         JSONObject speed = new JSONObject();
 //        speed.put("packet-size", mtr.getInteger("psize"));
-        speed.put("sending-speed", getSendingSpeed());
+        speed.put("sending-speed", getSendingSpeed(networkCardName));
         speed.put("loss", object.getFloat("Loss%"));
         speed.put("best-transmission-delay", object.getFloat("Best"));
         speed.put("worst-transmission-delay", object.getFloat("Wrst"));
@@ -251,8 +256,29 @@ public class LLDP {
         return speed;
     }
 
-    private int getSendingSpeed(){
-        System.out.println(host_name);
-        return 1000;
+    private int getSendingSpeed(String networkCardName) throws IOException{
+        int sendingSpeed = 0;
+        Process process = Runtime.getRuntime().exec("ip -4 -j address");
+        InputStreamReader ir = new InputStreamReader(process.getInputStream());
+        LineNumberReader input = new LineNumberReader (ir);
+        String line, result = "";
+        while ((line = input.readLine ()) != null){
+            result += line;
+        }
+        if (result.length() == 0) return sendingSpeed;
+        if (result.charAt(0) != '['){
+            result = "[" + result + "]";
+        }
+        JSONArray report = JSON.parseArray(result);
+        for (int i = 0; i < report.size(); i++){
+            JSONObject object = report.getJSONObject(i);
+//            System.out.println(object);
+            String ifname = object.getString("ifname");
+            if (ifname.equals(networkCardName)) {
+                sendingSpeed = object.getInteger("txqlen");
+                break;
+            }
+        }
+        return sendingSpeed;
     }
 }
