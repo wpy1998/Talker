@@ -42,6 +42,7 @@ public class StreamLauncher {
                 int timeInterval = 15 * 1000;
                 try {
                     while (true){
+                        System.out.println("--Unallocated stream shown as follows: --");
                         for (TalkerClient talkerClient: clients){
                             System.out.println(talkerClient.getKey());
                         }

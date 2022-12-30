@@ -165,7 +165,7 @@ public class LLDP {
         if (neighbor == null){
             return;
         }
-        System.out.println(neighbor.toString());
+//        System.out.println(neighbor);
         String dest_node, dest_tp, dest_mac;
         Iterator<String> iterator = neighbor.getJSONObject("chassis").keySet().iterator();
         dest_node = iterator.next();
