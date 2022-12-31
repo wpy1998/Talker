@@ -24,11 +24,6 @@ public class LLDP {
         refresh();
     }
 
-    public LLDP(String test){
-        linkList = new ArrayList<>();
-        current = new Node();
-    }
-
     /**
      * create by: wpy
      * description: refresh the LLDP message
