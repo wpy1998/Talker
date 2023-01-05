@@ -1,34 +1,167 @@
 package Yang.Network;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LLDPs {
-    private String windowsCommand = "ipconfig", linuxCommand = "ifconfig";
+    private String windowsCommand = "ipconfig -all", linuxCommand = "ifconfig";
     @Getter
     private String systemType;
 
     public LLDPs(){
         String os = System.getProperty("os.name");
-        System.out.println(os.charAt(0));
+        if (os.charAt(0) == 'L' || os.charAt(0) == 'l'){
+            systemType = "Linux";
+        }else if (os.charAt(0) == 'W' || os.charAt(0) == 'w'){
+            systemType = "Windows";
+        }
     }
 
     //chcp 437 change to english
     //chcp 936 change to chinese
     public void getLocalInterface() throws IOException {
-        Process process = new ProcessBuilder(windowsCommand).start();
-        InputStream in=process.getInputStream();
+        if (systemType == "Windows"){
+            runWindowsCommand();
+        }else if (systemType == "Linux"){
+            runLinuxCommand();
+        }
+    }
+
+    private void runWindowsCommand() throws IOException {
+        Process process = Runtime.getRuntime().exec(windowsCommand);
+        InputStream in = process.getInputStream();
         BufferedReader br = new BufferedReader(
                 new InputStreamReader(in, "gbk"));
-        String line, result = "";
+        String line;
+        List<String> terminals = new ArrayList<>();
         while ((line = br.readLine ()) != null){
-            System.out.println(line);
-            result += line;
+            if (line.length() != 0){
+                terminals.add(new String(line));
+            }
         }
-//        System.out.println(result);
+        JSONObject origin = new JSONObject(), midObject = null;
+//        for (String terminal: terminals){
+//            System.out.println(terminal);
+//        }
+        for (int i = 0; i < terminals.size(); i++){
+            String terminal = terminals.get(i);
+            if (terminal.charAt(0) != ' '){
+                JSONObject object = new JSONObject();
+                String key = terminal.replace(":", "");
+                System.out.println(key);
+                origin.put(key, object);
+                midObject = object;
+            }else {
+                String key = "", value = "";
+                int j;
+                for (j = 0; j < terminal.length(); j++){
+                    if (terminal.charAt(j) == ':'){
+                        break;
+                    }else {
+                        key += terminal.charAt(j);
+                    }
+                }
+                value = terminal.substring(j+2);
+                key = key.replace(".", "");
+                key = key.replace(" ", "");
+                key = convertStandardWindows(key);
+                value = clearValue(convertStandardWindows(value));
+                if (value == "") continue;
+                System.out.println("key = " + key + ", value = " + value);
+                if (key == "Default Gateway" || key == "DNS Servers"){
+                    midObject.put(key + " IPV6", value);
+                    value = terminals.get(i + 1).replace(" ", "");
+                    value = clearValue(convertStandardWindows(value));
+                    midObject.put(key + " IPV4", value);
+                    i++;
+                }else {
+                    midObject.put(key, value);
+                }
+            }
+        }
+        System.out.println(origin);
+    }
+
+    private void runLinuxCommand(){
+    }
+
+    private String clearValue(String content){
+        String result = "";
+        int flag = 0;
+        for (int i = 0; i < content.length(); i++){
+            if (content.charAt(i) == '('){
+                flag++;
+            }else if (content.charAt(i) == ')'){
+                flag--;
+            }else if (flag == 0){
+                result += content.charAt(i);
+            }
+        }
+        return result;
+    }
+
+    private String convertStandardWindows(String name){
+        switch (name){
+            case "是": return "Yes";
+            case "否": return "No";
+            case "主机名": return "Host Name";
+            case "主DNS后缀": return "Primary Dns Suffix";
+            case "节点类型": return "Node Type";
+            case "IP路由已启用": return "IP Routing Enabled";
+            case "WINS代理已启用": return "WINS Proxy Enabled";
+            case "DNS后缀搜索列表": return "DNS Suffix Search List";
+            case "连接特定的DNS后缀": return "Connection-specific DNS Suffix";
+            case "描述": return "Description";
+            case "物理地址": return "Physical Address";
+            case "DHCP已启用": return "DHCP Enabled";
+            case "自动配置已启用": return "Autoconfiguration Enabled";
+            case "本地链接IPv6地址": return "Link-local IPv6 Address";
+            case "IPv4地址": return "IPv4 Address";
+            case "子网掩码": return "Subnet Mask";
+            case "默认网关": return "Default Gateway";
+            case "DHCPv6客户端DUID": return "DHCPv6 Client DUID";
+            case "TCPIP上的NetBIOS": return "NetBIOS over Tcpip";
+            case "已启用": return "Enabled";
+            case "获得租约的时间": return "Lease Obtained";
+            case "租约过期的时间": return "Lease Expires";
+            case "DHCP服务器": return "DHCP Server";
+            case "混合": return "Hybrid";
+            case "媒体状态": return "Media State";
+            case "媒体已断开连接": return "Media disconnected";
+            case "DNS服务器": return "DNS Servers";
+
+            case "HostName": return "Host Name";
+            case "PrimaryDnsSuffix": return "Primary Dns Suffix";
+            case "NodeType": return "Node Type";
+            case "IPRoutingEnabled": return "IP Routing Enabled";
+            case "WINSProxyEnabled": return "WINS Proxy Enabled";
+            case "DNSSuffixSearchList": return "DNS Suffix Search List";
+            case "Connection-specificDNSSuffix": return "Connection-specific DNS Suffix";
+            case "PhysicalAddress": return "Physical Address";
+            case "DHCPEnabled": return "DHCP Enabled";
+            case "AutoconfigurationEnabled": return "Autoconfiguration Enabled";
+            case "Link-localIPv6Address": return "Link-local IPv6 Address";
+            case "IPv4Address": return "IPv4 Address";
+            case "SubnetMask": return "Subnet Mask";
+            case "DefaultGateway": return "Default Gateway";
+            case "DHCPv6ClientDUID": return "DHCPv6 Client DUID";
+            case "NetBIOSoverTcpip": return "NetBIOS over Tcpip";
+            case "LeaseObtained": return "Lease Obtained";
+            case "LeaseExpires": return "Lease Expires";
+            case "DHCPServer": return "DHCP Server";
+            case "MediaState": return "Media State";
+            case "Mediadisconnected": return "Media disconnected";
+            case "DNSServers": return "DNS Servers";
+            default: return name;
+        }
     }
 }
