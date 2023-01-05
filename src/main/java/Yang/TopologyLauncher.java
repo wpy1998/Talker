@@ -2,7 +2,7 @@ package Yang;
 
 import RestfulAPI.RestfulDeleteInfo;
 import RestfulAPI.RestfulPutInfo;
-import Yang.Network.LLDP;
+import Yang.Network.LLDP3;
 import Yang.Network.Link;
 import Yang.Network.Topology;
 import com.alibaba.fastjson.JSONArray;
@@ -21,7 +21,7 @@ import java.io.IOException;
 public class TopologyLauncher {
     private static Thread timerThread = null;
     @Getter
-    private LLDP lldp;
+    private LLDP3 lldp3;
     private String topologyId, urlFront, hostName;
 
     @Builder
@@ -31,7 +31,7 @@ public class TopologyLauncher {
         this.urlFront = urlFront;
         this.hostName = hostName;
 
-        this.lldp = new LLDP();
+        this.lldp3 = new LLDP3();
     }
 
     public void startTimerThread(){
@@ -46,7 +46,7 @@ public class TopologyLauncher {
                 try {
                     int timeInterval = 15 * 60 * 1000;
                     while (true){
-                        registerDevice(lldp);
+                        registerDevice(lldp3);
                         Thread.sleep(timeInterval);
                     }
                 }catch (InterruptedException e){
@@ -74,10 +74,10 @@ public class TopologyLauncher {
      *
      * @Param: null
      * @return
-     * @param lldp
+     * @param lldp3
      */
-    public void registerDevice(LLDP lldp){
-        Topology topology = Topology.builder().topology_id(topologyId).lldp(lldp).build();
+    public void registerDevice(LLDP3 lldp3){
+        Topology topology = Topology.builder().topology_id(topologyId).lldp3(lldp3).build();
         String url = this.urlFront + "topology/" + topologyId;
 
         JSONObject net = topology.getJSONObject();
@@ -112,8 +112,8 @@ public class TopologyLauncher {
         System.out.println("--remove node from controller--");
         RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder().url(url).build();
         restfulDeleteInfo.deleteInfo();
-        for (int i = 0; i < lldp.linkList.size(); i++){
-            Link link = lldp.linkList.get(i);
+        for (int i = 0; i < lldp3.linkList.size(); i++){
+            Link link = lldp3.linkList.get(i);
             removeLink(link);
         }
     }

@@ -8,16 +8,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class LLDPs {
+public class LLDP2 {
     private String windowsCommand = "ipconfig -all", linuxCommand = "ifconfig";
     @Getter
     private String systemType;
 
-    public LLDPs(){
+    public LLDP2(){
         String os = System.getProperty("os.name");
         if (os.charAt(0) == 'L' || os.charAt(0) == 'l'){
             systemType = "Linux";
@@ -74,13 +72,13 @@ public class LLDPs {
                 key = key.replace(".", "");
                 key = key.replace(" ", "");
                 key = convertStandardWindows(key);
-                value = clearValue(convertStandardWindows(value));
+                value = clearBrackets(convertStandardWindows(value));
                 if (value == "") continue;
                 System.out.println("key = " + key + ", value = " + value);
                 if (key == "Default Gateway" || key == "DNS Servers"){
                     midObject.put(key + " IPV6", value);
                     value = terminals.get(i + 1).replace(" ", "");
-                    value = clearValue(convertStandardWindows(value));
+                    value = clearBrackets(convertStandardWindows(value));
                     midObject.put(key + " IPV4", value);
                     i++;
                 }else {
@@ -91,16 +89,70 @@ public class LLDPs {
         System.out.println(origin);
     }
 
-    private void runLinuxCommand(){
+    private void runLinuxCommand() throws IOException {
+        Process process = Runtime.getRuntime().exec(linuxCommand);
+        InputStream in = process.getInputStream();
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader(in, "gbk"));
+        String line;
+        List<String> terminals = new ArrayList<>();
+        while ((line = br.readLine ()) != null){
+            if (line.length() != 0){
+                terminals.add(new String(line));
+            }
+        }
+        JSONObject origin = new JSONObject(), midObject = null;
+        for (String terminal: terminals){
+            System.out.println(terminal);
+            String midString = clearBrackets(terminal);
+            List<String> elements = new ArrayList<>();
+            String[] temp = midString.split(" ");
+            for (int i = 0; i < temp.length; i++){
+                if (temp[i].length() != 0){
+                    elements.add(temp[i]);
+//                    System.out.println(temp[i]);
+                }
+            }
+            if (terminal.charAt(0) != ' '){
+                JSONObject object = new JSONObject();
+                String name = elements.get(0).replace(":", "");
+                origin.put(name, object);
+                String flag = elements.get(1);
+                String midList[] = flag.split("=");
+                object.put(midList[0], midList[1]);
+                for (int i = 2; i < elements.size(); i = i + 2){
+                    object.put(elements.get(i), elements.get(i + 1));
+                }
+                midObject = object;
+            }else {
+                if (elements.size() % 2 == 0){
+                    for (int i = 0; i < elements.size(); i = i + 2){
+                        midObject.put(elements.get(i), elements.get(i + 1));
+                    }
+                }else {
+                    JSONObject xObject;
+                    if (midObject.get(elements.get(0)) != null){
+                        xObject = midObject.getJSONObject(elements.get(0));
+                    }else {
+                        xObject = new JSONObject();
+                        midObject.put(elements.get(0), xObject);
+                    }
+                    for (int i = 1; i < elements.size(); i = i + 2){
+                        xObject.put(elements.get(i), elements.get(i + 1));
+                    }
+                }
+            }
+        }
+        System.out.println(origin);
     }
 
-    private String clearValue(String content){
+    private String clearBrackets(String content){
         String result = "";
         int flag = 0;
         for (int i = 0; i < content.length(); i++){
-            if (content.charAt(i) == '('){
+            if (content.charAt(i) == '(' || content.charAt(i) == '<'){
                 flag++;
-            }else if (content.charAt(i) == ')'){
+            }else if (content.charAt(i) == ')' || content.charAt(i) == '>'){
                 flag--;
             }else if (flag == 0){
                 result += content.charAt(i);

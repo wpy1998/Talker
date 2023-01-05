@@ -18,17 +18,17 @@ public class Topology {
     public List<Link> links;
 
     @Builder
-    public Topology(@NonNull String topology_id, @NonNull LLDP lldp){
+    public Topology(@NonNull String topology_id, @NonNull LLDP3 lldp3){
         this.topology_id = topology_id;
         underlay_topologies = new ArrayList<>();
         nodes = new ArrayList<>();
         links = new ArrayList<>();
-        addLink(lldp);
-        this.nodes.add(lldp.current);
+        addLink(lldp3);
+        this.nodes.add(lldp3.current);
     }
 
-    public void addLink(LLDP lldp){
-        for(Link link: lldp.linkList){
+    public void addLink(LLDP3 lldp3){
+        for(Link link: lldp3.linkList){
             this.links.add(link);
         }
     }

@@ -14,11 +14,11 @@ import java.util.List;
 import static Hardware.Computer.host_merge;
 import static Hardware.Computer.host_name;
 
-public class LLDP {
+public class LLDP3 {
     public List<Link> linkList;
     public Node current;
 
-    public LLDP() throws IOException {
+    public LLDP3() throws IOException {
         linkList = new ArrayList<>();
         current = new Node();
         refresh();
