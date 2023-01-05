@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class TestApp {
     public static void main(String[] args) throws IOException {
-        LLDP2 LLDP2 = new LLDP2();
-        LLDP2.getLocalInterface();
+        LLDP2 lldp2 = new LLDP2();
+        lldp2.getLocalInterface();
     }
 }
