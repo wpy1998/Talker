@@ -8,7 +8,7 @@ import lombok.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Topology {
+public class Topology3 {
     public String topology_id;
     public boolean server_provided;
     //container topology-types needed to be defined
@@ -18,7 +18,7 @@ public class Topology {
     public List<Link> links;
 
     @Builder
-    public Topology(@NonNull String topology_id, @NonNull LLDP3 lldp3){
+    public Topology3(@NonNull String topology_id, @NonNull LLDP3 lldp3){
         this.topology_id = topology_id;
         underlay_topologies = new ArrayList<>();
         nodes = new ArrayList<>();

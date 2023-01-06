@@ -1,5 +1,7 @@
 package Hardware;
 
+import Yang.Network.LLDP2Win;
+import Yang.Network.LLDP2linux;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -9,18 +11,18 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.net.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Computer {//获取硬件信息, LLDP
-    public static String host_name = null;
-    public static String host_merge;
+    public static String host_name = null, host_merge, systemType = "";
     public static final String cuc_ip = "localhost";
     public static final String topology_id = "tsn-network";
     public static long firstSeen = System.currentTimeMillis();
     public Map<String, String> urls;
     public static List<String> ipv4s, ipv6s, macs;
+    private LLDP lldp;
 
     public Computer(){
+        System.out.println("<TSN Client> 本软件运行背景是在有线连接，不支持无线连接，操作系统仅支持Linux <TSN Client>");
         urls = new HashMap<>();
         urls.put("tsn-talker", "http://" + cuc_ip +
                 ":8181/restconf/config/tsn-talker-type:stream-talker-config/devices/");
@@ -28,6 +30,14 @@ public class Computer {//获取硬件信息, LLDP
                 ":8181/restconf/config/network-topology:network-topology/");
         urls.put("tsn-listener", "http://" + cuc_ip +
                 ":8181/restconf/config/tsn-listener-type:stream-listener-config/devices/");
+        systemType = getSystemType();
+        if (systemType.equals("Windows")){
+            lldp = new LLDP2Win();
+        }else if (systemType.equals("Linux")){
+            lldp = new LLDP2linux();
+        }else {
+            lldp = new LLDP();
+        }
         ipv4s = new ArrayList<>();
         ipv6s = new ArrayList<>();
         macs = new ArrayList<>();
@@ -70,6 +80,9 @@ public class Computer {//获取硬件信息, LLDP
                 addComputerMessage(inter.getJSONObject(i));
             }
         }
+
+        JSONObject networkCards = lldp.getLocalInterface();
+        System.out.println(networkCards);
     }
 
     public void addComputerMessage(JSONObject inter){
@@ -102,5 +115,16 @@ public class Computer {//获取硬件信息, LLDP
             }
         }
         list.add(content);
+    }
+
+    public String getSystemType() {
+        String systemType = "";
+        String os = System.getProperty("os.name");
+        if (os.charAt(0) == 'L' || os.charAt(0) == 'l'){
+            systemType = "Linux";
+        }else if (os.charAt(0) == 'W' || os.charAt(0) == 'w'){
+            systemType = "Windows";
+        }
+        return systemType;
     }
 }

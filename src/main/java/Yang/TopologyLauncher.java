@@ -4,7 +4,7 @@ import RestfulAPI.RestfulDeleteInfo;
 import RestfulAPI.RestfulPutInfo;
 import Yang.Network.LLDP3;
 import Yang.Network.Link;
-import Yang.Network.Topology;
+import Yang.Network.Topology3;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Builder;
@@ -77,10 +77,10 @@ public class TopologyLauncher {
      * @param lldp3
      */
     public void registerDevice(LLDP3 lldp3){
-        Topology topology = Topology.builder().topology_id(topologyId).lldp3(lldp3).build();
+        Topology3 topology3 = Topology3.builder().topology_id(topologyId).lldp3(lldp3).build();
         String url = this.urlFront + "topology/" + topologyId;
 
-        JSONObject net = topology.getJSONObject();
+        JSONObject net = topology3.getJSONObject();
         JSONArray nodes = net.getJSONArray("node");
         for (int i = 0; i < nodes.size(); i++){
             JSONObject node = nodes.getJSONObject(i);

@@ -1,55 +1,31 @@
 package Yang.Network;
 
+import Hardware.LLDP;
 import com.alibaba.fastjson.JSONObject;
-import lombok.Getter;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
-public class LLDP2 {
-    private String windowsCommand = "ipconfig -all", linuxCommand = "ifconfig";
-    @Getter
-    private String systemType;
+public class LLDP2Win extends LLDP {
+    private String firstWindowsCommand = "ipconfig -all";
 
-    public LLDP2(){
-        String os = System.getProperty("os.name");
-        if (os.charAt(0) == 'L' || os.charAt(0) == 'l'){
-            systemType = "Linux";
-        }else if (os.charAt(0) == 'W' || os.charAt(0) == 'w'){
-            systemType = "Windows";
-        }
+    public LLDP2Win(){
     }
 
-    //chcp 437 change to english
-    //chcp 936 change to chinese
-    public void getLocalInterface() throws IOException {
-        if (systemType == "Windows"){
-            runWindowsCommand();
-        }else if (systemType == "Linux"){
-            runLinuxCommand();
+    @Override
+    public JSONObject getLocalInterface(){
+        try {
+            List<String> terminals;
+            terminals = runCommand(firstWindowsCommand);
+            extractNetworkCard(terminals);
+        }catch (IOException e){
+            e.printStackTrace();
         }
+        return null;
     }
 
-    private void runWindowsCommand() throws IOException {
-        Process process = Runtime.getRuntime().exec(windowsCommand);
-        InputStream in = process.getInputStream();
-        BufferedReader br = new BufferedReader(
-                new InputStreamReader(in, "gbk"));
-        String line;
-        List<String> terminals = new ArrayList<>();
-        while ((line = br.readLine ()) != null){
-            if (line.length() != 0){
-                terminals.add(new String(line));
-            }
-        }
+    protected void extractNetworkCard(List<String> terminals){
         JSONObject origin = new JSONObject(), midObject = null;
-//        for (String terminal: terminals){
-//            System.out.println(terminal);
-//        }
         for (int i = 0; i < terminals.size(); i++){
             String terminal = terminals.get(i);
             if (terminal.charAt(0) != ' '){
@@ -87,78 +63,6 @@ public class LLDP2 {
             }
         }
         System.out.println(origin);
-    }
-
-    private void runLinuxCommand() throws IOException {
-        Process process = Runtime.getRuntime().exec(linuxCommand);
-        InputStream in = process.getInputStream();
-        BufferedReader br = new BufferedReader(
-                new InputStreamReader(in, "gbk"));
-        String line;
-        List<String> terminals = new ArrayList<>();
-        while ((line = br.readLine ()) != null){
-            if (line.length() != 0){
-                terminals.add(new String(line));
-            }
-        }
-        JSONObject origin = new JSONObject(), midObject = null;
-        for (String terminal: terminals){
-            System.out.println(terminal);
-            String midString = clearBrackets(terminal);
-            List<String> elements = new ArrayList<>();
-            String[] temp = midString.split(" ");
-            for (int i = 0; i < temp.length; i++){
-                if (temp[i].length() != 0){
-                    elements.add(temp[i]);
-//                    System.out.println(temp[i]);
-                }
-            }
-            if (terminal.charAt(0) != ' '){
-                JSONObject object = new JSONObject();
-                String name = elements.get(0).replace(":", "");
-                origin.put(name, object);
-                String flag = elements.get(1);
-                String midList[] = flag.split("=");
-                object.put(midList[0], midList[1]);
-                for (int i = 2; i < elements.size(); i = i + 2){
-                    object.put(elements.get(i), elements.get(i + 1));
-                }
-                midObject = object;
-            }else {
-                if (elements.size() % 2 == 0){
-                    for (int i = 0; i < elements.size(); i = i + 2){
-                        midObject.put(elements.get(i), elements.get(i + 1));
-                    }
-                }else {
-                    JSONObject xObject;
-                    if (midObject.get(elements.get(0)) != null){
-                        xObject = midObject.getJSONObject(elements.get(0));
-                    }else {
-                        xObject = new JSONObject();
-                        midObject.put(elements.get(0), xObject);
-                    }
-                    for (int i = 1; i < elements.size(); i = i + 2){
-                        xObject.put(elements.get(i), elements.get(i + 1));
-                    }
-                }
-            }
-        }
-        System.out.println(origin);
-    }
-
-    private String clearBrackets(String content){
-        String result = "";
-        int flag = 0;
-        for (int i = 0; i < content.length(); i++){
-            if (content.charAt(i) == '(' || content.charAt(i) == '<'){
-                flag++;
-            }else if (content.charAt(i) == ')' || content.charAt(i) == '>'){
-                flag--;
-            }else if (flag == 0){
-                result += content.charAt(i);
-            }
-        }
-        return result;
     }
 
     private String convertStandardWindows(String name){
