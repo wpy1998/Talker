@@ -19,7 +19,11 @@ public class LLDP {
         return null;
     }
 
-    protected List<String> runCommand(String command) throws IOException {
+    public List<String> runCommand(String command) throws IOException {
+        return runCommand(command, false);
+    }
+
+    public List<String> runCommand(String command, boolean isDebug) throws IOException {
         Process process = Runtime.getRuntime().exec(command);
         InputStream in = process.getInputStream();
         BufferedReader br = new BufferedReader(
@@ -29,6 +33,9 @@ public class LLDP {
         while ((line = br.readLine ()) != null){
             if (line.length() != 0){
                 terminals.add(line);
+            }
+            if (isDebug){
+                System.out.println(line);
             }
         }
         return terminals;

@@ -2,9 +2,11 @@ package Hardware;
 
 import Yang.Network.LLDP2Win;
 import Yang.Network.LLDP2linux;
+import Yang.Network.NetworkCard;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,11 +16,13 @@ import java.util.*;
 
 public class Computer {//获取硬件信息, LLDP
     public static String host_name = null, host_merge, systemType = "";
-    public static final String cuc_ip = "localhost";
-    public static final String topology_id = "tsn-network";
+    public static final String cuc_ip = "localhost", topology_id = "tsn-network",
+            win = "Windows", linux = "Linux";
     public static long firstSeen = System.currentTimeMillis();
     public Map<String, String> urls;
     public static List<String> ipv4s, ipv6s, macs;
+    @Getter
+    private List<NetworkCard> networkCardList;
     private LLDP lldp;
 
     public Computer(){
@@ -31,9 +35,9 @@ public class Computer {//获取硬件信息, LLDP
         urls.put("tsn-listener", "http://" + cuc_ip +
                 ":8181/restconf/config/tsn-listener-type:stream-listener-config/devices/");
         systemType = getSystemType();
-        if (systemType.equals("Windows")){
+        if (systemType.equals(win)){
             lldp = new LLDP2Win();
-        }else if (systemType.equals("Linux")){
+        }else if (systemType.equals(linux)){
             lldp = new LLDP2linux();
         }else {
             lldp = new LLDP();
@@ -41,6 +45,7 @@ public class Computer {//获取硬件信息, LLDP
         ipv4s = new ArrayList<>();
         ipv6s = new ArrayList<>();
         macs = new ArrayList<>();
+        networkCardList = new ArrayList<>();
         try {
             refresh();
             System.out.println(ipv4s + ", " + macs + ", " + ipv6s + ", " + host_name);
@@ -59,6 +64,7 @@ public class Computer {//获取硬件信息, LLDP
         macs.clear();
         ipv4s.clear();
         ipv6s.clear();
+        networkCardList.clear();
         InetAddress ia = InetAddress.getLocalHost();
         host_name = ia.getHostName();
 
@@ -81,8 +87,18 @@ public class Computer {//获取硬件信息, LLDP
             }
         }
 
-        JSONObject networkCards = lldp.getLocalInterface();
-        System.out.println(networkCards);
+        JSONObject networkCardsJSONObject = lldp.getLocalInterface();
+        if (systemType.equals(linux)){
+            for (String key: networkCardsJSONObject.keySet()){
+                NetworkCard networkCard = new NetworkCard();
+                networkCard.loadLinuxObject(networkCardsJSONObject.getJSONObject(key));
+            }
+        }else if (systemType.equals(win)){
+            for (String key: networkCardsJSONObject.keySet()){
+                NetworkCard networkCard = new NetworkCard();
+                networkCard.loadWindowsObject(networkCardsJSONObject.getJSONObject(key));
+            }
+        }
     }
 
     public void addComputerMessage(JSONObject inter){

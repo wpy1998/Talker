@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LLDP2linux extends LLDP {
-    private String firstLinuxCommand = "ifconfig -a", secondLinuxCommand = "ethtool ";
+    private final String firstLinuxCommand = "ifconfig -a", secondLinuxCommand = "ethtool ",
+            thirdLinuxCommandF = "tcpdump -i ", thirdLinuxCommandS = " -nev ether proto 0x88cc -c 1";
 
     public LLDP2linux(){
     }
@@ -28,6 +29,7 @@ public class LLDP2linux extends LLDP {
         return networkCards;
     }
 
+    //base on ifconfig
     private JSONObject extractNetworkCard(List<String> terminals) throws IOException {
         JSONObject origin = new JSONObject(), midObject = null;
         //get all network card
@@ -87,6 +89,7 @@ public class LLDP2linux extends LLDP {
         return origin;
     }
 
+    //base on ethtool
     private JSONObject extractLinuxEthTool(List<String> terminals){
         JSONObject origin = new JSONObject();
         for (int i = 1; i < terminals.size(); i++){
