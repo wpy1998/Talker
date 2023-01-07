@@ -1,22 +1,24 @@
 package Hardware;
 
-import Yang.TopologyLauncher;
 import Yang.StreamLauncher;
+import Yang.TopologyLauncher;
 import lombok.Builder;
 import lombok.NonNull;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
 public class Command {
     private TopologyLauncher topologyLauncher;
     private StreamLauncher streamLauncher;
+    private Computer computer;
 
     @Builder
     public Command(@NonNull TopologyLauncher topologyLauncher,
-                   @NonNull StreamLauncher streamLauncher){
+                   @NonNull StreamLauncher streamLauncher,
+                   @NonNull Computer computer){
         this.topologyLauncher = topologyLauncher;
         this.streamLauncher = streamLauncher;
+        this.computer = computer;
     }
 
     public void start() throws Exception {
@@ -24,7 +26,7 @@ public class Command {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("*****************************************************************");
-        System.out.println("Please input the number which pattern to start: \n" +
+        System.out.println("<TSN Client> Please input the number which pattern to start: <TSN Client>\n" +
                 "1. Talker\n2. Listener\n3. Both");
         System.out.println("*****************************************************************");
 
@@ -40,18 +42,21 @@ public class Command {
 
         topologyLauncher.startTimerThread();
         if (pattern == 1){
-            System.out.println("--Start Talker Client--");
+            System.out.println("<TSN Client> Start Talker Client <TSN Client>");
             streamLauncher.startPollingThread();
-            streamLauncher.registerTalkerStream("talker client message");
+            streamLauncher.registerTalkerStream("talker client message",
+                    computer.getNetworkCards().get(0));
         }else if (pattern == 2){
-            System.out.println("--Start Listener Server--");
-            streamLauncher.startListenerServer();
+            System.out.println("<TSN Client> Start Listener Server <TSN Client>");
+            streamLauncher.startListenerServer(computer.getNetworkCards().get(0));
         }else if(pattern == 3){
-            System.out.println("--Start Talker Client and Listener Server--");
-            streamLauncher.startListenerServer();
-            streamLauncher.registerTalkerStream("talker client message");
+            System.out.println("<TSN Client> Start Talker Client and Listener Server <TSN Client>");
+            streamLauncher.startPollingThread();
+            streamLauncher.startListenerServer(computer.getNetworkCards().get(0));
+            streamLauncher.registerTalkerStream("talker client message",
+                    computer.getNetworkCards().get(0));
         }else {
-            System.out.println("--Start Test Pattern--");
+            System.out.println("<TSN Client> Start Test Pattern <TSN Client>");
         }
 
         while (scanner.hasNext()){

@@ -43,7 +43,7 @@ public class ListenerServer {
                     int resultCode = join_listener();
 
                     if(resultCode >= 400 || resultCode < 100){
-                        System.out.println("listener register failed");
+                        System.out.println("<TSN Client> listener register failed <TSN Client>");
                         return;
                     }
 
@@ -66,15 +66,15 @@ public class ListenerServer {
                             });
                     future = b.bind(port).sync();
                     if (future.isSuccess()){
-                        System.out.println("Server Start Successful");
+                        System.out.println("<TSN Client> Server Start Successful <TSN Client>");
                     }else {
-                        System.out.println("Server Start Failure");
+                        System.out.println("<TSN Client> Server Start Failure <TSN Client>");
                         stopServer();
                     }
                     future.channel().closeFuture().sync();
                 }catch (InterruptedException e){
                     stopServer();
-                    System.out.println("--Thread: ServerThread interrupted--");
+                    System.out.println("<TSN Client> Thread: ServerThread interrupted <TSN Client>");
                 }
             }
 
@@ -113,14 +113,14 @@ public class ListenerServer {
         streams.add(joinStream);
         JSONObject device = new JSONObject();
         device.put("stream-list", streams);
-        System.out.println("--register listener to controller--");
+        System.out.println("<TSN Client> register listener to controller <TSN Client>");
         return restfulPutInfo.putInfo(device.toString());
     }
 
     private int leave_listener(){
         String url = this.url + header.getKey();
         RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder().url(url).build();
-        System.out.println("--remove listener from controller--");
+        System.out.println("<TSN Client> remove listener from controller <TSN Client>");
         return restfulDeleteInfo.deleteInfo();
     }
 }

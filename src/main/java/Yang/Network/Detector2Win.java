@@ -1,15 +1,14 @@
 package Yang.Network;
 
-import Hardware.LLDP;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
 
-public class LLDP2Win extends LLDP {
+public class Detector2Win extends Detector {
     private String firstWindowsCommand = "ipconfig -all";
 
-    public LLDP2Win(){
+    public Detector2Win(){
     }
 
     @Override

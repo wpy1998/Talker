@@ -1,17 +1,16 @@
 package Yang.Network;
 
-import Hardware.LLDP;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LLDP2linux extends LLDP {
+public class Detector2Linux extends Detector {
     private final String firstLinuxCommand = "ifconfig -a", secondLinuxCommand = "ethtool ",
             thirdLinuxCommandF = "tcpdump -i ", thirdLinuxCommandS = " -nev ether proto 0x88cc -c 1";
 
-    public LLDP2linux(){
+    public Detector2Linux(){
     }
 
     //chcp 437 change to english

@@ -1,13 +1,12 @@
 package Yang;
 
+import Hardware.Computer;
+import Yang.Network.NetworkCard;
 import Yang.Stream.ListenerServer;
 import Yang.Stream.TalkerClient;
 import Yang.Stream.Header;
 import lombok.Builder;
 import lombok.NonNull;
-
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,15 +14,12 @@ public class StreamLauncher {
     private String talkerFront, listenerFront, hostName;
     private static List<TalkerClient> clients = new ArrayList<>();
     private static ListenerServer server = null;
-
     private static Thread pollingThread = null;
 
-    @Builder
-    public StreamLauncher(@NonNull String talkerFront, @NonNull String listenerFront,
-                          @NonNull String hostName){
-        this.talkerFront = talkerFront;
-        this.listenerFront = listenerFront;
-        this.hostName = hostName;
+    public StreamLauncher(Computer computer){
+        this.talkerFront = computer.urls.get("tsn-talker");
+        this.listenerFront = computer.urls.get("tsn-listener");
+        this.hostName = computer.host_name;
     }
 
     public void stopStreamLauncher(){
@@ -33,7 +29,7 @@ public class StreamLauncher {
 
     public void startPollingThread(){
         if (pollingThread != null){
-            System.out.println("Polling Thread has started");
+            System.out.println("<TSN Client> Polling Thread has started <TSN Client>");
             return;
         }
         pollingThread = new Thread(new Runnable() {
@@ -42,14 +38,14 @@ public class StreamLauncher {
                 int timeInterval = 15 * 1000;
                 try {
                     while (true){
-                        System.out.println("--Unallocated stream shown as follows: --");
+                        System.out.println("<TSN Client> Unallocated stream shown as follows: <TSN Client>");
                         for (TalkerClient talkerClient: clients){
                             System.out.println(talkerClient.getKey());
                         }
                         Thread.sleep(timeInterval);
                     }
                 }catch (InterruptedException e){
-                    System.out.println("--Thread: PollingThread interrupted--");
+                    System.out.println("<TSN Client> Thread: PollingThread interrupted <TSN Client>");
                 }
             }
         });
@@ -107,17 +103,18 @@ public class StreamLauncher {
         return s1 + "-" + s2;
     }
 
-    public void registerTalkerStream(String body) throws Exception {
+    public void registerTalkerStream(String body, NetworkCard networkCard) throws Exception {
         int uniqueId = allocateUniqueId();
         Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
                 .rank((short) 0)
+                .networkCard(networkCard)
                 .build();
 
         TalkerClient client = TalkerClient.builder()
                 .host("localhost")
                 .port(17835)
                 .header(header)
-                .url(this.talkerFront + this.hostName + "/stream-list/")
+                .url(this.talkerFront + this.hostName + networkCard.getMac() + "/stream-list/")
                 .body(body)
                 .build();
         clients.add(client);
@@ -132,13 +129,14 @@ public class StreamLauncher {
      * @return
      */
     //listener 以下参数, 函数仅在操作listener config库时使用
-    public void startListenerServer(){
+    public void startListenerServer(NetworkCard networkCard){
         int uniqueId = allocateUniqueId();
         Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
                 .rank((short) 0)
+                .networkCard(networkCard)
                 .build();
         server = ListenerServer.builder().port(17835).header(header)
-                .url(this.listenerFront + hostName + "/stream-list/").build();
+                .url(this.listenerFront + hostName + networkCard.getMac() + "/stream-list/").build();
         server.start();
     }
 

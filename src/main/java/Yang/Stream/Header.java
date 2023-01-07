@@ -1,8 +1,10 @@
 package Yang.Stream;
 
+import Yang.Network.NetworkCard;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
@@ -46,11 +48,13 @@ public class Header {//负责数据流header内容的转化
     @Setter
     private boolean isHaveIpv6, isHaveIpv4, isHaveVlan, isHaveMac;
 
+
     @Builder
     public Header(@NonNull String uniqueId, @NonNull short rank,
                   List<String> dest_mac, List<String> dest_ip, List<String> dest_ip6,
                   Boolean isHaveIpv6, Boolean isHaveIpv4,
-                  Boolean isHaveVlan, Boolean isHaveMac){
+                  Boolean isHaveVlan, Boolean isHaveMac,
+                  @NonNull NetworkCard networkCard){
         this.isHaveIpv6 = isHaveIpv6 == null ? false : isHaveIpv6;
         this.isHaveIpv4 = isHaveIpv4 == null ? false : isHaveIpv4;
         this.isHaveMac = isHaveMac == null ? true : isHaveMac;
@@ -63,21 +67,21 @@ public class Header {//负责数据流header内容的转化
         this.rank = rank;
 
         //endStationInterface
-        this.macAddress = macs.get(0);
-        this.interfaceName = host_merge;
+        this.macAddress = networkCard.getMac();
+        this.interfaceName = networkCard.getName() + networkCard.getMac();
 
         //dateFrameSpecification
         this.index = 0;
 
         if (dest_mac == null){
             this.destinationMacAddress = new ArrayList<>();
-            this.destinationMacAddress.add(macs.get(0));
+            this.destinationMacAddress.add(networkCard.getMac());
         }else this.destinationMacAddress = dest_mac;
-        this.sourceMacAddress = macs.get(0);
+        this.sourceMacAddress = networkCard.getMac();
         this.priorityCodePoint = 0;
         this.vlanId = 0;
 
-        this.sourceIpAddressV4 = ipv4s.get(0);
+        this.sourceIpAddressV4 = networkCard.getIp();
         if (dest_ip == null){
             destinationIpAddressV4 = new ArrayList<>();
             destinationIpAddressV4.add("127.0.0.1");
@@ -89,7 +93,7 @@ public class Header {//负责数据流header内容的转化
         this.sourcePortV4 = 0;
         this.destinationPortV4 = 0;
 
-        this.sourceIpAddressV6 = ipv6s.get(0);
+        this.sourceIpAddressV6 = networkCard.getIpv6();
         if (dest_ip == null){
             destinationIpAddressV6 = new ArrayList<>();
             destinationIpAddressV6.add("0000:0000:0000:0000:0000:0000:0000:0000");

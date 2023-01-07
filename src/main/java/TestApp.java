@@ -1,16 +1,26 @@
 import Hardware.Computer;
-import Hardware.LLDP;
+import Yang.StreamLauncher;
+import Yang.TopologyLauncher;
 
-import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.Scanner;
 
 public class TestApp {
-    public static void main(String[] args) {
-//        Computer computer = new Computer();
-        LLDP lldp = new LLDP();
-        try {
-            lldp.runCommand("tcpdump -i ens33 -nev ether proto 0x88cc -c 1", true);
-        }catch (IOException e){
-            e.printStackTrace();
+    public static void main(String[] args) throws Exception {
+        Computer computer = new Computer();
+        TopologyLauncher topologyLauncher = new TopologyLauncher(computer);
+        topologyLauncher.startTimerThread();
+        StreamLauncher streamLauncher = new StreamLauncher(computer);
+        streamLauncher.startPollingThread();
+        streamLauncher.registerTalkerStream("aaaaa", computer.getNetworkCards().get(0));
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNext()){
+            String str = scanner.next();
+            if (str.equals("exit")){
+                streamLauncher.stopStreamLauncher();
+                topologyLauncher.stopTimerThread();
+                break;
+            }
         }
     }
 }

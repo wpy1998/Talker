@@ -1,7 +1,6 @@
-package Hardware;
+package Yang.Network;
 
 import com.alibaba.fastjson.JSONObject;
-import lombok.Getter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,9 +9,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LLDP {
+public class Detector {
 
-    public LLDP(){
+    public Detector(){
     }
 
     public JSONObject getLocalInterface(){
