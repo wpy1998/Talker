@@ -1,5 +1,5 @@
 import Hardware.Computer;
-import Yang.Network.NetworkCard;
+import Yang.Topology.NetworkCard;
 import Yang.StreamLauncher;
 
 import java.io.IOException;

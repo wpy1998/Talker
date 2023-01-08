@@ -1,12 +1,11 @@
 package Yang;
 
 import Hardware.Computer;
-import Yang.Network.NetworkCard;
+import Yang.Topology.NetworkCard;
 import Yang.Stream.ListenerServer;
 import Yang.Stream.TalkerClient;
 import Yang.Stream.Header;
-import lombok.Builder;
-import lombok.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 

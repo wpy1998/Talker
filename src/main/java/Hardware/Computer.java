@@ -1,9 +1,9 @@
 package Hardware;
 
-import Yang.Network.Detector;
-import Yang.Network.Detector2Win;
-import Yang.Network.Detector2Linux;
-import Yang.Network.NetworkCard;
+import Yang.Topology.Detector;
+import Yang.Topology.Detector2Win;
+import Yang.Topology.Detector2Linux;
+import Yang.Topology.NetworkCard;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 

@@ -1,17 +1,14 @@
 package Yang.Stream;
 
-import Yang.Network.NetworkCard;
+import Yang.Topology.NetworkCard;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static Hardware.Computer.*;
 
 public class Header {//负责数据流header内容的转化
     //streamId

@@ -1,10 +1,7 @@
 import Hardware.Computer;
-import Yang.Network.NetworkCard;
+import Yang.Topology.NetworkCard;
 import Yang.Stream.Header;
 import Yang.Stream.TalkerClient;
-import Yang.StreamLauncher;
-
-import java.io.UnsupportedEncodingException;
 
 public class TalkerClientApp {
     public static void main(String[] args) throws Exception {

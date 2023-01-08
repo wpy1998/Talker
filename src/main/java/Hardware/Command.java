@@ -1,6 +1,6 @@
 package Hardware;
 
-import Yang.Network.NetworkCard;
+import Yang.Topology.NetworkCard;
 import Yang.StreamLauncher;
 import Yang.TopologyLauncher;
 import lombok.Builder;
