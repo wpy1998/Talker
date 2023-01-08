@@ -6,7 +6,7 @@ import Yang.Stream.TalkerClient;
 public class TalkerClientApp {
     public static void main(String[] args) throws Exception {
         Computer computer = new Computer();
-        NetworkCard networkCard = computer.getNetworkCards().get(0);
+        NetworkCard networkCard = computer.getCurrentNetworkCard();
 
         String body = "123456789012345678901234567890123456789012345678901234567890";
         Header header = Header.builder().uniqueId("00-00")
@@ -18,7 +18,7 @@ public class TalkerClientApp {
                 .port(17835)
                 .header(header)
                 .url(computer.urls.get("tsn-talker") + computer.host_name +
-                        computer.getNetworkCards().get(0).getMac() + "/stream-list/")
+                        networkCard.getMac() + "/stream-list/")
                 .body(body)
                 .build();
         client.start();

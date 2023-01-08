@@ -7,6 +7,7 @@ import Yang.Topology.*;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TopologyLauncher {
@@ -34,10 +35,7 @@ public class TopologyLauncher {
                     int timeInterval = 10 * 60 * 1000;
                     while (true){
                         computer.refresh();
-                        List<NetworkCard> networkCards = computer.getNetworkCards();
-                        for (int i = 0; i < networkCards.size(); i++){
-                            registerDevice(networkCards.get(i));
-                        }
+                        registerDevice();
                         Thread.sleep(timeInterval);
                     }
                 }catch (InterruptedException e){
@@ -55,13 +53,11 @@ public class TopologyLauncher {
         if (timerThread != null && timerThread.isAlive()){
             timerThread.interrupt();
         }
-        List<NetworkCard> networkCards = computer.getNetworkCards();
-        for (int i = 0; i < networkCards.size(); i++){
-            removeDevice(networkCards.get(i));
-        }
+        removeDevice();
     }
 
-    public void registerDevice(NetworkCard networkCard){
+    public void registerDevice(){
+        NetworkCard networkCard = computer.getCurrentNetworkCard();
         String url = this.urlFront + "topology/" + topologyId + "/node/" + networkCard.getNode_id();
         JSONObject node = networkCard.getJSONObject();
         System.out.println("<TSN Client> register node to controller <TSN Client>");
@@ -73,7 +69,8 @@ public class TopologyLauncher {
         restfulPutInfo.putInfo(object.toString());
     }
 
-    public void removeDevice(NetworkCard networkCard){
+    public void removeDevice(){
+        NetworkCard networkCard = computer.getCurrentNetworkCard();
         String url = this.urlFront + "topology/" + topologyId + "/node/" + networkCard.getNode_id();
         System.out.println("<TSN Client> remove node from controller <TSN Client>");
         RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder().url(url).build();

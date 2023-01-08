@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class ListenerServerApp {
     public static void main(String[] args) throws IOException {
         Computer computer = new Computer();
-        NetworkCard networkCard = computer.getNetworkCards().get(0);
+        NetworkCard networkCard = computer.getCurrentNetworkCard();
 
         StreamLauncher streamLauncher = new StreamLauncher(computer);
         streamLauncher.startListenerServer(networkCard);

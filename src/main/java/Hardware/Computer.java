@@ -17,7 +17,7 @@ public class Computer {//获取硬件信息, LLDP
     public static long firstSeen = System.currentTimeMillis();
     public Map<String, String> urls;
     @Getter
-    private List<NetworkCard> networkCards;
+    private NetworkCard currentNetworkCard;
     private Detector detector;
 
     public Computer() throws UnknownHostException {
@@ -29,7 +29,6 @@ public class Computer {//获取硬件信息, LLDP
                 ":8181/restconf/config/network-topology:network-topology/");
         urls.put("tsn-listener", "http://" + cuc_ip +
                 ":8181/restconf/config/tsn-listener-type:stream-listener-config/devices/");
-        networkCards = new ArrayList<>();
         systemType = getSystemType();
 
         if (getSystemType().equals(win)){
@@ -44,19 +43,16 @@ public class Computer {//获取硬件信息, LLDP
     }
 
     public void refresh() throws UnknownHostException {
-        networkCards.clear();
         JSONObject networkCardsJSONObject = detector.getLocalInterface();
         if (getSystemType().equals(linux)){
             for (String key: networkCardsJSONObject.keySet()){
-                NetworkCard networkCard = new NetworkCard(key, host_name);
-                networkCard.loadLinuxObject(networkCardsJSONObject.getJSONObject(key));
-                networkCards.add(networkCard);
+                currentNetworkCard = new NetworkCard(key, host_name);
+                currentNetworkCard.loadLinuxObject(networkCardsJSONObject.getJSONObject(key));
             }
         }else if (getSystemType().equals(win)){
             for (String key: networkCardsJSONObject.keySet()){
-                NetworkCard networkCard = new NetworkCard(key, host_name);
-                networkCard.loadWindowsObject(networkCardsJSONObject.getJSONObject(key));
-                networkCards.add(networkCard);
+                currentNetworkCard = new NetworkCard(key, host_name);
+                currentNetworkCard.loadWindowsObject(networkCardsJSONObject.getJSONObject(key));
             }
         }
     }

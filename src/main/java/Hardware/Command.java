@@ -42,7 +42,7 @@ public class Command {
         }
 
         topologyLauncher.startTimerThread();
-        NetworkCard networkCard = computer.getNetworkCards().get(0);
+        NetworkCard networkCard = computer.getCurrentNetworkCard();
         if (pattern == 1){
             System.out.println("<TSN Client> Start Talker Client <TSN Client>");
             streamLauncher.startPollingThread();

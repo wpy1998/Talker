@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Detector2Linux extends Detector {
-    private final String firstLinuxCommand = "ifconfig -a", secondLinuxCommand = "ethtool ",
-            thirdLinuxCommandF = "tcpdump -i ", thirdLinuxCommandS = " -nev ether proto 0x88cc -c 1";
+    private final String firstLinuxCommand = "ifconfig -a", secondLinuxCommand = "ethtool ";
 
     public Detector2Linux(){
     }
