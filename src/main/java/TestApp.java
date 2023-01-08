@@ -1,4 +1,5 @@
 import Hardware.Computer;
+import Yang.Network.NetworkCard;
 import Yang.StreamLauncher;
 import Yang.TopologyLauncher;
 
@@ -12,7 +13,8 @@ public class TestApp {
         topologyLauncher.startTimerThread();
         StreamLauncher streamLauncher = new StreamLauncher(computer);
         streamLauncher.startPollingThread();
-        streamLauncher.registerTalkerStream("aaaaa", computer.getNetworkCards().get(0));
+        NetworkCard networkCard = computer.getNetworkCards().get(0);
+        streamLauncher.registerTalkerStream("aaaaa", networkCard);
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNext()){
             String str = scanner.next();

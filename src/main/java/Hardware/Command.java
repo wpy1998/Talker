@@ -1,5 +1,6 @@
 package Hardware;
 
+import Yang.Network.NetworkCard;
 import Yang.StreamLauncher;
 import Yang.TopologyLauncher;
 import lombok.Builder;
@@ -41,20 +42,19 @@ public class Command {
         }
 
         topologyLauncher.startTimerThread();
+        NetworkCard networkCard = computer.getNetworkCards().get(0);
         if (pattern == 1){
             System.out.println("<TSN Client> Start Talker Client <TSN Client>");
             streamLauncher.startPollingThread();
-            streamLauncher.registerTalkerStream("talker client message",
-                    computer.getNetworkCards().get(0));
+            streamLauncher.registerTalkerStream("talker client message", networkCard);
         }else if (pattern == 2){
             System.out.println("<TSN Client> Start Listener Server <TSN Client>");
-            streamLauncher.startListenerServer(computer.getNetworkCards().get(0));
+            streamLauncher.startListenerServer(networkCard);
         }else if(pattern == 3){
             System.out.println("<TSN Client> Start Talker Client and Listener Server <TSN Client>");
             streamLauncher.startPollingThread();
-            streamLauncher.startListenerServer(computer.getNetworkCards().get(0));
-            streamLauncher.registerTalkerStream("talker client message",
-                    computer.getNetworkCards().get(0));
+            streamLauncher.startListenerServer(networkCard);
+            streamLauncher.registerTalkerStream("talker client message", networkCard);
         }else {
             System.out.println("<TSN Client> Start Test Pattern <TSN Client>");
         }
