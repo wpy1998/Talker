@@ -24,7 +24,6 @@ public class NetworkCard {
     }
 
     public void loadLinuxObject(JSONObject origin){
-        System.out.println(origin);
         mac = origin.getString("ether").replace(":", "-");
         ip = origin.getString("inet");
         ipv6 = origin.getString("inet6");
