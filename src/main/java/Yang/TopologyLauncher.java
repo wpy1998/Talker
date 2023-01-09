@@ -62,8 +62,8 @@ public class TopologyLauncher {
         JSONObject node = networkCard.getJSONObject();
         System.out.println("<TSN Client> register node to controller <TSN Client>");
         RestfulPutInfo restfulPutInfo = RestfulPutInfo.builder().url(url).build();
-        JSONArray array = new JSONArray();
-        array.add(node);
+//        JSONArray array = new JSONArray();
+//        array.add(node);
         JSONObject object = new JSONObject();
         object.put("node", node);
         restfulPutInfo.putInfo(object.toString());
