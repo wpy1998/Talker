@@ -65,7 +65,7 @@ public class Header {//负责数据流header内容的转化
 
         //endStationInterface
         this.macAddress = networkCard.getMac();
-        this.interfaceName = networkCard.getName() + networkCard.getMac();
+        this.interfaceName = networkCard.getName();
 
         //dateFrameSpecification
         this.index = 0;

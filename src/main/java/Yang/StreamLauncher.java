@@ -113,7 +113,8 @@ public class StreamLauncher {
                 .host("localhost")
                 .port(17835)
                 .header(header)
-                .url(this.talkerFront + this.hostName + networkCard.getMac() + "/stream-list/")
+                .url(this.talkerFront + networkCard.getMac().replace(":", "-")
+                        + "/stream-list/")
                 .body(body)
                 .build();
         clients.add(client);
@@ -135,7 +136,8 @@ public class StreamLauncher {
                 .networkCard(networkCard)
                 .build();
         server = ListenerServer.builder().port(17835).header(header)
-                .url(this.listenerFront + hostName + networkCard.getMac() + "/stream-list/").build();
+                .url(this.listenerFront + networkCard.getMac().replace(":", "-")
+                        + "/stream-list/").build();
         server.start();
     }
 

@@ -86,7 +86,6 @@ public class TalkerClient {
 
     private int join_talker(){
         String url = this.url + header.getKey();
-//        System.out.println(url);
         RestfulPutInfo restfulPutInfo = RestfulPutInfo.builder()
                 .url(url)
 //                .isDebug(true)

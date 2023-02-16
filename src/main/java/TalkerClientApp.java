@@ -17,8 +17,8 @@ public class TalkerClientApp {
                 .host("localhost")
                 .port(17835)
                 .header(header)
-                .url(computer.urls.get("tsn-talker") + computer.host_name +
-                        networkCard.getMac() + "/stream-list/")
+                .url(computer.urls.get("tsn-talker") + networkCard.getMac()
+                        .replace(":", "-") + "/stream-list/")
                 .body(body)
                 .build();
         client.start();

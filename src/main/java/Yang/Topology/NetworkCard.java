@@ -40,7 +40,7 @@ public class NetworkCard {
             }
         }
         speed = Integer.parseInt(midString);
-        node_id = this.hostName + this.mac;
+        node_id = this.mac.replace(":", "-");
     }
 
     public JSONObject getJSONObject(){
