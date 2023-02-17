@@ -13,24 +13,25 @@ public class Detector2Win extends Detector {
 
     @Override
     public JSONObject getLocalInterface(){
+        JSONObject networkCards = null;
         try {
             List<String> terminals;
             terminals = runCommand(firstWindowsCommand);
-            extractNetworkCard(terminals);
+            networkCards = extractNetworkCard(terminals);
         }catch (IOException e){
             e.printStackTrace();
         }
-        return null;
+        return networkCards;
     }
 
-    protected void extractNetworkCard(List<String> terminals){
+    protected JSONObject extractNetworkCard(List<String> terminals){
         JSONObject origin = new JSONObject(), midObject = null;
         for (int i = 0; i < terminals.size(); i++){
             String terminal = terminals.get(i);
             if (terminal.charAt(0) != ' '){
                 JSONObject object = new JSONObject();
                 String key = terminal.replace(":", "");
-                System.out.println(key);
+//                System.out.println("***" + key + "***");
                 origin.put(key, object);
                 midObject = object;
             }else {
@@ -49,7 +50,7 @@ public class Detector2Win extends Detector {
                 key = convertStandardWindows(key);
                 value = clearBrackets(convertStandardWindows(value));
                 if (value == "") continue;
-                System.out.println("key = " + key + ", value = " + value);
+//                System.out.println("key = " + key + ", value = " + value);
                 if (key == "Default Gateway" || key == "DNS Servers"){
                     midObject.put(key + " IPV6", value);
                     value = terminals.get(i + 1).replace(" ", "");
@@ -61,7 +62,14 @@ public class Detector2Win extends Detector {
                 }
             }
         }
-        System.out.println(origin);
+        JSONObject networkCardObject = origin.getJSONObject("以太网适配器 以太网");
+//        System.out.println(networkCardObject);
+//        for (String key: networkCardObject.keySet()){
+//            System.out.println(key + ", " + networkCardObject.getString(key));
+//        }
+        JSONObject result = new JSONObject();
+        result.put("Ethernet adapter Ethernet", networkCardObject);
+        return result;
     }
 
     private String convertStandardWindows(String name){

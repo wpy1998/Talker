@@ -14,7 +14,7 @@ public class TalkerClientApp {
                 .networkCard(networkCard)
                 .build();
         TalkerClient client = TalkerClient.builder()
-                .host("localhost")
+                .host(computer.cuc_ip)
                 .port(17835)
                 .header(header)
                 .url(computer.urls.get("tsn-talker") + networkCard.getMac()

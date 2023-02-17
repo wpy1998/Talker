@@ -21,6 +21,9 @@ public class NetworkCard {
     }
 
     public void loadWindowsObject(JSONObject origin){
+        mac = origin.getString("Physical Address").replace(" ", "");
+        ip = origin.getString("IPv4 Address").replace(" ", "");
+        node_id = this.mac.replace(":", "-");
     }
 
     public void loadLinuxObject(JSONObject origin){
