@@ -61,11 +61,12 @@ public class MonitorServer {
                     future.channel().closeFuture().sync();
                 }catch (InterruptedException e){
                     stopServer();
-                    System.out.println("<TSN Client MonitorServer> Server Stopped.");
                 }
             }
 
             public void stopServer(){
+                handler.clearTalkerClients();
+                System.out.println("<TSN Client MonitorServer> Server Stopped.");
                 if (bossGroup != null)
                     bossGroup.shutdownGracefully();
                 if (workerGroup != null)

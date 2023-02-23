@@ -71,4 +71,12 @@ public class MonitorServerHandler extends ChannelInboundHandlerAdapter {
             talkerClients.remove(key);
         }
     }
+
+    public void clearTalkerClients(){
+        for (String key: talkerClients.keySet()){
+            TalkerClient client = talkerClients.get(key);
+            client.leave_talker();
+        }
+        talkerClients.clear();
+    }
 }
