@@ -8,13 +8,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="talker" />
-        <module name="tsn_client" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="Client" target="8" />
       <module name="Restful-Server" target="8" />
       <module name="Server" target="8" />
+      <module name="tsn_client" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
