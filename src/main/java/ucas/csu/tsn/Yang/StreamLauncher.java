@@ -113,6 +113,11 @@ public class StreamLauncher {
     }
 
     public void registerTalkerStream(String body, NetworkCard networkCard) throws Exception {
+        String result = "";
+        for (int i = 0; i < 100; i++){
+            result += body;
+        }
+        body = result;
         int uniqueId = allocateUniqueId();
         Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
                 .rank((short) 0)

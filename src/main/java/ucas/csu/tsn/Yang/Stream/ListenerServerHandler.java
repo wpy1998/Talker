@@ -14,7 +14,7 @@ public class ListenerServerHandler extends ChannelInboundHandlerAdapter {
         JSONObject object = JSONObject.parseObject((String) rpcRequest.getData());
         long timeTap = object.getLong("timeTap"), current = System.currentTimeMillis();
         System.out.println("<TSN Client listenerServer> Client Message: " +
-                object.getString("body") + ", costTime = " + (current - timeTap));
+                object.getString("body").length() + ", costTime = " + (current - timeTap));
     }
 
     @Override
