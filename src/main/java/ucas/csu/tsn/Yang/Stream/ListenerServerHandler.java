@@ -8,14 +8,6 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 public class ListenerServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg){
-//        RpcRequest request = (RpcRequest) msg;
-//        System.out.println("Server GET: " + request.toString());
-//        RpcResponse response = new RpcResponse();
-//        response.setId(UUID.randomUUID().toString());
-//        response.setData("Server message");
-//        response.setStatus(1);
-//        ctx.writeAndFlush(response);
-
         System.out.println("Client: " + ctx.channel().remoteAddress());
         RpcRequest rpcRequest = (RpcRequest) msg;
         System.out.println("Client Message: " + rpcRequest.getData());

@@ -22,6 +22,7 @@ public class TalkerClientHandler extends SimpleChannelInboundHandler<RpcResponse
     public TalkerClientHandler(String body){
         this.body = body;
     }
+
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext,
                                 RpcResponse rpcResponse) throws Exception {

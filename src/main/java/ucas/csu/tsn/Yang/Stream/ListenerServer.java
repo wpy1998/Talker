@@ -23,7 +23,6 @@ public class ListenerServer {
     private final int port;
     private Header header;
     private String url;
-
     private Thread serverThread;
 
     @Builder
