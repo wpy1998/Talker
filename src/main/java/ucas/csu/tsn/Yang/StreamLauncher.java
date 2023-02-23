@@ -8,6 +8,7 @@ import ucas.csu.tsn.Yang.Stream.ListenerServer;
 import ucas.csu.tsn.Yang.Stream.Header;
 
 import java.util.List;
+import java.util.Map;
 
 public class StreamLauncher {
     private String talkerFront, listenerFront, hostName;
@@ -43,17 +44,18 @@ public class StreamLauncher {
                 int timeInterval = 15 * 1000;
                 try {
                     while (true){
-                        List<TalkerClient> talkerClients = monitorServer.getTalkerClients();
+                        Map<String, TalkerClient> talkerClients = monitorServer.getTalkerClients();
                         if (talkerClients.size() != 0){
-                            System.out.println("<TSN Client StreamLauncher> Unallocated stream shown as follows: ");
+                            System.out.println("<TSN Client StreamLauncher> Unallocated stream " +
+                                    "shown as follows: ");
                         }
-                        for (TalkerClient talkerClient: talkerClients){
-                            System.out.println(talkerClient.getKey());
+                        for (String key: talkerClients.keySet()){
+                            System.out.println(key);
                         }
                         Thread.sleep(timeInterval);
                     }
                 }catch (InterruptedException e){
-                    System.out.println("<TSN Client StreamLauncher> Thread: PollingThread interrupted.");
+                    System.out.println("<TSN Client StreamLauncher> PollingThread interrupted.");
                 }
             }
         });

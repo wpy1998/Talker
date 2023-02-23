@@ -14,20 +14,19 @@ import ucas.csu.tsn.MonitorEncoder;
 import ucas.csu.tsn.MonitorRequest;
 import ucas.csu.tsn.MonitorResponse;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MonitorServer {
     protected int port = 9802;
     protected Thread serverThread;
-    @Getter
-    private List<TalkerClient> talkerClients;
+    private MonitorServerHandler handler;
 
     public MonitorServer(){
-        talkerClients = new ArrayList<>();
     }
 
     private void initServer(){
+        handler = new MonitorServerHandler();
         serverThread = new Thread(new Runnable() {
             EventLoopGroup bossGroup, workerGroup;
             ChannelFuture future;
@@ -47,20 +46,22 @@ public class MonitorServer {
                                     socketChannel.pipeline()
                                             .addLast(new MonitorDecoder(MonitorRequest.class))
                                             .addLast(new MonitorEncoder(MonitorResponse.class))
-                                            .addLast(new MonitorServerHandler());
+                                            .addLast(handler);
                                 }
                             });
                     future = b.bind(port).sync();
                     if (future.isSuccess()){
-                        System.out.println("<TSN Client MonitorServer> MonitorServer Start Successful.");
+                        System.out.println("<TSN Client MonitorServer> MonitorServer Start" +
+                                " Successful.");
                     }else {
-                        System.out.println("<TSN Client MonitorServer> MonitorServer Start Failure.");
+                        System.out.println("<TSN Client MonitorServer> MonitorServer Start" +
+                                " Failure.");
                         stopServer();
                     }
                     future.channel().closeFuture().sync();
                 }catch (InterruptedException e){
                     stopServer();
-                    System.out.println("<TSN Client MonitorServer> Server Stop.");
+                    System.out.println("<TSN Client MonitorServer> Server Stopped.");
                 }
             }
 
@@ -85,24 +86,18 @@ public class MonitorServer {
         if (serverThread != null){
             serverThread.interrupt();
         }
-        talkerClients.clear();
         System.out.println("<TSN Client MonitorServer> Server has stopped.");
     }
 
-    synchronized public void insertTalkerClient(TalkerClient client){
-        System.out.println("<TSN Client MonitorServer> Server insert TalkerClient " +
-                client.getKey() + ".");
-        talkerClients.add(client);
+    public void insertTalkerClient(TalkerClient client){
+        handler.insertTalkerClient(client);
     }
 
-    synchronized public void removeTalkerClient(String key){
-        for (TalkerClient client: talkerClients){
-            if (key.equals(client.getKey())){
-                System.out.println("<TSN Client MonitorServer> Server remove TalkerClient " +
-                        client.getKey() + ".");
-                talkerClients.remove(client);
-                return;
-            }
-        }
+    public void removeTalkerClient(String key){
+        handler.removeTalkerClient(key);
+    }
+
+    public Map<String, TalkerClient> getTalkerClients(){
+        return handler.getTalkerClients();
     }
 }

@@ -74,7 +74,8 @@ public class ListenerServer {
                     future.channel().closeFuture().sync();
                 }catch (InterruptedException e){
                     stopServer();
-                    System.out.println("<TSN Client listenerServer> Thread: ServerThread interrupted.");
+                    System.out.println("<TSN Client listenerServer> Thread: ServerThread" +
+                            " interrupted.");
                 }
             }
 

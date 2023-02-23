@@ -34,8 +34,8 @@ public class TalkerClient {
     private long size;
 
     @Builder
-    public TalkerClient(String host, @NonNull int port, @NonNull Header header,
-                        @NonNull String url, @NonNull String body) throws Exception {
+    public TalkerClient(String host, @NonNull int port, @NonNull Header header, @NonNull String url,
+                        @NonNull String body) throws Exception {
         this.port = port;
         this.host = host == null ? "localhost" : host;
         this.header = header;
@@ -46,7 +46,7 @@ public class TalkerClient {
         join_talker();
     }
 
-    public void start() throws Exception{
+    public void start() throws InterruptedException {
         final EventLoopGroup group = new NioEventLoopGroup();
 
         Bootstrap b = new Bootstrap();
