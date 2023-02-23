@@ -13,7 +13,7 @@ import java.util.*;
 public class Computer {//获取硬件信息, LLDP
     public String host_name = null, systemType = "";
     public final String topology_id = "tsn-network", win = "Windows", linux = "Linux";
-    public String cuc_ip = "10.2.25.151";
+    public String cuc_ip = "localhost";
     public static long firstSeen = System.currentTimeMillis();
     public Map<String, String> urls;
     @Getter

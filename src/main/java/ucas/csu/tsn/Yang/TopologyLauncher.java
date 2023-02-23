@@ -20,7 +20,7 @@ public class TopologyLauncher {
 
     public void startTimerThread(){
         if (timerThread != null){
-            System.out.println("<TSN Client> timer has started <TSN Client>");
+            System.out.println("<TSN Client TopologyLauncher> timer has started.");
             return;
         }
 
@@ -35,7 +35,7 @@ public class TopologyLauncher {
                         Thread.sleep(timeInterval);
                     }
                 }catch (InterruptedException e){
-                    System.out.println("<TSN Client> Thread: TimerThread interrupted <TSN Client>");
+                    System.out.println("<TSN Client TopologyLauncher> Thread: TimerThread interrupted.");
                 } catch (Exception e){
                     e.printStackTrace();
                 }
@@ -56,7 +56,7 @@ public class TopologyLauncher {
         NetworkCard networkCard = computer.getCurrentNetworkCard();
         String url = this.urlFront + "topology/" + topologyId + "/node/" + networkCard.getNode_id();
         JSONObject node = networkCard.getJSONObject();
-        System.out.println("<TSN Client> register node to controller <TSN Client>");
+        System.out.println("<TSN Client TopologyLauncher> register node to controller.");
         RestfulPutInfo restfulPutInfo = RestfulPutInfo.builder().url(url).build();
 //        JSONArray array = new JSONArray();
 //        array.add(node);
@@ -68,7 +68,7 @@ public class TopologyLauncher {
     public void removeDevice(){
         NetworkCard networkCard = computer.getCurrentNetworkCard();
         String url = this.urlFront + "topology/" + topologyId + "/node/" + networkCard.getNode_id();
-        System.out.println("<TSN Client> remove node from controller <TSN Client>");
+        System.out.println("<TSN Client TopologyLauncher> remove node from controller.");
         RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder().url(url).build();
         restfulDeleteInfo.deleteInfo();
     }

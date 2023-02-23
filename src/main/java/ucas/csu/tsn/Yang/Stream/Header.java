@@ -58,7 +58,7 @@ public class Header {//负责数据流header内容的转化
         this.isHaveVlan = isHaveVlan == null ? false : isHaveVlan;
         //streamId
         this.uniqueId = uniqueId;
-        System.out.println("Generate StreamID - UniqueID " + this.uniqueId);
+        System.out.println("<TSN Client Header> Generate StreamID - UniqueID " + this.uniqueId);
 
         //streamRank
         this.rank = rank;

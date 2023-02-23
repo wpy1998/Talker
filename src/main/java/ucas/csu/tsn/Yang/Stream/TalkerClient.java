@@ -54,7 +54,7 @@ public class TalkerClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
-                        System.out.println("Connecting to...");
+                        System.out.println("<TSN Client talkerClient> Connecting to...");
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         pipeline.addLast(new RpcEncoder(RpcRequest.class));
                         pipeline.addLast(new RpcDecoder(RpcResponse.class));
@@ -67,10 +67,10 @@ public class TalkerClient {
             @Override
             public void operationComplete(ChannelFuture channelFuture) throws Exception {
                 if (channelFuture.isSuccess()){
-                    System.out.println("Connected Successful");
+                    System.out.println("<TSN Client talkerClient> Connected Successful");
                     resultCode = 200;
                 }else {
-                    System.out.println("Connected Failure");
+                    System.out.println("<TSN Client talkerClient> Connected Failure");
                     resultCode = 400;
                 }
                 future.channel().close();
@@ -100,7 +100,7 @@ public class TalkerClient {
         streams.add(joinStream);
         JSONObject device = new JSONObject();
         device.put("stream-list", streams);
-        System.out.println("<TSN Client> register talker to controller <TSN Client>");
+        System.out.println("<TSN Client talkerClient> register talker to controller.");
         return restfulPutInfo.putInfo(device.toString());
     }
 
@@ -110,7 +110,7 @@ public class TalkerClient {
         RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder()
                 .url(url)
                 .build();
-        System.out.println("<TSN Client> remove talker from controller <TSN Client>");
+        System.out.println("<TSN Client talkerClient> remove talker from controller.");
         return restfulDeleteInfo.deleteInfo();
     }
 

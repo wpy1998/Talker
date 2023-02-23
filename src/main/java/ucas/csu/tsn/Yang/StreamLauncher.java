@@ -1,34 +1,40 @@
 package ucas.csu.tsn.Yang;
 
+import ucas.csu.tsn.Yang.Stream.MonitorServer;
 import ucas.csu.tsn.Yang.Stream.TalkerClient;
 import ucas.csu.tsn.Yang.Topology.NetworkCard;
 import ucas.csu.tsn.Hardware.Computer;
 import ucas.csu.tsn.Yang.Stream.ListenerServer;
 import ucas.csu.tsn.Yang.Stream.Header;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class StreamLauncher {
     private String talkerFront, listenerFront, hostName;
-    private static List<TalkerClient> clients = new ArrayList<>();
     private static ListenerServer server = null;
     private static Thread pollingThread = null;
+    private MonitorServer monitorServer;
 
     public StreamLauncher(Computer computer){
         this.talkerFront = computer.urls.get("tsn-talker");
         this.listenerFront = computer.urls.get("tsn-listener");
         this.hostName = computer.host_name;
+        monitorServer = new MonitorServer();
     }
 
     public void stopStreamLauncher(){
         stopPollingThread();
         stopListenerServer();
+        monitorServer.stop();
     }
 
     public void startPollingThread(){
+        if (monitorServer == null){
+            monitorServer = new MonitorServer();
+        }
+        monitorServer.start();
         if (pollingThread != null){
-            System.out.println("<TSN Client> Polling Thread has started <TSN Client>");
+            System.out.println("<TSN Client StreamLauncher> Polling Thread has started.");
             return;
         }
         pollingThread = new Thread(new Runnable() {
@@ -37,14 +43,17 @@ public class StreamLauncher {
                 int timeInterval = 15 * 1000;
                 try {
                     while (true){
-                        System.out.println("<TSN Client> Unallocated stream shown as follows: <TSN Client>");
-                        for (TalkerClient talkerClient: clients){
+                        List<TalkerClient> talkerClients = monitorServer.getTalkerClients();
+                        if (talkerClients.size() != 0){
+                            System.out.println("<TSN Client StreamLauncher> Unallocated stream shown as follows: ");
+                        }
+                        for (TalkerClient talkerClient: talkerClients){
                             System.out.println(talkerClient.getKey());
                         }
                         Thread.sleep(timeInterval);
                     }
                 }catch (InterruptedException e){
-                    System.out.println("<TSN Client> Thread: PollingThread interrupted <TSN Client>");
+                    System.out.println("<TSN Client StreamLauncher> Thread: PollingThread interrupted.");
                 }
             }
         });
@@ -55,10 +64,9 @@ public class StreamLauncher {
         if (pollingThread != null && pollingThread.isAlive()){
             pollingThread.interrupt();
         }
-        for (TalkerClient talkerClient: clients){
-            talkerClient.leave_talker();
+        if (monitorServer != null){
+            monitorServer.stop();
         }
-        clients.clear();
     }
 
     /**
@@ -117,7 +125,7 @@ public class StreamLauncher {
                         + "/stream-list/")
                 .body(body)
                 .build();
-        clients.add(client);
+        monitorServer.insertTalkerClient(client);
     }
 
     /**

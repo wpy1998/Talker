@@ -24,6 +24,5 @@ public class ListenerServerApp {
                 break;
             }
         }
-
     }
 }

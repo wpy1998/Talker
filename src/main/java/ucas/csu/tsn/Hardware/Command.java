@@ -27,7 +27,7 @@ public class Command {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("*****************************************************************");
-        System.out.println("<TSN Client> Please input the number which pattern to start: <TSN Client>\n" +
+        System.out.println("<TSN Client> Please input the number which pattern to start: \n" +
                 "1. Talker\n2. Listener\n3. Both");
         System.out.println("*****************************************************************");
 
@@ -44,19 +44,19 @@ public class Command {
         topologyLauncher.startTimerThread();
         NetworkCard networkCard = computer.getCurrentNetworkCard();
         if (pattern == 1){
-            System.out.println("<TSN Client> Start Talker Client <TSN Client>");
+            System.out.println("<TSN Client> Start Talker Client.");
             streamLauncher.startPollingThread();
             streamLauncher.registerTalkerStream("talker client message", networkCard);
         }else if (pattern == 2){
-            System.out.println("<TSN Client> Start Listener Server <TSN Client>");
+            System.out.println("<TSN Client> Start Listener Server.");
             streamLauncher.startListenerServer(networkCard);
         }else if(pattern == 3){
-            System.out.println("<TSN Client> Start Talker Client and Listener Server <TSN Client>");
+            System.out.println("<TSN Client> Start Talker Client and Listener Server.");
             streamLauncher.startPollingThread();
             streamLauncher.startListenerServer(networkCard);
             streamLauncher.registerTalkerStream("talker client message", networkCard);
         }else {
-            System.out.println("<TSN Client> Start Test Pattern <TSN Client>");
+            System.out.println("<TSN Client> Start Test Pattern.");
         }
 
         while (scanner.hasNext()){

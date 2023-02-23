@@ -43,7 +43,7 @@ public class ListenerServer {
                     int resultCode = join_listener();
 
                     if(resultCode >= 400 || resultCode < 100){
-                        System.out.println("<TSN Client> listener register failed <TSN Client>");
+                        System.out.println("<TSN Client listenerServer> listener register failed.");
                         return;
                     }
 
@@ -66,15 +66,15 @@ public class ListenerServer {
                             });
                     future = b.bind(port).sync();
                     if (future.isSuccess()){
-                        System.out.println("<TSN Client> Server Start Successful <TSN Client>");
+                        System.out.println("<TSN Client listenerServer> Server Start Successful.");
                     }else {
-                        System.out.println("<TSN Client> Server Start Failure <TSN Client>");
+                        System.out.println("<TSN Client listenerServer> Server Start Failure.");
                         stopServer();
                     }
                     future.channel().closeFuture().sync();
                 }catch (InterruptedException e){
                     stopServer();
-                    System.out.println("<TSN Client> Thread: ServerThread interrupted <TSN Client>");
+                    System.out.println("<TSN Client listenerServer> Thread: ServerThread interrupted.");
                 }
             }
 
@@ -113,14 +113,14 @@ public class ListenerServer {
         streams.add(joinStream);
         JSONObject device = new JSONObject();
         device.put("stream-list", streams);
-        System.out.println("<TSN Client> register listener to controller <TSN Client>");
+        System.out.println("<TSN Client listenerServer> register listener to controller.");
         return restfulPutInfo.putInfo(device.toString());
     }
 
     private int leave_listener(){
         String url = this.url + header.getKey();
         RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder().url(url).build();
-        System.out.println("<TSN Client> remove listener from controller <TSN Client>");
+        System.out.println("<TSN Client listenerServer> remove listener from controller.");
         return restfulDeleteInfo.deleteInfo();
     }
 }

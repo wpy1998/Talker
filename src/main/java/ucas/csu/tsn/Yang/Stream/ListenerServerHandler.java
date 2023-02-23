@@ -8,16 +8,16 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 public class ListenerServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg){
-        System.out.println("Client: " + ctx.channel().remoteAddress());
+        System.out.println("<TSN Client listenerServer> Client: " + ctx.channel().remoteAddress());
         RpcRequest rpcRequest = (RpcRequest) msg;
-        System.out.println("Client Message: " + rpcRequest.getData());
+        System.out.println("<TSN Client listenerServer> Client Message: " + rpcRequest.getData());
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
-        System.out.println("Server Get Message finished..");
+        System.out.println("<TSN Client listenerServer> Server Get Message finished...");
         RpcResponse rpcResponse = new RpcResponse();
-        rpcResponse.setData("Hello，Client....^_^");
+        rpcResponse.setData("<TSN Client listenerServer> Hello，Client....^_^");
         ctx.channel().writeAndFlush(rpcResponse);
     }
 
