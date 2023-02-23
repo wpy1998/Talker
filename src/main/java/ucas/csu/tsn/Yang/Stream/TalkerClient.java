@@ -48,6 +48,9 @@ public class TalkerClient {
 
     public void start() throws InterruptedException {
         final EventLoopGroup group = new NioEventLoopGroup();
+        JSONObject object = new JSONObject();
+        object.put("timeTap", System.currentTimeMillis());
+        object.put("body", body);
 
         Bootstrap b = new Bootstrap();
         b.group(group).channel(NioSocketChannel.class)
@@ -58,7 +61,7 @@ public class TalkerClient {
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         pipeline.addLast(new RpcEncoder(RpcRequest.class));
                         pipeline.addLast(new RpcDecoder(RpcResponse.class));
-                        pipeline.addLast(new TalkerClientHandler(body));
+                        pipeline.addLast(new TalkerClientHandler(object.toJSONString()));
                     }
                 });
         final ChannelFuture future = b.connect(host, port).sync();

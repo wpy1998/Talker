@@ -1,5 +1,6 @@
 package ucas.csu.tsn.Yang.Stream;
 
+import com.alibaba.fastjson.JSONObject;
 import ucas.csu.tsn.NettyAPI.RpcRequest;
 import ucas.csu.tsn.NettyAPI.RpcResponse;
 import io.netty.channel.ChannelHandlerContext;
@@ -10,7 +11,10 @@ public class ListenerServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg){
         System.out.println("<TSN Client listenerServer> Client: " + ctx.channel().remoteAddress());
         RpcRequest rpcRequest = (RpcRequest) msg;
-        System.out.println("<TSN Client listenerServer> Client Message: " + rpcRequest.getData());
+        JSONObject object = JSONObject.parseObject((String) rpcRequest.getData());
+        long timeTap = object.getLong("timeTap"), current = System.currentTimeMillis();
+        System.out.println("<TSN Client listenerServer> Client Message: " +
+                object.getString("body") + ", costTime = " + (current - timeTap));
     }
 
     @Override
