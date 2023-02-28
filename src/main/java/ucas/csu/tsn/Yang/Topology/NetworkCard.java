@@ -49,7 +49,7 @@ public class NetworkCard {
         JSONObject node = new JSONObject();
         node.put("node-id", this.node_id);
         node.put("node-type", "device");
-        node.put("id", mac.replace(":", "-"));
+        node.put("id", mac.replace("-", ":"));
 
         JSONArray addresses = new JSONArray();
         JSONObject address = new JSONObject();
