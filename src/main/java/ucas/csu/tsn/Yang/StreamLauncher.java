@@ -112,7 +112,8 @@ public class StreamLauncher {
         return s1 + "-" + s2;
     }
 
-    public void registerTalkerStream(String body, NetworkCard networkCard) throws Exception {
+    public void registerTalkerStream(String body, NetworkCard networkCard,
+                                     String destIp) throws Exception {
         String result = "";
         for (int i = 0; i < 100; i++){
             result += body;
@@ -125,7 +126,7 @@ public class StreamLauncher {
                 .build();
 
         TalkerClient client = TalkerClient.builder()
-                .host("localhost")
+                .host(destIp)
                 .port(17835)
                 .header(header)
                 .url(this.talkerFront + networkCard.getMac().replace(":", "-")
