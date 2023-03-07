@@ -7,6 +7,7 @@ import ucas.csu.tsn.Hardware.Computer;
 import ucas.csu.tsn.Yang.Stream.ListenerServer;
 import ucas.csu.tsn.Yang.Stream.Header;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -119,10 +120,17 @@ public class StreamLauncher {
             result += body;
         }
         body = result;
+        List<String> destIps = new ArrayList<>();
+        destIps.add(destIp);
+        List<String> destMacs = new ArrayList<>();
+        destMacs.add("00-0c-29-6b-bf-4e");
         int uniqueId = allocateUniqueId();
         Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
                 .rank((short) 0)
                 .networkCard(networkCard)
+                .isHaveIpv4(true)
+                .dest_ip(destIps)
+                .dest_mac(destMacs)
                 .build();
 
         TalkerClient client = TalkerClient.builder()
