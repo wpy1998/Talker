@@ -13,7 +13,7 @@ import java.util.*;
 public class Computer {//获取硬件信息, LLDP
     public String host_name = null, systemType = "";
     public final String topology_id = "tsn-network", win = "Windows", linux = "Linux";
-    public String cuc_ip = "192.168.1.15";
+    public String cuc_ip = "localhost";
     public static long firstSeen = System.currentTimeMillis();
     public Map<String, String> urls;
     @Getter
@@ -21,7 +21,7 @@ public class Computer {//获取硬件信息, LLDP
     private Detector detector;
 
     public Computer() throws UnknownHostException {
-        System.out.println("<TSN Client> 本软件运行背景是在有线连接，不支持无线连接，操作系统支持Windows和Linux <TSN Client>");
+        System.out.println("<TSN Client> 本软件运行背景是在有线连接，不支持无线连接，操作系统支持Windows和Linux.");
         urls = new HashMap<>();
         urls.put("tsn-talker", "http://" + cuc_ip +
                 ":8181/restconf/config/tsn-talker-type:stream-talker-config/devices/");
