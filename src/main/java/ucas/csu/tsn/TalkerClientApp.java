@@ -10,7 +10,10 @@ public class TalkerClientApp {
         Computer computer = new Computer();
         NetworkCard networkCard = computer.getCurrentNetworkCard();
 
-        String body = "123456789012345678901234567890123456789012345678901234567890";
+        String body = "123456789012345678901234567890123456789012345678901234567890", result = "";
+        for (int i = 0; i < 35; i++){
+            result = body + result;
+        }
         Header header = Header.builder().uniqueId("00-00")
                 .rank((short) 0)
                 .networkCard(networkCard)
@@ -21,7 +24,7 @@ public class TalkerClientApp {
                 .header(header)
                 .url(computer.urls.get("tsn-talker") + networkCard.getMac()
                         .replace(":", "-") + "/stream-list/")
-                .body(body)
+                .body(result)
                 .build();
         client.start();
     }
