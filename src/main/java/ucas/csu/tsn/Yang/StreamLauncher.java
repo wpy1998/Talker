@@ -115,11 +115,6 @@ public class StreamLauncher {
 
     public void registerTalkerStream(String body, NetworkCard networkCard,
                                      String destIp) throws Exception {
-        String result = "";
-        for (int i = 0; i < 100; i++){
-            result += body;
-        }
-        body = result;
         List<String> destIps = new ArrayList<>();
         destIps.add(destIp);
         List<String> destMacs = new ArrayList<>();

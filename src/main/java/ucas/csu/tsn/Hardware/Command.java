@@ -46,8 +46,7 @@ public class Command {
         if (pattern == 1){
             System.out.println("<TSN Client> Start Talker Client.");
             streamLauncher.startPollingThread();
-            streamLauncher.registerTalkerStream("talker client message", networkCard,
-                    "192.168.1.15");
+            generateTalkerStream(9, networkCard);
         }else if (pattern == 2){
             System.out.println("<TSN Client> Start Listener Server.");
             streamLauncher.startListenerServer(networkCard);
@@ -55,8 +54,7 @@ public class Command {
             System.out.println("<TSN Client> Start Talker Client and Listener Server.");
             streamLauncher.startPollingThread();
             streamLauncher.startListenerServer(networkCard);
-            streamLauncher.registerTalkerStream("talker client message", networkCard,
-                    "192.168.1.15");
+            generateTalkerStream(1, networkCard);
         }else {
             System.out.println("<TSN Client> Start Test Pattern.");
         }
@@ -80,6 +78,16 @@ public class Command {
                         break;
                 }
             }
+        }
+    }
+
+    private void generateTalkerStream(int number, NetworkCard networkCard) throws Exception {
+        String body = "";
+        for (int i = 0; i < 1000; i++){
+            body += "a";
+        }
+        for (int i = 0; i < number; i++) {
+            streamLauncher.registerTalkerStream(body, networkCard, "192.168.1.15");
         }
     }
 }

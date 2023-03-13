@@ -2,6 +2,7 @@ package ucas.csu.tsn.RestfulAPI;
 
 import lombok.Builder;
 import lombok.NonNull;
+import lombok.Setter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.net.URL;
 
 public class RestfulDeleteInfo {
     private String _url, identity, password;
+    @Setter
     private boolean isDebug;
 
     @Builder

@@ -1,11 +1,13 @@
 package ucas.csu.tsn.Yang.Stream;
 
 import com.alibaba.fastjson.JSONObject;
+import io.netty.channel.ChannelHandler;
 import ucas.csu.tsn.NettyAPI.RpcRequest;
 import ucas.csu.tsn.NettyAPI.RpcResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
+@ChannelHandler.Sharable
 public class ListenerServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg){
