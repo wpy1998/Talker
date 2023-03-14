@@ -1,5 +1,6 @@
 package ucas.csu.tsn.Yang.Stream;
 
+import lombok.Setter;
 import ucas.csu.tsn.NettyAPI.RpcDecoder;
 import ucas.csu.tsn.NettyAPI.RpcEncoder;
 import ucas.csu.tsn.NettyAPI.RpcRequest;
@@ -32,16 +33,20 @@ public class TalkerClient {
     private Header header;
     private String url, body;
     private long size;
+    @Setter
+    private boolean isRegister;
 
     @Builder
-    public TalkerClient(String host, @NonNull int port, @NonNull Header header, @NonNull String url,
-                        @NonNull String body) throws Exception {
+    public TalkerClient(String host, @NonNull int port, @NonNull Header header,
+                        @NonNull String url, @NonNull String body,
+                        Boolean isRegister) throws Exception {
         this.port = port;
         this.host = host == null ? "localhost" : host;
         this.header = header;
         this.url = url;
         this.body = body;
         this.size = this.body.getBytes("gbk").length;
+        this.isRegister = isRegister == null ? true : isRegister;
 
         join_talker();
     }
@@ -87,6 +92,9 @@ public class TalkerClient {
     }
 
     private int join_talker(){
+        if (!isRegister){
+            return 200;
+        }
         String url = this.url + header.getKey();
         RestfulPutInfo restfulPutInfo = RestfulPutInfo.builder()
                 .url(url)
@@ -108,6 +116,9 @@ public class TalkerClient {
     }
 
     public int leave_talker(){
+        if (!isRegister){
+            return 200;
+        }
         String url = this.url + header.getKey();
 //        System.out.println(url);
         RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder()
