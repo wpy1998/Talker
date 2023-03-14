@@ -32,6 +32,7 @@ public class RestfulGetInfo {
         String output = null;
         int resultCode = 400;
         if (isDebug){
+            System.out.println("url : " + _url);
             System.out.println("requestType : getInfo");
             System.out.println("requestBody : " + _url);
         }

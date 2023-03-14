@@ -113,30 +113,36 @@ public class StreamLauncher {
         return s1 + "-" + s2;
     }
 
-    public void registerTalkerStream(String body, NetworkCard networkCard,
-                                     String destIp) throws Exception {
-        List<String> destIps = new ArrayList<>();
-        destIps.add(destIp);
-        List<String> destMacs = new ArrayList<>();
-        destMacs.add("00-0c-29-6b-bf-4e");
-        int uniqueId = allocateUniqueId();
-        Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
-                .rank((short) 0)
-                .networkCard(networkCard)
-                .isHaveIpv4(true)
-                .dest_ip(destIps)
-                .dest_mac(destMacs)
-                .build();
+    public void registerTalkerStream(String body,
+                                     NetworkCard networkCard,
+                                     List<String> destIps,
+                                     List<String> destMacs) throws Exception {
+        for (int i = 0; i < destIps.size(); i++){
+            String destIp = destIps.get(i);
+            String destMac = destMacs.get(i);
+            List<String> ips = new ArrayList<>();
+            ips.add(destIp);
+            List<String> macs = new ArrayList<>();
+            macs.add(destMac);
+            int uniqueId = allocateUniqueId();
+            Header header = Header.builder().uniqueId(convertUniqueID(uniqueId))
+                    .rank((short) 0)
+                    .networkCard(networkCard)
+                    .isHaveIpv4(true)
+                    .dest_ip(ips)
+                    .dest_mac(macs)
+                    .build();
 
-        TalkerClient client = TalkerClient.builder()
-                .host(destIp)
-                .port(17835)
-                .header(header)
-                .url(this.talkerFront + networkCard.getMac().replace(":", "-")
-                        + "/stream-list/")
-                .body(body)
-                .build();
-        monitorServer.insertTalkerClient(client);
+            TalkerClient client = TalkerClient.builder()
+                    .host(destIp)
+                    .port(17835)
+                    .header(header)
+                    .url(this.talkerFront + networkCard.getMac().replace(":", "-")
+                            + "/stream-list/")
+                    .body(body)
+                    .build();
+            monitorServer.insertTalkerClient(client);
+        }
     }
 
     /**

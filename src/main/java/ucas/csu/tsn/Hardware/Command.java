@@ -6,6 +6,8 @@ import ucas.csu.tsn.Yang.TopologyLauncher;
 import lombok.Builder;
 import lombok.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Command {
@@ -46,7 +48,7 @@ public class Command {
         if (pattern == 1){
             System.out.println("<TSN Client> Start Talker Client.");
             streamLauncher.startPollingThread();
-            generateTalkerStream(9, networkCard);
+            generateTalkerStream(1, networkCard);
         }else if (pattern == 2){
             System.out.println("<TSN Client> Start Listener Server.");
             streamLauncher.startListenerServer(networkCard);
@@ -54,7 +56,7 @@ public class Command {
             System.out.println("<TSN Client> Start Talker Client and Listener Server.");
             streamLauncher.startPollingThread();
             streamLauncher.startListenerServer(networkCard);
-            generateTalkerStream(1, networkCard);
+            generateTalkerStream(3, networkCard);
         }else {
             System.out.println("<TSN Client> Start Test Pattern.");
         }
@@ -87,7 +89,11 @@ public class Command {
             body += "a";
         }
         for (int i = 0; i < number; i++) {
-            streamLauncher.registerTalkerStream(body, networkCard, "192.168.1.15");
+            List<String> destIps = new ArrayList<>();
+            List<String> destMacs = new ArrayList<>();
+            destIps.add("10.2.25.53");
+            destMacs.add("00-0c-29-b8-88-ad");
+            streamLauncher.registerTalkerStream(body, networkCard, destIps, destMacs);
         }
     }
 }

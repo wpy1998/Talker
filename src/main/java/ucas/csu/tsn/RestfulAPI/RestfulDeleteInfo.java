@@ -31,6 +31,7 @@ public class RestfulDeleteInfo {
     public int deleteInfo(){
         int resultCode = 400;
         if (isDebug){
+            System.out.println("url : " + _url);
             System.out.println("requestType : deleteInfo");
             System.out.println("requestBody : " + _url);
         }

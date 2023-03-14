@@ -31,6 +31,7 @@ public class RestfulPostInfo {
     public int postInfo(String objS){
         int resultCode = 400;
         if (isDebug){
+            System.out.println("url : " + _url);
             System.out.println("requestType : postInfo");
             System.out.println("requestBody : " + objS);
         }
