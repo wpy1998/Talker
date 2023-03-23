@@ -22,7 +22,7 @@ public class TalkerClientApp {
                 .networkCard(networkCard)
                 .build();
         TalkerClient client = TalkerClient.builder()
-                .host("192.168.1.15")
+                .host("localhost")
                 .port(17835)
                 .header(header)
                 .url(computer.urls.get("tsn-talker") + networkCard.getMac()

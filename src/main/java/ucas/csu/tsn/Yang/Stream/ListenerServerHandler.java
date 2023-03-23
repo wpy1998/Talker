@@ -14,16 +14,16 @@ public class ListenerServerHandler extends ChannelInboundHandlerAdapter {
         System.out.println("<TSN Client listenerServer> Client: " + ctx.channel().remoteAddress());
         RpcRequest rpcRequest = (RpcRequest) msg;
         JSONObject object = JSONObject.parseObject((String) rpcRequest.getData());
-        long timeTap = object.getLong("timeTap"), current = System.currentTimeMillis();
+//        long timeTap = object.getLong("timeTap"), current = System.currentTimeMillis();
         System.out.println("<TSN Client listenerServer> Client Message: " +
-                object.getString("body").length() + ", costTime = " + (current - timeTap));
+                object.getString("body").length());
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
         System.out.println("<TSN Client listenerServer> Server Get Message finished...");
         RpcResponse rpcResponse = new RpcResponse();
-        rpcResponse.setData("<TSN Client listenerServer> Hello，Client....^_^");
+        rpcResponse.setData("Hello，Client....^_^");
         ctx.channel().writeAndFlush(rpcResponse);
     }
 

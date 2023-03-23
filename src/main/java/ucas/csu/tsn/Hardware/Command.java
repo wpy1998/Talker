@@ -56,7 +56,7 @@ public class Command {
             System.out.println("<TSN Client> Start Talker Client and Listener Server.");
             streamLauncher.startPollingThread();
             streamLauncher.startListenerServer(networkCard);
-            generateTalkerStream(3, networkCard);
+            generateTalkerStream(1, networkCard);
         }else {
             System.out.println("<TSN Client> Start Test Pattern.");
         }
@@ -91,7 +91,7 @@ public class Command {
         for (int i = 0; i < number; i++) {
             List<String> destIps = new ArrayList<>();
             List<String> destMacs = new ArrayList<>();
-            destIps.add("10.2.25.53");
+            destIps.add("127.0.0.1");
             destMacs.add("00-0c-29-b8-88-ad");
             streamLauncher.registerTalkerStream(body, networkCard, destIps, destMacs);
         }

@@ -35,6 +35,8 @@ public class TalkerClient {
     private long size;
     @Setter
     private boolean isRegister;
+    private TalkerClientHandler handler;
+    private EventLoopGroup group;
 
     @Builder
     public TalkerClient(String host, @NonNull int port, @NonNull Header header,
@@ -48,14 +50,19 @@ public class TalkerClient {
         this.size = this.body.getBytes("gbk").length;
         this.isRegister = isRegister == null ? true : isRegister;
 
+        group = new NioEventLoopGroup();
+        handler = new TalkerClientHandler();
+        handler.setFather(this);
         join_talker();
     }
 
     public void start() throws InterruptedException {
-        final EventLoopGroup group = new NioEventLoopGroup();
+        long current = System.currentTimeMillis();
+        setSendTime(current);
         JSONObject object = new JSONObject();
-        object.put("timeTap", System.currentTimeMillis());
+        object.put("timeTap", current);
         object.put("body", body);
+        handler.setBody(object.toJSONString());
 
         Bootstrap b = new Bootstrap();
         b.group(group).channel(NioSocketChannel.class)
@@ -66,7 +73,7 @@ public class TalkerClient {
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         pipeline.addLast(new RpcEncoder(RpcRequest.class));
                         pipeline.addLast(new RpcDecoder(RpcResponse.class));
-                        pipeline.addLast(new TalkerClientHandler(object.toJSONString()));
+                        pipeline.addLast(handler);
                     }
                 });
         final ChannelFuture future = b.connect(host, port).sync();
@@ -81,6 +88,10 @@ public class TalkerClient {
                     System.out.println("<TSN Client talkerClient> Connected Failure");
                     resultCode = 400;
                 }
+//                stopFuture();
+            }
+
+            private void stopFuture(){
                 future.channel().close();
                 group.shutdownGracefully();
                 leave_talker();
@@ -115,6 +126,11 @@ public class TalkerClient {
         return restfulPutInfo.putInfo(device.toString());
     }
 
+    public void stop(){
+        group.shutdownGracefully();
+        leave_talker();
+    }
+
     public int leave_talker(){
         if (!isRegister){
             return 200;
@@ -130,5 +146,21 @@ public class TalkerClient {
 
     public String getKey(){
         return this.header.getKey();
+    }
+
+    public long getSendTime(){
+        return handler.getSendTime();
+    }
+
+    public void setSendTime(long sendTime){
+        handler.setSendTime(sendTime);
+    }
+
+    public long getAcceptTime(){
+        return handler.getAcceptTime();
+    }
+
+    public void setAcceptTime(long acceptTime){
+        handler.setAcceptTime(acceptTime);
     }
 }

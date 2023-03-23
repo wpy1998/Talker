@@ -24,6 +24,7 @@ public class ListenerServer {
     private Header header;
     private String url;
     private Thread serverThread;
+    private ListenerServerHandler handler;
 
     @Builder
     public ListenerServer(@NonNull int port, @NonNull Header header, @NonNull String url) {
@@ -33,6 +34,7 @@ public class ListenerServer {
     }
 
     private void initServer(){
+        handler = new ListenerServerHandler();
         serverThread = new Thread(new Runnable() {
             EventLoopGroup bossGroup, workerGroup;
             ChannelFuture future;
@@ -61,7 +63,7 @@ public class ListenerServer {
                                     socketChannel.pipeline()
                                             .addLast(new RpcDecoder(RpcRequest.class))
                                             .addLast(new RpcEncoder(RpcResponse.class))
-                                            .addLast(new ListenerServerHandler());
+                                            .addLast(handler);
                                 }
                             });
                     future = b.bind(port).sync();
