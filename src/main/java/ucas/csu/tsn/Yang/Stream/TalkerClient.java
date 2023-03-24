@@ -39,16 +39,19 @@ public class TalkerClient {
     private EventLoopGroup group;
 
     @Builder
-    public TalkerClient(String host, @NonNull int port, @NonNull Header header,
-                        @NonNull String url, @NonNull String body,
-                        Boolean isRegister) throws Exception {
+    public TalkerClient(String host, @NonNull int port, Header header,
+                        String url, @NonNull String body) throws Exception {
         this.port = port;
         this.host = host == null ? "localhost" : host;
         this.header = header;
         this.url = url;
         this.body = body;
         this.size = this.body.getBytes("gbk").length;
-        this.isRegister = isRegister == null ? true : isRegister;
+        if (this.header == null || this.url == null){
+            this.isRegister = false;
+        }else {
+            this.isRegister = true;
+        }
 
         group = new NioEventLoopGroup();
         handler = new TalkerClientHandler();

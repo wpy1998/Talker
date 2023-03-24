@@ -25,12 +25,20 @@ public class ListenerServer {
     private String url;
     private Thread serverThread;
     private ListenerServerHandler handler;
+    private boolean isRegister;
 
     @Builder
-    public ListenerServer(@NonNull int port, @NonNull Header header, @NonNull String url) {
+    public ListenerServer(@NonNull int port,
+                          Header header,
+                          String url) {
         this.port = port;
         this.header = header;
         this.url = url;
+        if (this.header == null || this.url == null){
+            this.isRegister = false;
+        }else {
+            this.isRegister = true;
+        }
     }
 
     private void initServer(){
@@ -105,6 +113,9 @@ public class ListenerServer {
     }
 
     private int join_listener(){
+        if (!this.isRegister){
+            return 200;
+        }
         String url = this.url + header.getKey();
 //        System.out.println(url);
         RestfulPutInfo restfulPutInfo = RestfulPutInfo.builder().url(url).build();
@@ -121,6 +132,9 @@ public class ListenerServer {
     }
 
     private int leave_listener(){
+        if (!this.isRegister){
+            return 200;
+        }
         String url = this.url + header.getKey();
         RestfulDeleteInfo restfulDeleteInfo = RestfulDeleteInfo.builder().url(url).build();
         System.out.println("<TSN Client listenerServer> remove listener from controller.");

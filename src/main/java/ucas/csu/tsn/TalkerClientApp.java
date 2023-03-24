@@ -10,25 +10,14 @@ import java.util.List;
 
 public class TalkerClientApp {
     public static void main(String[] args) throws Exception {
-        Computer computer = new Computer();
-        NetworkCard networkCard = computer.getCurrentNetworkCard();
-
         String body = "";
         for (int i = 0; i < 1000; i++){
             body = body + "a";
         }
-        Header header = Header.builder().uniqueId("00-00")
-                .rank((short) 0)
-                .networkCard(networkCard)
-                .build();
         TalkerClient client = TalkerClient.builder()
                 .host("localhost")
                 .port(17835)
-                .header(header)
-                .url(computer.urls.get("tsn-talker") + networkCard.getMac()
-                        .replace(":", "-") + "/stream-list/")
                 .body(body)
-                .isRegister(false)
                 .build();
         client.start();
     }
