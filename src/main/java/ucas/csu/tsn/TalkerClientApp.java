@@ -15,7 +15,7 @@ public class TalkerClientApp {
             body = body + "a";
         }
         TalkerClient client = TalkerClient.builder()
-                .host("localhost")
+                .host("192.168.1.14")
                 .port(17835)
                 .body(body)
                 .build();
