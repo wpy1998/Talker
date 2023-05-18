@@ -46,13 +46,13 @@ public class StreamLauncher {
                 try {
                     while (true){
                         Map<String, TalkerClient> talkerClients = monitorServer.getTalkerClients();
-                        if (talkerClients.size() != 0){
-                            System.out.println("<TSN Client StreamLauncher> Unallocated stream " +
-                                    "shown as follows: ");
-                        }
-                        for (String key: talkerClients.keySet()){
-                            System.out.println(key);
-                        }
+//                        if (talkerClients.size() != 0){
+//                            System.out.println("<TSN Client StreamLauncher> Unallocated stream " +
+//                                    "shown as follows: ");
+//                        }
+//                        for (String key: talkerClients.keySet()){
+//                            System.out.println(key);
+//                        }
                         Thread.sleep(timeInterval);
                     }
                 }catch (InterruptedException e){
