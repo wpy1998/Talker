@@ -39,7 +39,7 @@ public class TalkerClientHandler extends SimpleChannelInboundHandler<RpcResponse
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception{
-        System.out.println("<TSN Client talkerClient> Send Message: " + body);
+        System.out.println("<TSN Client talkerClient> Send Message: " + body.length());
         RpcRequest rpcRequest = new RpcRequest();
         rpcRequest.setData(body);
         ctx.channel().writeAndFlush(rpcRequest);

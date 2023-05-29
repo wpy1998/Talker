@@ -48,7 +48,7 @@ public class Command {
         if (pattern == 1){
             System.out.println("<TSN Client> Start Talker Client.");
             streamLauncher.startPollingThread();
-            generateTalkerStream(100, networkCard);
+            generateTalkerStream(1, networkCard);
         }else if (pattern == 2){
             System.out.println("<TSN Client> Start Listener Server.");
             streamLauncher.startListenerServer(networkCard);
